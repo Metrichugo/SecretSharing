@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="css/login.css">
   <link rel="stylesheet" href="css/navbar.css">
   <link href="css/sticky-footer.css" rel="stylesheet">
+  <script src="js/jquery-3.2.1.min.js"></script>
   <script src="assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+  <script src="js/login.js"></script>
 </head>
 
 <body>
@@ -28,7 +30,7 @@
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <a class="btn btn-success my-2 my-sm-0 mr-sm-2" href="login.html" role="button" >Iniciar Sesión</a>
+        <a class="btn btn-success my-2 my-sm-0 mr-sm-2" href="login.html" role="button">Iniciar Sesión</a>
         <a class="btn btn-secondary my-2 my-sm-0" href="index.html#SignUp" role="button" style="color:black">Crear Cuenta</a>
       </form>
     </div>
@@ -43,7 +45,7 @@
         <img src="assets/Login-Icon.png" width="20%" height:auto class="rounded">
       </div>
       <div class="form-bottom">
-        <form action="php/Login.php" method="POST" onsubmit="#">
+        <form method="POST" onsubmit="return submitdata()">
           <div class="form-group row">
             <label for="Email" class="col-sm-1 offset-sm-1 col-form-label">Email</label>
             <div class="col-sm-6 offset-sm-1">
@@ -71,9 +73,11 @@
             </div>
           </div>
         </form>
+        <div class="offset-sm-1 col-sm-10" id="Error"></div>
       </div>
     </div>
   </div>
+
   <footer class="footer" id="PiePagina">
     <div class="container">
       <div class="row">

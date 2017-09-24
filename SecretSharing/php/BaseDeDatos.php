@@ -66,6 +66,23 @@
             }
             return;
         }
+
+        public function existeUsuario($Usuario){
+            $email = $Usuario->getidUsuario();
+            $password = $Usuario->getContraseña();
+            if($sentencia = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM USUARIO WHERE idUsuario = '$email' AND contrasenia = '$password'")){
+                $sentencia->execute();
+                $sentencia->bind_result($result);
+                while($sentencia->fetch()){
+                    if($result==1){
+                        $isUnique = true;
+                    }else{
+                        $isUnique = false;
+                    }
+                }
+            }
+            return $isUnique;
+        }
         
     }
 ?>

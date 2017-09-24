@@ -8,7 +8,12 @@
     $userForm = new Usuario();
     $userForm->setidUsuario($_POST['Email']);
     $userForm->setContraseña($_POST['Password']);
-
-
-
+    //User exists?
+    $result = $DBConnection->existeUsuario($userForm);
+    if($result){
+        $userForm->iniciaSesion();
+        echo "correct";
+    }else{
+        echo "incorrect";
+    }
 ?>

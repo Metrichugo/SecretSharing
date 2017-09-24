@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/navbar.css">
   <link href="css/sticky-footer.css" rel="stylesheet">
+  <script src="js/jquery-3.2.1.min.js"></script>
   <script src="assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+  <script src="js/signup.js"></script>
 </head>
 
 <body>
@@ -94,19 +96,21 @@
         <p class="h1 section-header">Comienza ya mismo</p>
       </div>
     </div>
-    <form>
+    <form method="POST" onsubmit="return submitdata()">
       <div class="container-fluid">
         <div class="form-group row">
           <label for="Alias" class="col-sm-1 offset-sm-3 col-form-label">Alias</label>
           <div class="col-sm-5">
             <input type="text" class="form-control" id="Alias" placeholder="ExampleUser98">
           </div>
+          <div class="offset-sm-4 col-sm-5" id="ErrorAlias"></div>
         </div>
         <div class="form-group row">
           <label for="Email" class="col-sm-1 offset-sm-3 col-form-label">Email</label>
           <div class="col-sm-5">
             <input type="email" class="form-control" id="Email" placeholder="example@example.com">
           </div>
+          <div class="offset-sm-4 col-sm-5" id="ErrorEmail"></div>
         </div>
         <div class="form-group row">
           <label for="Password" class="col-sm-1 offset-sm-3 col-form-label">Contraseña</label>
@@ -117,17 +121,18 @@
           <div class="col-sm-2">
             <input type="password" class="form-control" id="Confimacion" placeholder="********">
           </div>
+          <div class="offset-sm-4 col-sm-5" id="ErrorPassword"></div>
         </div>
         <div class="form-group row">
           <div class="col-sm-6 offset-sm-3">
-            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+            <button type="submit" class="btn btn-primary btn-block">Registrarse !</button>
           </div>
         </div>
       </div>
     </form>
   </div>
   <br><br> <!--TODO: MODIFICAR EL CSS -->
-    <footer class="footer" id="PiePagina">
+    <!--<footer class="footer" id="PiePagina">
       <div class="container">
         <div class="row">
           <div class="col-md-3">
@@ -155,7 +160,7 @@
           </div>
         </div>
       </div>
-    </footer>
+    </footer>-->
 </body>
 
 

@@ -19,5 +19,24 @@
         public function toString(){
             printf("%s %s %s %s %s \n",$this->idUsuario,$this->contraseña,$this->alias,$this->status,$this->espacioDisp);
         }
+        public function iniciaSesion(){
+            session_start();
+            $_SESSION["idUsuario"] = $this->idUsuario;
+            return true;
+        }
+
+        public function cerrarSesion(){
+            session_unset();
+            session_destroy();
+        }
+
+        public function modificarContraseña($contraseña){
+            $this->setContraseña($contraseña);
+        }
+
+        public function modificarAlias($alias){
+            $this->setAlias($alias);
+        }
     }
+    
 ?>
