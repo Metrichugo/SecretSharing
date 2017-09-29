@@ -1,5 +1,7 @@
 <?php
     include("Usuario.php");
+    include("Carpeta.php");
+    include("Archivo.php");
     class BaseDeDatos{
         protected $DB_NAME = "SecretSharing";
         protected $DB_USER = "root";
@@ -14,6 +16,9 @@
                         . mysqli_connect_error());
             }
         }
+
+                /************************************  Actions for USERS  ************************************/
+
         public function insertaUsuario($Usuario){
             $email = $Usuario->getidUsuario();
             $password = $Usuario->getContraseña();
@@ -83,6 +88,39 @@
             }
             return $isUnique;
         }
-        
+
+
+        /************************************  Actions for FILES  ************************************/
+        /*public function insertaArchivo($Archivo){
+            //$nombre = 
+        }*/
+
+        /************************************  Actions for CARPETAS  ************************************/
+        public function listaCarpetas($Usuario){
+            $email = $Usuario->getidUsuario();
+            if($sentencia = $this->connection->prepare("select c.nombreCarpeta,c.idCarpeta from carpeta c, usuario u where u.idUsuario = c.idUsuario and c.idCarpetaSuperior=5 and u.idUsuario='$email'")){
+                $sentencia->execute();
+                $sentencia->bind_result($nombre,$idCarpeta);
+                while($sentencia->fetch()){
+                    $Carpeta = new Carpeta();
+                    $Carpeta->crearCarpeta($email,$idCarpeta,$nombre,null);
+                    echo(
+                        '<tr>'.
+                        '<td>'.$Carpeta->getNombre().'</td>
+                        <td>'.($Carpeta->getIdCarpeta()+10).'</td>'.
+                        '<td class="text-center">
+                        <a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                        <a class="btn btn-info btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+                        <a class="btn btn-danger btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                    </td>
+                </tr>'
+
+                    );
+                    //echo($Carpeta->toString());
+                    //$User->toString();    
+                }             
+                $sentencia->close();
+            }
+        }
     }
 ?>

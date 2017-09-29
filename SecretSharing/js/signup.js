@@ -69,7 +69,6 @@ function submitdata(){
     var password = $('#Password').val();
     var alias = $('#Alias').val();
     var conf = $('#Confimacion').val(); 
-    /* Aa@1qwerty*/
     if( !validateAlias(alias) || !validatePassword(email, password,conf)){
         return false;
     }
@@ -82,6 +81,7 @@ function submitdata(){
             Alias : alias
         },
         success: function (response) {
+            document.write(response);
             if (response == "correct") {
                 window.open("index.html", "_self");
             } else {

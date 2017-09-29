@@ -13,7 +13,7 @@ function submitdata() {
         },
         success: function (response) {
             if (response == "correct") {
-                window.open("index.html", "_self");
+                window.open("./php/Principal.php","_self");
             } else {
                 $('#Error').html('<div class="alert alert-danger"><button type="button" class="close">×</button>El correo electrónico y/o contraseña no son válidos</div>');
                 window.setTimeout(function () {
