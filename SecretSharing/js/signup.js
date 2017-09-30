@@ -81,7 +81,6 @@ function submitdata(){
             Alias : alias
         },
         success: function (response) {
-            document.write(response);
             if (response == "correct") {
                 window.open("index.html", "_self");
             } else {
@@ -100,32 +99,3 @@ function submitdata(){
     return false;
 }
 
-
-
-/*$('#Error').html('<div class="alert alert-danger"><button type="button" class="close">×</button>El correo electrónico y/o contraseña no son válidos</div>');
-window.setTimeout(function () {
-    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-        $(this).remove();
-    });
-}, 5000);
-/* Button for close alert */
-/*$('.alert .close').on("click", function (e) {
-    $(this).parent().fadeTo(500, 0).slideUp(500);
-});*/
-
-/*
-    if (validatePassword(email, password)) {
-
-
-    }else {
-    $('#Error').html('<div class="alert alert-danger"><button type="button" class="close">×</button>Usuario y/o contaseña no validos </div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
-    });
-}*/

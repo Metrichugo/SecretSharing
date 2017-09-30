@@ -1,42 +1,38 @@
-<?php
+<?php 
     class Carpeta{
-        protected $idUsuario;
         protected $idCarpeta;
-        protected $nombre;
+        protected $idCarpetaSuperior;
+        protected $nombreCarpeta;
         protected $fechaCreacion;
-        protected $idCarpetaSup;
-
-        public function crearCarpeta($idUsuario,$idCarpeta,$nombre,$idCarpetaSup){
-            $this->idUsuario = $idUsuario;
+        
+        function __construct($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion){
             $this->idCarpeta = $idCarpeta;
-            $this->nombre = $nombre;
-            $this->idCarpetaSup = $idCarpetaSup;
-            $this->fechaCreacion = ""; //TODO: Code for extract date from system 
+            $this->idCarpetaSuperior = $idCarpetaSuperior;
+            $this->nombreCarpeta = $nombreCarpeta;
+            $this->fechaCreacion = $fechaCreacion;
         }
+        public function getIdCarpeta(){ return $this->idCarpeta;}
+        public function getIdCarpetaSuperior(){ return $this->idCarpetaSuperior;}
+        public function getNombreCarpeta(){ return $this->nombreCarpeta;}
+        public function getFechaCreacion(){ return $this->fechaCreacion;}
 
-        public function getIdUsuario(){
-            return $this->idUsuario;
+        public function setIdCarpeta($idCarpeta){
+            $this->idCarpeta = $idCarpeta;
         }
-
-        public function getIdCarpeta(){
-            return $this->idCarpeta;
+        public function setIdCarpetaSuperior($idCarpetaSuperior){
+            $this->idCarpetaSuperior = $idCarpetaSuperior;
         }
-
-        public function getNombre(){
-            return $this->nombre;
+        public function setNombreCarpeta($nombreCarpeta){
+            $this->nombreCarpeta = $nombreCarpeta;
         }
-
-        public function getIdCarpetaSup(){
-            return $this->idCarpetaSup;
+        public function setFechaCreacion($fechaCreacion){
+            $this->fechaCreacion = $fechaCreacion;
         }
-
-        public function getFechaCreacion(){
-            return $this->fechaCreacion;
-        }
-
         public function toString(){
-            printf("%s %s %s %s %s \n",$this->idUsuario,$this->idCarpeta,$this->nombre,$this->idCarpetaSup,$this->fechaCreacion);
+            printf("idCarpeta = %s idCarpetaSuperior = %s nombreCarpeta = %s fechaCreacion = %s<br>",
+                 $this->idCarpeta, $this->idCarpetaSuperior, $this->nombreCarpeta, $this->fechaCreacion);
         }
 
     }
-?>
+
+ ?>

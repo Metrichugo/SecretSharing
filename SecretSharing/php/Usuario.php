@@ -1,24 +1,23 @@
 <?php
     class Usuario{
         protected $idUsuario;
-        protected $contraseña;
+        protected $contrasenia;
         protected $alias;
         protected $status;
-        protected $espacioDisp;
+        protected $espacioUtilizado;
 
         public function getidUsuario(){ return $this->idUsuario;}
-        public function setidUsuario($idUsuario){ $this->idUsuario = $idUsuario;}
-        public function getContraseña(){ return $this->contraseña;}
-        public function setContraseña($contraseña){ $this->contraseña = $contraseña;}
+        public function getContrasenia(){ return $this->contrasenia;}
         public function getAlias(){ return $this->alias;}
-        public function setAlias($alias) {$this->alias = $alias;}
         public function getStatus(){ return $this->status;}
+        public function getEspacioUtilizado(){return $this->espacioUtilizado;}
+       
+        public function setidUsuario($idUsuario){ $this->idUsuario = $idUsuario;}
+        public function setContrasenia($contrasenia){ $this->contrasenia = $contrasenia;}
+        public function setAlias($alias) {$this->alias = $alias;}
         public function setStatus($status){ $this->status = $status;}
-        public function getEspacioDisp(){return $this->espacioDisp;}
-        public function setEspacioDisp($espacioDisp){ $this->espacioDisp = $espacioDisp;}
-        public function toString(){
-            printf("%s %s %s %s %s \n",$this->idUsuario,$this->contraseña,$this->alias,$this->status,$this->espacioDisp);
-        }
+        public function setEspacioUtilizado($espacioUtilizado){ $this->espacioUtilizado = $espacioUtilizado;}
+        
         public function iniciaSesion(){
             session_start();
             $_SESSION["idUsuario"] = $this->idUsuario;
@@ -26,16 +25,23 @@
         }
 
         public function cerrarSesion(){
-            session_unset();
-            session_destroy();
+            // remove all session variables
+            session_unset(); 
+            // destroy the session 
+            session_destroy(); 
+            header('Location: ../login.html');
         }
 
-        public function modificarContraseña($contraseña){
-            $this->setContraseña($contraseña);
+        public function modificarContrasenia($Contrasenia){
+            $this->setContrasenia($Contrasenia);
         }
 
         public function modificarAlias($alias){
             $this->setAlias($alias);
+        }
+        
+        public function toString(){
+            printf("idUsuario = %s Contrasenia = %s alias = %s status = %s espacioUtilizado = %s \n",$this->idUsuario,$this->contrasenia,$this->alias,$this->status,$this->espacioUtilizado);
         }
     }
     

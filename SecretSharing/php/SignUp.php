@@ -10,16 +10,18 @@ $DBConnection->connect();
 //Saving and recovering values from LoginForm
 $userForm = new Usuario();
 $userForm->setidUsuario($_POST['Email']);
-$userForm->setContraseña($_POST['Password']);
+$userForm->setContrasenia($_POST['Password']);
 $userForm->setAlias($_POST['Alias']);
 //User exists?
 $result = $DBConnection->existeUsuario($userForm);
 if($result){
+	$DBConnection->close();
     echo "Duplicated User";
 }else{
     $userForm->setStatus(STATUS);
-    $userForm->setEspacioDisp(ESP_UTILIZADO);
+    $userForm->setEspacioUtilizado(ESP_UTILIZADO);
     $DBConnection->insertaUsuario($userForm);
+	$DBConnection->close();
     echo "correct";
 }
 

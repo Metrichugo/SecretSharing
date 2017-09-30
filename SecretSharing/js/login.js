@@ -1,7 +1,6 @@
 function submitdata() {
     var email = $('#Email').val();
     var password = $('#Password').val();
-
     /*If userinput password & email are correct*/
 
     $.ajax({
