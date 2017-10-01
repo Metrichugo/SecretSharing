@@ -112,6 +112,35 @@
 
 		}
 
+		public function existeCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta){
+
+			$idUsuario = $Usuario->getidUsuario();
+			$idCarpetaSup = $carpetaActual->getIdCarpeta();
+
+			if($sentencia = $this->connection->prepare("select count(idCarpeta) as result  from carpeta where  idUsuario = '$idUsuario' and nombreCarpeta = '$nombreNuevaCarpeta' and idCarpetaSuperior = '$idCarpetaSup' ")){
+				$sentencia->execute();
+				$sentencia->bind_result($result);
+				while($sentencia->fetch()){
+					if($result==1){
+						return  true;
+					}else{
+						return false;
+					}
+				}
+			}
+		}
+
+		public function insertaCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta){
+			$idUsuario = $Usuario->getidUsuario();
+			$idCarpetaSup = $carpetaActual->getIdCarpeta();
+			
+			if(!$this->connection->query("insert into carpeta (idUsuario, idCarpetaSuperior,  nombreCarpeta, fechaCreacion) values  ('$idUsuario', '$idCarpetaSup'  ,'$nombreNuevaCarpeta', CURDATE() )")){
+				echo "Mistakes Were Made " . $this->connection->errno . " ". $this->connection->error;
+				return false;
+			}
+			return true;  
+		}
+
 
 
 		public function listaCarpetas($Usuario, $carpetaActual){
@@ -134,7 +163,7 @@
 					$carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
 					//$carpeta->toString(); // impresion de valores de carpeta
 					$ans = $ans.'<tr>
-							<td><p id ='.$carpeta->getIdCarpeta().'  onclick = "actualizarContenidoEnPantalla('.$carpeta->getIdCarpeta().')" >'.$carpeta->getNombreCarpeta().'</p></td>
+							<td><a href = "#"> <p id ='.$carpeta->getIdCarpeta().'  onclick = "actualizarContenidoEnPantalla('.$carpeta->getIdCarpeta().')" >'.$carpeta->getNombreCarpeta().'</p></a></td>
 							<td>'.$carpeta->getFechaCreacion().'</td>
 							<td class="text-center">
 								<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
@@ -179,9 +208,9 @@
 								<td>'.$archivo->getTamanio().'</td>
 								<td>'.$archivo->getFechaSubida().'</td>
 								<td class="text-center">
-									<a class="btn btn-success btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Copiar</a>
 									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 									<a class="btn btn-info    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+									<a class="btn btn-success    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
 									<a class="btn btn-danger  btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';

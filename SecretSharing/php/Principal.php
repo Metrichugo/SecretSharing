@@ -29,11 +29,6 @@
     <link rel="stylesheet" href="../css/sticky-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <script src="../js/jquery-3.2.1.min.js"></script>
-    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
-    <script src="../js/carpeta.js"></script>
-
 
 
 </head>
@@ -60,19 +55,51 @@
             </form>
         </div>
     </nav>
+
     <div class="container-fluid" id="ContenidoPrincipal">
+        <div class = "row col-12" id = "ErroresPrincipal">
+        </div>
         <div class="row">
             <div class="col-12 col-md-3" id="menuOpciones">
                 <div class="col">
-                    <p><a class="btn btn-success btn-lg btn-block" href="" role="button">Subir archivo</a></p>
+                    <p><a class="btn btn-success btn-lg btn-block" role="button" >Subir archivo</a></p>
                 </div>
                 <div class="col">
-                    <p><a class="btn btn-secondary btn-lg btn-block" href="" role="button">Crear carpeta</a></p>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" data-toggle="modal" data-target="#modalCrearCarpeta" >
+                        Crear carpeta
+                    </button>
+
+                    <!-- Modal Para crear nueva carpeta -->
+                    <div class="modal fade" id="modalCrearCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Crear nueva carpeta</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          </div>
+
+                          <div class="modal-body">
+                            <div class="col-sm-12 ">
+                              <input type="text" class="form-control" id="nombreCarpeta" placeholder="Introduce aqui el nombre de la carpeta" name="nombreCarpeta">
+                            </div>
+                             <div class="col-sm-12" id = "ErrorNombreCarpeta">
+                            </div><div class="col-sm-12" id = "resultadoCrearCarpeta">
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary"  onclick = "return crearNuevaCar()">Aceptar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                 </div>
             </div>
 
             <div class="col-12 col-md-9" id="Contenido">
                 <h2>Carpetas</h2>
+              
                 <div class="row col-md-12 col-md-offset-2 custyle">
                    <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>    Ir anterior</button>
                 </div>
@@ -92,5 +119,12 @@
 
         </div>
     </div>
+
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+    <script src="../js/carpeta.js"></script>
+
+
 </body>
 </html>

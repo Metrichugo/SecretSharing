@@ -10,13 +10,14 @@
 	include_once("Carpeta.php");
 
 
-
     $usuario = unserialize($_SESSION["usuario"]);
     $DBConnection = unserialize($_SESSION["DBConnection"]);
     $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 
     $operacion = $_POST['Operation'];
     $carpetActual = unserialize($_SESSION["carpetActual"]);
+
+
 
     if($operacion == "actualizarCarpetaActual"){
         $idcarpetaMoverse = $_POST['idCarpetaMoverse'];
@@ -37,6 +38,7 @@
         echo ($ans);
     }  
 
+
     if($operacion == "irCarpetaAtras"){
         if($carpetActual-> getIdCarpeta() == "1" ){
             echo "incorrect";
@@ -50,5 +52,20 @@
         echo( $idCarpetaSup);
     }
 	
+    if($operacion == "crearNuevaCar"){
+        $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
+        $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
+        if($result){
+            echo "incorrect";exit();
+        }
+        // lo insertamos en la basede datos
+        $result =  $DBConnection->insertaCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
+        if($result){
+            echo "correct";exit();
+        }
+        echo "incorrect";
+        exit();
+    }
+
 
  ?>
