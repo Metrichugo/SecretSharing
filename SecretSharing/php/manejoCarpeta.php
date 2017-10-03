@@ -67,5 +67,19 @@
         exit();
     }
 
+    if($operacion == "eliminarCarpeta"){
+        $idCarpeta = $_POST['idCarpeta'];
+        $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpeta);
+        $result = $DBConnection->eliminarCarpeta($usuario, $carpeta);
 
+        if($result) echo "correct";
+        else echo "incorrect";
+        exit();
+    }
+
+    if($operacion == "cargarCarpetaRaiz"){
+        //al cargar la pagina la carpeta actual es la carpeta raiz con id = 1;
+        $carpetaRaiz = unserialize($_SESSION["carpetActual"]);
+        echo( $carpetaRaiz-> getIdCarpeta() );
+    }
  ?>

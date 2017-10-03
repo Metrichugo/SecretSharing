@@ -14,8 +14,9 @@
     $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 
     //al cargar la pagina la carpeta actual es la carpeta raiz con id = 1;
-    $carpetActual = $DBConnection->consultaCarpeta($usuario,1);
+    $carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
     $_SESSION["carpetActual"] = serialize($carpetActual);
+
 ?>
 
 <html>
@@ -29,7 +30,10 @@
     <link rel="stylesheet" href="../css/sticky-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+    <script src="../js/carpeta.js"></script>
 
 </head>
 
@@ -120,10 +124,7 @@
         </div>
     </div>
 
-    <script src="../js/jquery-3.2.1.min.js"></script>
-    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
-    <script src="../js/carpeta.js"></script>
+    
 
 
 </body>

@@ -97,6 +97,22 @@
 		}
 
 		/************************************  Actions for CARPETAS  ************************************/
+		public function consultaCarpetaRaiz($Usuario){
+			$idUsuario = $Usuario->getidUsuario();
+			if($sentencia = $this->connection->prepare(" select * from carpeta where idUsuario = '$idUsuario' and idCarpetaSuperior IS NULL") ){
+				$sentencia->execute();
+				$sentencia->bind_result($idCarpeta, $idUsuario,  $idCarpetaSuperior , $nombreCarpeta , $fechaCreacion );
+				while($sentencia->fetch()){
+				   $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+				}             
+				$sentencia->close();
+				return $carpeta;  
+			}
+			return;
+
+		}
+
+
 		public function consultaCarpeta($Usuario, $idCarpeta){
 			$idUsuario = $Usuario->getidUsuario();
 			if($sentencia = $this->connection->prepare("select * from Carpeta where idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario' ") ){
@@ -167,8 +183,8 @@
 							<td>'.$carpeta->getFechaCreacion().'</td>
 							<td class="text-center">
 								<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
-								<a class="btn btn-danger btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+								<a class="btn btn-info    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+								<a class="btn btn-danger  btn-sm" href="#" onclick = "eliminarCarpeta('.$carpeta->getIdCarpeta().')" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 							</td>
 						</tr>';
 					
@@ -177,6 +193,16 @@
 			}
 			$ans = $ans.'</table>';
 			return $ans;
+		}
+
+		public function eliminarCarpeta($usuario, $carpeta){
+			$idUsuario = $usuario->getidUsuario();
+			$idCarpetaEliminar = $carpeta->getIdCarpeta();
+			if(!$this->connection->query("delete from carpeta where idUsuario = '$idUsuario' and idCarpeta = '$idCarpetaEliminar'" ) ){
+				echo "Mistakes were made ".$this->connection->errno. " " . $this->connection->error;
+				return false;
+			}
+			return true;
 		}
 
 		/************************************  Actions for FILES  ************************************/
@@ -210,7 +236,7 @@
 								<td class="text-center">
 									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 									<a class="btn btn-info    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
-									<a class="btn btn-success    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+									<a class="btn btn-success btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
 									<a class="btn btn-danger  btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';

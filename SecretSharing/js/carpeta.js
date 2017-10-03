@@ -1,6 +1,3 @@
-var carpetaActual = 1;
-
-
 /****** Funciones para actualizar contenido en pantalla principal *****************/
 function actualizarCarpetaActual(idCarpetaMoverse){
    // ajax para actualizar la variable de sesion de la carpeta actual
@@ -171,7 +168,44 @@ function crearNuevaCar(){
     return false;
 }
 
-//Este funcion se ejecuta al recien abrirse pantalla.php para cargar el directorio raiz del usuario
-actualizarContenidoEnPantalla(carpetaActual);
+function eliminarCarpeta( idCarpeta ){
+    console.log(idCarpeta);
+    $.ajax({
+        type: "POST",
+        url: "manejoCarpeta.php",
+        data: {
+           Operation : "eliminarCarpeta",
+           idCarpeta: idCarpeta
+        },
+        success: function (response) {
+            console.log(response);
+            if (response == "correct"){
+                actualizarCarpetasEnPantalla();
+            }else{
+                console.log("no pude");
+            }
+        }
+    });
 
-  
+}
+
+
+//script para cargar los datos de la carpeta raiz
+function cargarCarpetaRaiz(  ){
+
+    $.ajax({
+        type: "POST",
+        url: "manejoCarpeta.php",
+        data: {
+           Operation : "cargarCarpetaRaiz"
+        },
+        success: function (response) {
+            console.log(response);
+            actualizarContenidoEnPantalla(response);
+
+            return response;
+        }
+    });
+}
+
+cargarCarpetaRaiz();
