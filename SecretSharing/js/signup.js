@@ -72,8 +72,11 @@ function submitdata(){
     if( !validateAlias(alias) || !validatePassword(email, password,conf)){
         return false;
     }
-
+    
+    console.log(email + " " + password + " " + alias + " " + conf);
+    
     $.ajax({
+
         type: "POST",
         url: "php/SignUp.php",
         data: {
@@ -96,7 +99,10 @@ function submitdata(){
                 });
             }
         }
+
     });
     return false;
+
+
 }
 

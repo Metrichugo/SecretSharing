@@ -20,9 +20,18 @@ if($result){
 }else{
     $userForm->setStatus(STATUS);
     $userForm->setEspacioUtilizado(ESP_UTILIZADO);
-    $DBConnection->insertaUsuario($userForm);
-	$DBConnection->close();
-    echo "correct";
+    $r1 = $DBConnection->insertaUsuario($userForm);
+    if($r1){
+
+    	$r2 = $DBConnection->insertaCarpetaRaiz($userForm);
+    	if($r2){
+    		echo "correct";
+    	}else{
+    		echo "incorrect";	
+    	}
+    }else{
+    	echo "incorrect";
+    }
 }
 
 ?>

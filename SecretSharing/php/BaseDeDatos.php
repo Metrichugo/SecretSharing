@@ -146,6 +146,17 @@
 			}
 		}
 
+
+		public function insertaCarpetaRaiz($Usuario ){
+			$idUsuario = $Usuario->getidUsuario();
+			$nombreNuevaCarpeta = $Usuario->getidUsuario();
+			if(!$this->connection->query("insert into carpeta (idUsuario,  nombreCarpeta, fechaCreacion) values  ('$idUsuario', '$nombreNuevaCarpeta', CURDATE() )")){
+				echo "Mistakes Were Made " . $this->connection->errno . " ". $this->connection->error;
+				return false;
+			}
+			return true;  
+		}
+
 		public function insertaCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta){
 			$idUsuario = $Usuario->getidUsuario();
 			$idCarpetaSup = $carpetaActual->getIdCarpeta();
