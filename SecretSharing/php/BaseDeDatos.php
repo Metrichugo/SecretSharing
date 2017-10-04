@@ -157,8 +157,6 @@
 			return true;  
 		}
 
-
-
 		public function listaCarpetas($Usuario, $carpetaActual){
 			$ans = '<table class="table table-striped custab">
                             <thead>
@@ -183,7 +181,7 @@
 							<td>'.$carpeta->getFechaCreacion().'</td>
 							<td class="text-center">
 								<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+								<a class="btn btn-info btn-sm btn-editar" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
 								<a class="btn btn-danger  btn-sm" href="#" onclick = "eliminarCarpeta('.$carpeta->getIdCarpeta().')" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 							</td>
 						</tr>';
@@ -204,6 +202,16 @@
 			}
 			return true;
 		}
+
+		public function editarCarpeta($usuario, $idCarpetaEditar, $nombreCarpeta){
+			$idUsuario = $usuario->getidUsuario();
+			if(!$this->connection->query("UPDATE carpeta SET nombreCarpeta = '$nombreCarpeta' WHERE idCarpeta = '$idCarpetaEditar' AND idUsuario = '$idUsuario'" ) ){
+				echo "Mistakes were made ".$this->connection->errno. " " . $this->connection->error;
+				return false;
+			}
+			return true;
+		}
+
 
 		/************************************  Actions for FILES  ************************************/
 		
@@ -235,7 +243,6 @@
 								<td>'.$archivo->getFechaSubida().'</td>
 								<td class="text-center">
 									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-									<a class="btn btn-info    btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Editar</a>
 									<a class="btn btn-success btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
 									<a class="btn btn-danger  btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>

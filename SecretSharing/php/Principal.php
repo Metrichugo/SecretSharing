@@ -34,10 +34,12 @@
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
     <script src="../js/carpeta.js"></script>
+    
 
 </head>
 
 <body>
+
     <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="Navigation">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,6 +95,31 @@
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                             <button type="button" class="btn btn-primary"  onclick = "return crearNuevaCar()">Aceptar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Modal para editar una carpeta -->
+                    <div class="modal fade" id="modalEditarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Renombrar carpeta</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          </div>
+
+                          <div class="modal-body">
+                            <div class="col-sm-12 ">
+                              <input type="text" class="form-control" id="nombreEditarCarpeta" placeholder="Introduce aqui nuevo nombre de la carpeta" name="nombreEditarCarpeta">
+                            </div>
+                             <div class="col-sm-12" id = "ErrorEditarCarpeta">
+                            </div><div class="col-sm-12" id = "resultadoEditarCarpeta">
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary"  onclick = "return editarNombreCarpeta()">Aceptar</button>
                           </div>
                         </div>
                       </div>

@@ -72,6 +72,7 @@ function submitdata(){
     if( !validateAlias(alias) || !validatePassword(email, password,conf)){
         return false;
     }
+
     $.ajax({
         type: "POST",
         url: "php/SignUp.php",

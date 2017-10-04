@@ -8,7 +8,7 @@
 	include_once("BaseDeDatos.php");
 	include_once("Usuario.php");
 	include_once("Carpeta.php");
-
+    
 
     $usuario = unserialize($_SESSION["usuario"]);
     $DBConnection = unserialize($_SESSION["DBConnection"]);
@@ -40,7 +40,7 @@
 
 
     if($operacion == "irCarpetaAtras"){
-        if($carpetActual-> getIdCarpeta() == "1" ){
+        if($carpetActual-> getIdCarpeta() == $_SESSION['idCarpetaRaiz'] ){
             echo "incorrect";
             exit();
         }
@@ -49,7 +49,7 @@
         $carpetActual->toString();
         $carpetaSup = $DBConnection->consultaCarpeta($usuario, $idCarpetaSup);
         $_SESSION["carpetActual"] = serialize($carpetaSup);
-        echo( $idCarpetaSup);
+        echo( $idCarpetaSup );
     }
 	
     if($operacion == "crearNuevaCar"){
@@ -80,6 +80,29 @@
     if($operacion == "cargarCarpetaRaiz"){
         //al cargar la pagina la carpeta actual es la carpeta raiz con id = 1;
         $carpetaRaiz = unserialize($_SESSION["carpetActual"]);
+
+        $_SESSION['idCarpetaRaiz'] = $carpetaRaiz-> getIdCarpeta(); 
+
         echo( $carpetaRaiz-> getIdCarpeta() );
+    }
+    
+    if($operacion == "EditarCar"){
+  
+
+        $nombreCarpeta = $_POST['nombreCarpeta'];
+        $idCarpetaEditar = $_POST['idCarpetaEditar'];
+
+        $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreCarpeta);
+        if($result){
+            echo "incorrect";exit();
+        }
+
+        $result = $DBConnection->editarCarpeta($usuario, $idCarpetaEditar, $nombreCarpeta);
+        if($result){
+            echo "correct";
+        }
+        else{
+            echo "incorrect";
+        }
     }
  ?>

@@ -14,6 +14,7 @@ function submitdata() {
             if (response == "correct") {
                 window.open("./php/Principal.php","_self");
             } else {
+                console.log(response);
                 $('#Error').html('<div class="alert alert-danger"><button type="button" class="close">×</button>El correo electrónico y/o contraseña no son válidos</div>');
                 window.setTimeout(function () {
                     $(".alert").fadeTo(100, 0).slideUp(100, function () {
