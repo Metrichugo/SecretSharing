@@ -4,7 +4,7 @@ var  idCarpetaGlobal = 0;
 $(document).ready(function(){
     $(document).on("click",".btn-sel-carp",function (){
          idCarpetaGlobal = $(this).attr("data-idCarpeta");
-        console.log(idCarpetaGlobal); 
+        console.log("desde  btn-sel-carp" + idCarpetaGlobal); 
 
     });
 });
@@ -225,8 +225,12 @@ function crearNuevaCar(){
     return false;
 }
 
-function eliminarCarpeta( idCarpeta ){
-    console.log(idCarpeta);
+function eliminarCarpeta( ){
+    
+    idCarpeta = idCarpetaGlobal;
+
+    console.log("Desde eliminar carpeta () " + idCarpeta);
+    
     $.ajax({
         type: "POST",
         url: "manejoCarpeta.php",
@@ -244,6 +248,7 @@ function eliminarCarpeta( idCarpeta ){
         }
     });
 
+    return true;
 }
 function cargarCarpetaRaiz(  ){
 

@@ -191,9 +191,9 @@
 							<td><a href = "#"> <p id ='.$carpeta->getIdCarpeta().'  onclick = "actualizarContenidoEnPantalla('.$carpeta->getIdCarpeta().')" >'.$carpeta->getNombreCarpeta().'</p></a></td>
 							<td>'.$carpeta->getFechaCreacion().'</td>
 							<td class="text-center">
-								<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-								<a class="btn btn-danger  btn-sm" href="#" onclick = "eliminarCarpeta('.$carpeta->getIdCarpeta().')" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+								<a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+								<a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+								<a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().'  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 							</td>
 						</tr>';
 					

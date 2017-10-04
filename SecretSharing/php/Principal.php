@@ -66,9 +66,12 @@
     <div class="container-fluid" id="ContenidoPrincipal">
         <div class = "row col-12" id = "ErroresPrincipal">
         </div>
+
+        <br>
         <div class="row">
             <div class="col-12 col-md-3" id="menuOpciones">
                 <div class="col">
+                  <br><br>
                     <p><a class="btn btn-success btn-lg btn-block" role="button" >Subir archivo</a></p>
                 </div>
                 <div class="col">
@@ -129,30 +132,7 @@
         </div>
     </div>
 
-    <!-- Modal para eliminar una carpeta -->
-    <!--<div class="modal fade" id="modalEditarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Renombrar carpeta</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          </div>
 
-          <div class="modal-body">
-            <div class="col-sm-12 ">
-              <input type="text" class="form-control" id="nombreEditarCarpeta" placeholder="Introduce aqui nuevo nombre de la carpeta" name="nombreEditarCarpeta">
-            </div>
-             <div class="col-sm-12" id = "ErrorEditarCarpeta">
-            </div><div class="col-sm-12" id = "resultadoEditarCarpeta">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary"  onclick = "return editarNombreCarpeta()">Aceptar</button>
-          </div>
-        </div>
-      </div>
-    </div>-->
     <!-- Modal para editar una carpeta -->
     <div class="modal fade" id="modalEditarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -178,7 +158,29 @@
       </div>
     </div>
 
-    
+
+    <!-- Modal para eliminar una carpeta -->
+    <div class="modal fade" id="modalEliminarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Eliminar carpeta</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+
+          <div class="modal-body">
+             <p><strong>¿Estás seguro de eliminar la carpeta?</strong></p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary"  onclick = "return eliminarCarpeta()">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Modal para eliminar un archivo -->
     <div class="modal fade" id="modalEliminaArchivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -189,7 +191,7 @@
           </div>
 
           <div class="modal-body">
-            <p>¿Estás seguro de eliminar el archivo?</p>
+            <p><strong>¿Estás seguro de eliminar el archivo?</strong></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
