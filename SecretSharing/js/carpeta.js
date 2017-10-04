@@ -2,7 +2,7 @@
 var  idCarpetaGlobal = 0;
 
 $(document).ready(function(){
-    $(document).on("click",".btn-editar",function (){
+    $(document).on("click",".btn-sel-carp",function (){
          idCarpetaGlobal = $(this).attr("data-idCarpeta");
         console.log(idCarpetaGlobal); 
 
@@ -28,7 +28,7 @@ function editarNombreCarpeta(){
         success: function (response) {
             if (response == "correct"){
 
-                $('#resultadoEditarCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Nueva carpeta creada</div>');
+                $('#resultadoEditarCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Se ha actualizado del nombre de la carpeta</div>');
                         window.setTimeout(function () {
                             $(".alert").fadeTo(100, 0).slideUp(100, function () {
                                 $(this).remove();
@@ -41,7 +41,7 @@ function editarNombreCarpeta(){
 
                 actualizarCarpetasEnPantalla();
             }else{
-                $('#resultadoEditarCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>La carpeta ya existe.!</div>');
+                $('#resultadoEditarCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>Ya existe una carpeta con el mismo nombre</div>');
             window.setTimeout(function () {
                 $(".alert").fadeTo(100, 0).slideUp(100, function () {
                     $(this).remove();

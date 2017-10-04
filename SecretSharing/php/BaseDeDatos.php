@@ -181,7 +181,7 @@
 							<td>'.$carpeta->getFechaCreacion().'</td>
 							<td class="text-center">
 								<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info btn-sm btn-editar" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+								<a class="btn btn-info btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta='.$carpeta->getIdCarpeta().' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
 								<a class="btn btn-danger  btn-sm" href="#" onclick = "eliminarCarpeta('.$carpeta->getIdCarpeta().')" ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 							</td>
 						</tr>';
@@ -211,8 +211,6 @@
 			}
 			return true;
 		}
-
-
 		/************************************  Actions for FILES  ************************************/
 		
 		public function listaArchivos($Usuario, $carpetaActual){
@@ -242,9 +240,9 @@
 								<td>'.$archivo->getTamanio().'</td>
 								<td>'.$archivo->getFechaSubida().'</td>
 								<td class="text-center">
-									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-									<a class="btn btn-success btn-sm" href="#"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
-									<a class="btn btn-danger  btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+									<a class="btn btn-primary btn-sm  btn-sel-arch" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+									<a class="btn btn-success btn-sm  btn-sel-arch" href="#" data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+									<a class="btn btn-danger  btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.'><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';
 				
@@ -255,7 +253,15 @@
 			return $ans;
 		}
 
-
+		public function eliminarArchivo($usuario, $idCarpeta, $nombreArchivo){
+			$idUsuario = $usuario->getidUsuario();
+			if(!$this->connection->query("DELETE FROM archivo WHERE nombreArchivo = '$nombreArchivo' AND idCarpeta = '$idCarpeta' AND idUsuario = '$idUsuario' " )){
+				echo "Mistakes were made ".$this->connection->errno. " " . $this->connection->error;
+				return false;
+			}
+			return true;
+		}
+		
 		/********************************/
 
 	}
