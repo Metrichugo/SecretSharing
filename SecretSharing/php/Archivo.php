@@ -22,17 +22,5 @@
             printf("nombreArchivo = %s tamanio = %s fechaSubida = %s <br>",
                  $this->nombreArchivo, $this->tamanio, $this->fechaSubida);
         }
-
-        /*public function subeArchivo(){
-            //TODO: Code for upload file
-        }
-
-        public function descargaArchivo(){
-            //TODO: Code for download file
-        }
-
-        public function renombrarArchivo($nombre){
-            $this->nombre = $nombre;
-        }*/
     }
 ?>

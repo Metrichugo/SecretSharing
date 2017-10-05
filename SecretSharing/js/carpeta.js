@@ -242,6 +242,7 @@ function eliminarCarpeta( ){
             console.log(response);
             if (response == "correct"){
                 actualizarCarpetasEnPantalla();
+                $('#modalEliminarCarpeta').modal('hide');
             }else{
                 console.log("no pude");
             }

@@ -27,5 +27,16 @@
         else{ echo "incorrect"; }
         exit();
     }
+    if($operacion == "EditarArch"){
+
+       $idCarpeta = $_POST["idCarpeta"];
+       $nombreArch = $_POST["nombreArch"];
+       $nuevoNomArch = $_POST["nuevoNomArch"];
+
+       $result = $DBConnection->editarArchivo($usuario, $idCarpeta, $nombreArch, $nuevoNomArch);
+       if($result) echo "correct";
+        else{ echo "incorrect"; }
+        exit();
+    }
 
 ?>

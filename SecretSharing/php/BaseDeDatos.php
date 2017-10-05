@@ -253,6 +253,7 @@
 								<td class="text-center">
 									<a class="btn btn-primary btn-sm  btn-sel-arch" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 									<a class="btn btn-success btn-sm  btn-sel-arch" href="#" data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+									<a class="btn btn-info    btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Editar</a>
 									<a class="btn btn-danger  btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.'><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';
@@ -272,6 +273,16 @@
 			}
 			return true;
 		}
+		
+		public function editarArchivo($usuario, $idCarpeta, $nombreArchivo, $nuevoNomArch){
+			$idUsuario = $usuario->getidUsuario();
+			if(!$this->connection->query("update archivo set nombreArchivo = '$nuevoNomArch' where nombreArchivo = '$nombreArchivo' and idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario'" ) ){
+				echo "Mistakes were made ".$this->connection->errno. " " . $this->connection->error;
+				return false;
+			}
+			return true;
+		}
+
 		
 		/********************************/
 
