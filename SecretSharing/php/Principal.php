@@ -13,7 +13,7 @@
     $DBConnection = unserialize($_SESSION["DBConnection"]);
     $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 
-    //al cargar la pagina la carpeta actual es la carpeta raiz con id = 1;
+    //al cargar la pagina la carpeta actual es la carpeta raiz con idCarpetaSuperior=null;
     $carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
     $_SESSION["carpetActual"] = serialize($carpetActual);
 
