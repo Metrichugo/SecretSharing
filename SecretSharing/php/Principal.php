@@ -33,9 +33,13 @@
     <script src="../js/jquery-3.2.1.min.js"></script>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src = "https://cdn.jsdelivr.net/npm/gasparesganga-jquery-ajax-downloader@1.1.0/src/ajaxdownloader.min.js
+"></script>
+    
     <script src="../js/carpeta.js"></script>
     <script src="../js/archivo.js"></script>
-    
+    <script src="../js/descargaArchivo.js"></script>
 
 </head>
 

@@ -6,7 +6,7 @@
 	class BaseDeDatos{
 		protected $DB_NAME = "SecretSharing";
 		protected $DB_USER = "root";
-		protected $DB_PASS = "root";
+		protected $DB_PASS = "1@Javier";
 		protected $DB_HOST = "localhost";
 		/************************************ Methods for DB *****************************************/
 
@@ -252,7 +252,7 @@
 								<td>'.$archivo->getFechaSubida().'</td>
 								<td class="text-center">
 									<a class="btn btn-primary btn-sm  btn-sel-arch" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-									<a class="btn btn-success btn-sm  descargarArch" href="#" data-idCarpeta='.$idCarpeta.' data-nombreArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
 									<a class="btn btn-info    btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.' ><span class="glyphicon glyphicon-edit"></span> Editar</a>
 									<a class="btn btn-danger  btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta='.$idCarpeta.' data-nomArchivo='.$nombreArchivo.'><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
