@@ -72,7 +72,7 @@
             <div class="col-12 col-md-3" id="menuOpciones">
                 <div class="col">
                   <br><br>
-                    <p><a class="btn btn-success btn-lg btn-block" role="button" >Subir archivo</a></p>
+					<p><a class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</a></p>
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-secondary btn-lg btn-block" data-toggle="modal" data-target="#modalCrearCarpeta" >
@@ -225,5 +225,29 @@
         </div>
       </div>
     </div>
+    <!-----MODAL PARA SUBIR ARCHIVOS------>
+    <div class="modal fade" id="UploadFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="return subirArchivo()" method="POST" enctype="multipart/form-data" id="postFile">
+                <div class="modal-body">
+                        <label>Select File to upload:</label><br>  
+                        <input type="file" name="fileToUpload" id="fileToUpload">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

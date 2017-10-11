@@ -153,4 +153,51 @@ function editarNombreArchivo(){
     return false;
 }
 
+function subirArchivo() {
+	//document.write("ASDF");
+	//console.log("LAV");
+    //var filedata = $('#fileToUpload')[0];
+    var inputFile = document.getElementById("fileToUpload");
+    var file = inputFile.files[0];
+    var form_data = new FormData();
+    form_data.append('file',file);
+    form_data.append('Operation','SubirArchivo');
+    //document.write(inputFile);
+    $.ajax({
+        type: "POST",
+        url: "../php/ManejadorArchivo.php",
+        data: form_data,
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function (response) {
+            document.write(response);
+        },
+        done:function(response){
+            document.write(response);
+        }
+    });
+}
+
+$(document).ready(function(){
+    $(document).on("click" ,".descargarArch" , function(){
+        var filename = $(this).attr('data-nombreArchivo');
+        console.log("Aqui " +filename); 
+        console.log(filename); 
+        $.ajax({
+            type: "POST",
+            url: "../php/ManejadorArchivo.php",
+            data: {
+                Operation: "Descargar",
+                File: filename
+            },
+            success: function (response) {
+                document.write(response);
+            }
+        });
+    });
+    
+    
+});
+
 
