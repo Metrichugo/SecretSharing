@@ -1,0 +1,19 @@
+.wrapper{
+    margin: 80px 25%;
+    border-radius: 4px;
+    -moz-border-radius: 4px 4px 4px 4px;
+    background: #eeeeee;
+}
+
+.form-top{
+    margin: 0 0 30px 0;
+    padding: 20px 0;
+    border-radius: 4px 4px 0 0 ;
+    -moz-border-radius: 4px 4px 0 0;
+}
+
+.form-bottom{
+    padding: 0 0 30px 0;
+}
+
+
