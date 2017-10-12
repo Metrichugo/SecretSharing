@@ -20,7 +20,8 @@ $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 //Manejo del archivo
 $operacion = $_POST['Operation'];
 $dirsubida = "../files/";
-$timeStamp = (new DateTime())->getTimestamp();
+$dateTime = new DateTime();
+$timeStamp = $dateTime->getTimestamp();
 
 if ($operacion == "SubirArchivo") {
 
@@ -45,12 +46,11 @@ if ($operacion == "SubirArchivo") {
             my_shell_exec($comando, $stdout, $stderr);
             echo "<p>" . $stdout . "</p>";
             echo "<p>" . $stderr . "</p>";
-            exec("rm " . $dirsubida . $renamedFile);
+            exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID());
             //Validar ejecucion de la GRID
-            //
-            
             // Insercion en la base de datos           
             $DBConnection->insertaArchivo($archivo);
+            //Restar espacio disponible
             //Fin
             echo "<p>" . "UploadSuccesfull" . "</p>";
         } else {

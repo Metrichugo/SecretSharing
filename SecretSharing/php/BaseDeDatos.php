@@ -229,8 +229,8 @@ class BaseDeDatos {
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Tamaño</th>
-                                <th>Subida</th>
+                                <th>Tamaño (bytes)</th>
+                                <th>Fecha de subida</th>
                                 <th class="text-center">Acción</th>
                             </tr>
                         </thead>';
@@ -282,10 +282,29 @@ class BaseDeDatos {
     }
 
     public function insertaArchivo($archivo) {
+        $nombreArchivo = $archivo->getNombreArchivo();
+        $idCarpeta = $archivo->getIdCarpeta();
+        $idUsuario = $archivo->getIdUsuario();
+        $nombreArchivoGRID = $archivo->getNombreArchivoGRID();
+        $tamanio = $archivo->getTamanio();
+        $fechaSubida = $archivo->getFechaSubida();
         $stmt = $this->connection->prepare("INSERT INTO archivo (nombreArchivo,idCarpeta,idUsuario,nombreArchivoGRID,tamanio,fechaSubida)"
                 . " VALUES (?,?,?,?,?,?)");
-        $stmt->bind_param("sissis", $archivo->getNombreArchivo(), $archivo->getIdCarpeta(), $archivo->getIdUsuario(), $archivo->getNombreArchivoGRID(), $archivo->getTamanio(), $archivo->getFechaSubida());
+
+        $stmt->bind_param("sissis", $nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
         return $stmt->execute();
+    }
+
+    public function obtieneArchivo($nombreArchivo, $idCarpeta) {
+        $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=?");
+        $stmt->bind_param("si", $nombreArchivo, $idCarpeta); //s->String, i->Integer
+        $stmt->execute();
+        $stmt->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
+        $archivo = null;
+        while ($stmt->fetch()) {
+            $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
+        }
+        return $archivo;
     }
 
     /*     * ***************************** */
