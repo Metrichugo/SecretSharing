@@ -1,176 +1,180 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Secreto Compartido</title>
+        
+        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="css/navbar.css">
+        <link rel="stylesheet" href="css/sticky-footer.css">
 
-<head>
-  <meta charset="utf-8">
-   <title>Secreto Compartido</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/navbar.css">
-  <link rel="stylesheet" href="css/sticky-footer.css">
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-
-  <!--<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"  ></script>-->
-
-  <script src="js/jquery-3.2.1.min.js"></script>
-  <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"  ></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" ></script>
-  <script src="js/signup.js"></script>
+        <link rel="stylesheet" href="assets/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/tether.min.js"  ></script>
+        <script src="assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js" ></script>
+        <script src="js/signup.js"></script>
 
 
-</head>
+    </head>
 
-<body>
-  <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="Navigation">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="#">SecretSharing</a>
+    <body>
+        <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="Navigation">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="#">SecretSharing</a>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Descubir <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Servicios</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <a class="btn btn-success my-2 my-sm-0 mr-sm-2" role="button" href="login.html">Iniciar Sesión</a>
-        <a class="btn btn-secondary my-2 my-sm-0" role="submit" href="index.html#SignUp" style="color:black">Crear Cuenta</a>
-      </form>
-    </div>
-  </nav>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Descubir <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Servicios</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a class="btn btn-success my-2 my-sm-0 mr-sm-2" role="button" href="login.html">Iniciar Sesión</a>
+                    <a class="btn btn-secondary my-2 my-sm-0" href="index.html#SignUp" style="color:black">Crear Cuenta</a>
+                </form>
+            </div>
+        </nav>
 
-  <div class="container-fluid" id="MainContent">
-    <div class="row" id="HeaderText">
-      <div class="col-sm-6 offset-sm-3 align-self-center" id="Intro">
-        <h1 class="text-center"> Accede a tu información de forma segura</h1>
-      </div>
-    </div>
-    <div class="row" id="HeaderButtons">
-      <div class="col-sm-2 offset-sm-4">
-        <p><a class="btn btn-success btn-lg btn-block" href="login.html" role="button">Iniciar Sesión</a></p>
-      </div>
-      <div class="col-sm-2">
-        <p><a class="btn btn-secondary btn-lg btn-block" href="#SignUp" role="button">Crear Cuenta</a></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="container-fluid" id="Services">
-    <div class="row">
-      <div class="col-sm-4 offset-sm-4">
-        <p class="h1 section-header">¡Prueba nuestros servicios!</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="text-center">
-          <img src="assets/Login-Icon.png" width="30%">
-          <p class="h2">Servicio 1</p>
+        <div class="container-fluid" id="MainContent">
+            <div class="row" id="HeaderText">
+                <div class="col-sm-6 offset-sm-3 align-self-center" id="Intro">
+                    <h1 class="text-center"> Accede a tu información de forma segura</h1>
+                </div>
+            </div>
+            <div class="row" id="HeaderButtons">
+                <div class="col-sm-2 offset-sm-4">
+                    <p><a class="btn btn-success btn-lg btn-block" href="login.html" role="button">Iniciar Sesión</a></p>
+                </div>
+                <div class="col-sm-2">
+                    <p><a class="btn btn-secondary btn-lg btn-block" href="#SignUp" role="button">Crear Cuenta</a></p>
+                </div>
+            </div>
         </div>
-        <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-          del cañón.
-        </p>
-      </div>
-      <div class="col-sm-4">
-        <div class="text-center">
-          <img src="assets/Login-Icon.png" width="30%">
-          <p class="h2">Servicio 1</p>
-        </div>
-        <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-          del cañón.
-        </p>
-      </div>
-      <div class="col-sm-4">
-        <div class="text-center">
-          <img src="assets/Login-Icon.png" width="30%">
-          <p class="h2">Servicio 1</p>
-        </div>
-        <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-          del cañón.
-        </p>
-      </div>
-    </div>
-  </div>
 
-  <div class="container-fluid" id="SignUp">
-    <hr>
-    <div class="row">
-      <div class="col-sm-4 offset-sm-4">
-        <p class="h1 section-header">Comienza ya mismo</p>
-      </div>
-    </div>
-    <form method="POST" onsubmit="return submitdata()">
-      <div class="container-fluid">
-        <div class="form-group row">
-          <label for="Alias" class="col-sm-1 offset-sm-3 col-form-label">Alias</label>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" id="Alias" placeholder="ExampleUser98">
-          </div>
-          <div class="offset-sm-4 col-sm-5" id="ErrorAlias"></div>
+        <div class="container-fluid" id="Services">
+            <div class="row">
+                <div class="col-sm-4 offset-sm-4">
+                    <p class="h1 section-header">¡Prueba nuestros servicios!</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="assets/Login-Icon.png" width="30%">
+                        <p class="h2">Servicio 1</p>
+                    </div>
+                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
+                        del cañón.
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="assets/Login-Icon.png" width="30%">
+                        <p class="h2">Servicio 1</p>
+                    </div>
+                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
+                        del cañón.
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="text-center">
+                        <img src="assets/Login-Icon.png" width="30%">
+                        <p class="h2">Servicio 1</p>
+                    </div>
+                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
+                        del cañón.
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="form-group row">
-          <label for="Email" class="col-sm-1 offset-sm-3 col-form-label">Email</label>
-          <div class="col-sm-5">
-            <input type="email" class="form-control" id="Email" placeholder="example@example.com">
-          </div>
-          <div class="offset-sm-4 col-sm-5" id="ErrorEmail"></div>
-        </div>
-        <div class="form-group row">
-          <label for="Password" class="col-sm-1 offset-sm-3 col-form-label">Contraseña</label>
-          <div class="col-sm-2">
-            <input type="password" class="form-control" id="Password" placeholder="********">
-          </div>
-          <label for="Confirmacion" class="col-sm-1 col-form-label">Confirmacion</label>
-          <div class="col-sm-2">
-            <input type="password" class="form-control" id="Confimacion" placeholder="********">
-          </div>
-          <div class="offset-sm-4 col-sm-5" id="ErrorPassword"></div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6 offset-sm-3">
-            <button type="submit" class="btn btn-primary btn-block">Registrarse !</button>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-  <br><br> <!--TODO: MODIFICAR EL CSS -->
-    <!--<footer class="footer" id="PiePagina">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3">
-            <p class="font-weight-bold">Acerca</p>
-            <ul id="markdown-toc">
-              <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <p class="font-weight-bold">Seguridad</p>
-            <ul id="markdown-toc">
-              <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <p class="font-weight-bold">Legal</p>
-            <ul id="markdown-toc">
-              <li><a href="#" id="markdown-toc-contents">Terminos de uso</a></li>
-              <li><a href="#" id="markdown-toc-contents">Politicas de privacidad</a></li>
 
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <p class="font-weight-bold">Contacto</p>
-          </div>
+        
+        <!--Contenedor datos sign up-->
+        <div class="container-fluid" id="SignUp">
+            <hr>
+            <div class="row">
+                <div class="col-sm-4 offset-sm-4">
+                    <p class="h1 section-header">Comienza ya mismo</p>
+                </div>
+            </div>
+
+            <form method="POST" onsubmit="return submitdata()">
+                <div class="container-fluid">
+                    <div class="form-group row">
+                        <label for="Email" class="col-sm-1 offset-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-5">
+                            <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" required>
+                        </div>
+                        <div class="offset-sm-4 col-sm-5" id="ErrorEmail"></div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="Alias" class="col-sm-1 offset-sm-3 col-form-label">Alias</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="Alias" placeholder="Usuario_de_ejemplo" required>
+                        </div>
+                        <div class="offset-sm-4 col-sm-5" id="ErrorAlias"></div>
+                    </div> 
+
+                    <div class="form-group row">
+                        <label for="Password" class="col-sm-1 offset-sm-3 col-form-label">Contraseña</label>
+                        <div class="col-sm-2">
+                            <input type="password" maxlength="255" class="form-control" id="Password" placeholder="********" required>
+                        </div>
+                        <label for="Confirmacion" class="col-sm-1 col-form-label">Confirmación</label>
+                        <div class="col-sm-2">
+                            <input type="password" class="form-control" id="Confimacion" placeholder="********" required>
+                        </div>
+                        <div class="offset-sm-4 col-sm-5" id="ErrorPassword"></div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 offset-sm-3">
+                            <button type="submit" class="btn btn-primary btn-block">Registrar</button>                            
+                        </div>
+                        <div class="col-sm-6 offset-sm-3" id="RegistroOK"></div>
+                    </div>
+                </div>
+            </form>
+
         </div>
-      </div>
-    </footer>-->
-</body>
+        <br><br> <!--TODO: MODIFICAR EL CSS -->
+        <!--<footer class="footer" id="PiePagina">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3">
+                <p class="font-weight-bold">Acerca</p>
+                <ul id="markdown-toc">
+                  <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <p class="font-weight-bold">Seguridad</p>
+                <ul id="markdown-toc">
+                  <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <p class="font-weight-bold">Legal</p>
+                <ul id="markdown-toc">
+                  <li><a href="#" id="markdown-toc-contents">Terminos de uso</a></li>
+                  <li><a href="#" id="markdown-toc-contents">Politicas de privacidad</a></li>
+    
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <p class="font-weight-bold">Contacto</p>
+              </div>
+            </div>
+          </div>
+        </footer>-->
+    </body>
 
 
 </html>

@@ -17,12 +17,10 @@ $(document).ready(function(){
 	});
 });
 function eliminarArchivo(){
-    idCarpeta = idCarpetaG;
-    nombreArchivo = nomArchivoG;
-
+    idCarpeta = $('#deleteFile').attr('data-idCarpeta');
+    nombreArchivo = $('#deleteFile').attr('data-oldName');
     console.log("En funcion elminar Archivo");
     console.log("Elimando... " + idCarpeta + "/" + "nombreArchivo");
-    
     $.ajax({
         type: "POST",
         url: "manejoArchivo.php",
@@ -33,7 +31,6 @@ function eliminarArchivo(){
         },
         success: function (response) {
             console.log("Eliminacion del archivo " + response );
-
             if (response == "correct"){
                 actualizarArchivosEnPantalla();
                 setTimeout(function(){  $('#modalEliminaArchivo').modal('hide'); }, 500);
@@ -48,9 +45,7 @@ function eliminarArchivo(){
 
 
 function validarNombreArchivo(nuevoNomArch, classError ){
-
     var r1 = true, r2 = true , r3 = true;
-    
     if(nuevoNomArch.length >= 255 ){
         r1 = false;
         $("#" + classError ).html('<div class="alert alert-danger"><button type="button" class="close">×</button>El nombre del archivo no puede exceder los 255 caracteres</div>');
@@ -64,9 +59,9 @@ function validarNombreArchivo(nuevoNomArch, classError ){
                 $(this).parent().fadeTo(500, 0).slideUp(500);
             });
     } 
-    if(nuevoNomArch.indexOf("/") != -1 ){
+    if(nuevoNomArch.indexOf("/") !== -1 ){
         r2 = false;
-        $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>El carácter / no es valido</div>');
+        $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>El carácter / no es válido</div>');
             window.setTimeout(function () {
                 $(".alert").fadeTo(100, 0).slideUp(100, function () {
                     $(this).remove();
@@ -76,9 +71,8 @@ function validarNombreArchivo(nuevoNomArch, classError ){
             $('.alert .close').on("click", function (e) {
                 $(this).parent().fadeTo(500, 0).slideUp(500);
             });
-
     } 
-    if(nuevoNomArch.localeCompare(".") == 0  || nuevoNomArch.localeCompare("..") == 0 ){
+    if(nuevoNomArch.localeCompare(".") === 0  || nuevoNomArch.localeCompare("..") === 0 ){
         r3 = false;
         $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>El archivo no puede llamarse . o ..</div>');
             window.setTimeout(function () {
@@ -91,19 +85,15 @@ function validarNombreArchivo(nuevoNomArch, classError ){
                 $(this).parent().fadeTo(500, 0).slideUp(500);
             });
     }
-
     return r1 && r2 && r3;
-
 }
 
 function editarNombreArchivo(){
-    var idCarpeta = idCarpetaG;
-    var nombreArch = nomArchivoG;
+    var idCarpeta = $('#nombreEditarArchivo').attr('data-idCarpeta');
+    var nombreArch = $('#nombreEditarArchivo').attr('data-oldName');
     var nuevoNomArch =  $('#nombreEditarArchivo').val(); 
     var flag = validarNombreArchivo(nuevoNomArch, "ErrorEditarArchivo");
-
     if(!flag) return false;
-
     console.log("valores: idCarpeta"+ idCarpeta + " nombreArch " + nombreArch + " nuevoNomArch " +  nuevoNomArch);
     //Nombre de archivo, ahora llamada a ajax para verificar duplicidad
     $.ajax({
@@ -119,7 +109,7 @@ function editarNombreArchivo(){
         success: function (response) {
             console.log(response);
 
-            if (response == "correct"){
+            if (response === "correct"){
 
                 actualizarArchivosEnPantalla();
 
@@ -172,32 +162,28 @@ function subirArchivo() {
         processData: false,
         success: function (response) {
             document.write(response);
-        },
-        done:function(response){
-            document.write(response);
         }
     });
 }
 
+/* Se obtiene la referencia del objeto que invocó al modal, se obtienen sus
+valores y se ponen como atributos para ser utilizados posteriormente*/
 $(document).ready(function(){
-    $(document).on("click" ,".descargarArch" , function(){
-        var filename = $(this).attr('data-nombreArchivo');
-        console.log("Aqui " +filename); 
-        console.log(filename); 
-        $.ajax({
-            type: "POST",
-            url: "../php/ManejadorArchivo.php",
-            data: {
-                Operation: "Descargar",
-                File: filename
-            },
-            success: function (response) {
-                document.write(response);
-            }
-        });
+    $('#modalEditarArchivo').on('show.bs.modal', function (e) {
+        var opener=e.relatedTarget;
+        var oldName=$(opener).attr('data-nomArchivo');
+        var idCarpeta=$(opener).attr('data-idCarpeta');
+        $('#nombreEditarArchivo').attr("data-oldName",oldName);
+        $('#nombreEditarArchivo').attr("data-idCarpeta",idCarpeta);
     });
-    
-    
 });
 
-
+$(document).ready(function(){
+    $('#modalEliminaArchivo').on('show.bs.modal', function (e) {
+        var opener=e.relatedTarget;
+        var oldName=$(opener).attr('data-nomArchivo');
+        var idCarpeta=$(opener).attr('data-idCarpeta');
+        $('#deleteFile').attr("data-oldName",oldName);
+        $('#deleteFile').attr("data-idCarpeta",idCarpeta);
+    });
+});

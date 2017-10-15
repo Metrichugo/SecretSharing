@@ -44,7 +44,7 @@ if ($operacion == "SubirArchivo") {
             $carpeta_usuario = "/" . $usuario->getidUsuario();
             $comando = "python ../python/comparte_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
             my_shell_exec($comando, $stdout, $stderr);
-            echo "<p>" . $stdout . "</p>";
+            echo "Salida python: <p>" . $stdout . "</p>";
             echo "<p>" . $stderr . "</p>";
             exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID());
             //Validar ejecucion de la GRID

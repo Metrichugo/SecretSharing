@@ -229,8 +229,8 @@ class BaseDeDatos {
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Tamaño (bytes)</th>
-                                <th>Fecha de subida</th>
+                                <th>Tamaño</th>
+                                <th>Subida</th>
                                 <th class="text-center">Acción</th>
                             </tr>
                         </thead>';
@@ -250,10 +250,10 @@ class BaseDeDatos {
 								<td>' . $archivo->getTamanio() . '</td>
 								<td>' . $archivo->getFechaSubida() . '</td>
 								<td class="text-center">
-									<a class="btn btn-primary btn-sm  btn-sel-arch" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
-									<a class="btn btn-info    btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>
-									<a class="btn btn-danger  btn-sm  btn-sel-arch" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . '><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+									<a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>
+									<a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . '><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';
             }
