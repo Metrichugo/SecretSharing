@@ -4,9 +4,15 @@ var idCarpetaGlobal = 0;
 $(document).ready(function () {
     $(document).on("click", ".btn-sel-carp", function () {
         idCarpetaGlobal = $(this).attr("data-idCarpeta");
-        console.log("desde  btn-sel-carp" + idCarpetaGlobal);
+        console.log("desde  btn-sel-carp: " + idCarpetaGlobal);
 
     });
+
+    //Hace que los modales se reinicien cada que se ocultan/cierran
+    $('.modal').on('hidden.bs.modal', function () {
+        $('.modal-body').find('input,text').val('');
+    });
+
 });
 
 function editarNombreCarpeta() {
@@ -147,7 +153,7 @@ function validarNombreCarpeta(nomCarpeta, classError) {
     }
     if (nomCarpeta.indexOf("/") !== -1) {
         r2 = false;
-        muestraMensajeError("La carpeta no puede contener el caracter /");
+        muestraMensajeError("La carpeta no puede contener el caracter /", classError);
     }
 
     if (nomCarpeta.localeCompare(".") === 0 || nomCarpeta.localeCompare("..") === 0) {
@@ -160,20 +166,6 @@ function validarNombreCarpeta(nomCarpeta, classError) {
         muestraMensajeError("El nombre de la carpeta debe contener al menos un caracter", classError);
     }
     return r1 && r2 && r3 && r4;
-}
-
-function muestraMensajeError(mensaje, classError) {
-    $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>' + mensaje + '</div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-
-    /* Button for close alert */
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
-    });
 }
 
 function crearNuevaCarpeta() {
@@ -211,16 +203,12 @@ function crearNuevaCarpeta() {
 
                 actualizarCarpetasEnPantalla();
             } else {
-                $('#resultadoCrearCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>Ya existe una carpeta con el mismo nombre</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
+                muestraMensajeError("Ya existe una carpeta con el mismo nombre", "resultadoCrearCarpeta");
+                
+                //Timeout cerrar modal
+                setTimeout(function () {
+                    $('#modalCrearCarpeta').modal('hide');
+                }, 1000);
             }
         }
     });
@@ -256,6 +244,8 @@ function eliminarCarpeta( ) {
 
     return true;
 }
+
+
 function cargarCarpetaRaiz(  ) {
 
     $.ajax({
@@ -270,6 +260,20 @@ function cargarCarpetaRaiz(  ) {
 
             return response;
         }
+    });
+}
+
+function muestraMensajeError(mensaje, classError) {
+    $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>' + mensaje + '</div>');
+    window.setTimeout(function () {
+        $(".alert").fadeTo(100, 0).slideUp(100, function () {
+            $(this).remove();
+        });
+    }, 5000);
+
+    /* Button for close alert */
+    $('.alert .close').on("click", function (e) {
+        $(this).parent().fadeTo(500, 0).slideUp(500);
     });
 }
 

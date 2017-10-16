@@ -171,8 +171,8 @@ class BaseDeDatos {
         $ans = '<table class="table table-striped custab">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Creación</th>
+                                    <th class="text-center">Nombre</th>
+                                    <th class="text-center">Fecha de creación</th>
                                     <th class="text-center">Acción</th>
                                 </tr>
                             </thead>';
@@ -187,8 +187,8 @@ class BaseDeDatos {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
                 //$carpeta->toString(); // impresion de valores de carpeta
                 $ans = $ans . '<tr>
-							<td><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
-							<td>' . $carpeta->getFechaCreacion() . '</td>
+							<td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
+							<td class="text-center"> ' . $carpeta->getFechaCreacion() . '</td>
 							<td class="text-center">
 								<a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 								<a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
@@ -228,9 +228,9 @@ class BaseDeDatos {
         $ans = '<table class="table table-striped custab">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Tamaño</th>
-                                <th>Subida</th>
+                                <th class="text-center">Nombre</th>
+                                <th class="text-center">Tamaño (bytes)</th>
+                                <th class="text-center">Fecha de subida</th>
                                 <th class="text-center">Acción</th>
                             </tr>
                         </thead>';
@@ -246,9 +246,9 @@ class BaseDeDatos {
                 //$archivo->toString(); // impresion de valores de carpeta
 
                 $ans = $ans . '<tr>
-								<td>' . $archivo->getNombreArchivo() . '</td>
-								<td>' . $archivo->getTamanio() . '</td>
-								<td>' . $archivo->getFechaSubida() . '</td>
+								<td class="text-center">' . $archivo->getNombreArchivo() . '</td>
+								<td class="text-center"> ' . $archivo->getTamanio() . '</td>
+								<td class="text-center">' . $archivo->getFechaSubida() . '</td>
 								<td class="text-center">
 									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
 									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>

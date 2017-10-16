@@ -43,7 +43,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
     </head>
 
     <body>
-
+        <!-- Barra de navegacion -->
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="Navigation">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,83 +60,67 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <a class="nav-link" href="#">Gestión de cuenta</a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <a class="btn btn-warning my-2 my-sm-0 mr-sm-2" role="button" href="logout.php">Cerrar Sesión</a>
-                </form>
+
+                <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</button>
+                <button type="button" class="btn btn-secondary " data-toggle="modal" data-target="#modalCrearCarpeta" >Crear carpeta</button>
+                <a class="btn btn-danger" role="button" href="logout.php">Cerrar Sesión</a>
             </div>
         </nav>
 
+        <!-- Contenedor principal -->
         <div class="container-fluid" id="ContenidoPrincipal">
             <div class = "row col-12" id = "ErroresPrincipal">
             </div>
-
-            <br>
             <div class="row">
-                <div class="col-12 col-md-3" id="menuOpciones">
-                    <div class="col">
-                        <br><br>
-                        <p><a class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</a></p>
-                    </div>
-                    <div class="col">
-                        <button type="button" class="btn btn-secondary btn-lg btn-block" data-toggle="modal" data-target="#modalCrearCarpeta" >
-                            Crear carpeta
-                        </button>
+                <div class="col-11 col-md-11" id="Contenido">
+                    <br>
 
-                        <!-- Modal Para crear nueva carpeta -->
-                        <div class="modal fade" id="modalCrearCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="tituloModalCrearCarpeta">Crear nueva carpeta</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-sm-12 ">
-                                            <input type="text" class="form-control" id="nombreCarpeta" placeholder="Introduce el nombre de la carpeta" name="nombreCarpeta" required>
-                                        </div>
-                                        <div class="col-sm-12" id = "ErrorNombreCarpeta">
-                                        </div><div class="col-sm-12" id = "resultadoCrearCarpeta">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary"  onclick = "return crearNuevaCarpeta()">Aceptar</button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h3>Carpetas</h3></div>
+                        <div class="row col-md-12 col-md-offset-2 custyle">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>    Ir anterior</button>
                         </div>
-
-
-
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-9" id="Contenido">
-                    <h2>Carpetas</h2>
-
-                    <div class="row col-md-12 col-md-offset-2 custyle">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>    Ir anterior</button>
+                        <div class="panel-body" id = "contenedorCarpetas"> </div>
                     </div>
 
-                    <div class="row col-md-12 col-md-offset-2 custyle">
-                        <div id = "contenedorCarpetas" class="row col-md-12 col-md-offset-2 custyle">
-
-                        </div>
-                    </div>
-                    <h3>Archivos</h3>
-                    <div class="row col-md-12 col-md-offset-2 custyle">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h3>Archivos</h3></div>
                         <div id = "contenedorArchivos" class="row col-md-12 col-md-offset-2 custyle">
+                        </div>                      
 
-                        </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
 
 
+        <!-- Modal Para crear nueva carpeta -->
+        <div class="modal fade" id="modalCrearCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalCrearCarpeta">Crear nueva carpeta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-sm-12 ">
+                            <input type="text" class="form-control" id="nombreCarpeta" placeholder="Introduce el nombre de la carpeta" name="nombreCarpeta" required>
+                        </div>
+                        <div class="col-sm-12" id = "ErrorNombreCarpeta">
+                        </div><div class="col-sm-12" id = "resultadoCrearCarpeta">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"  onclick = "return crearNuevaCarpeta()">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal para editar una carpeta -->
-        <div class="modal fade" id="modalEditarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal fade" id="modalEditarCarpeta" tabindex="-1" role="dialog" aria-labelledby="tituloModalEditarCarpeta" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -160,7 +144,6 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
             </div>
         </div>
 
-
         <!-- Modal para eliminar una carpeta -->
         <div class="modal fade" id="modalEliminarCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -182,18 +165,17 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
             </div>
         </div>
 
-
         <!-- Modal para eliminar un archivo -->
         <div class="modal fade" id="modalEliminaArchivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Eliminar archivo</h5>
+                        <h5 class="modal-title" id="tituloModalEliminaArchivo">Eliminar archivo</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
 
                     <div class="modal-body">
-                        <p><strong>¿Estás seguro de eliminar el archivo?</strong></p>
+                        <p><strong>¿Desea eliminar el archivo?</strong></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -208,7 +190,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Renombrar archivo</h5>
+                        <h5 class="modal-title" id="tituloModalEditarArchivo">Renombrar archivo</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
 
@@ -226,25 +208,26 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                     </div>
                 </div>
             </div>
-        </div>
-        <!-----MODAL PARA SUBIR ARCHIVOS------>
-        <div class="modal fade" id="UploadFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>        
+
+        <!----- MODAL PARA SUBIR ARCHIVOS ---- -->
+        <div class="modal fade" id="UploadFile" tabindex="-1" role="dialog" aria-labelledby="tituloModalSubirArchivo" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <h5 class="modal-title" id="tituloModalSubirArchivo">Subir archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <form onsubmit="return subirArchivo()" method="POST" enctype="multipart/form-data" id="postFile">
                         <div class="modal-body">
-                            <label>Select File to upload:</label><br>  
+                            <label>Selecciona el archivo a subir:</label><br>  
                             <input type="file" name="fileToUpload" id="fileToUpload">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Subir archivo</button>
                         </div>
                     </form>
                 </div>
