@@ -59,10 +59,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                     <li class="nav-item">
                         <a class="nav-link" href="#">Gestión de cuenta</a>
                     </li>
-                </ul>
-
-                <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</button>
-                <button type="button" class="btn btn-secondary " data-toggle="modal" data-target="#modalCrearCarpeta" >Crear carpeta</button>
+                </ul>                
                 <a class="btn btn-danger" role="button" href="logout.php">Cerrar Sesión</a>
             </div>
         </nav>
@@ -74,18 +71,28 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
             <div class="row">
                 <div class="col-11 col-md-11" id="Contenido">
                     <br>
-
                     <div class="panel panel-default">
-                        <div class="panel-heading"><h3>Carpetas</h3></div>
+                        <div class="row">
+                            <div class="panel-heading col-sm-11"><h3>Carpetas</h3></div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCarpeta" >Crear carpeta</button>
+                        </div>
                         <div class="row col-md-12 col-md-offset-2 custyle">
                             <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>    Ir anterior</button>
                         </div>
+
                         <div class="panel-body" id = "contenedorCarpetas"> </div>
                     </div>
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><h3>Archivos</h3></div>
+                    
+                    <br>
+                    <div class="panel panel-default">                        
+                        <div class="row">
+                            <div class="panel-heading col-sm-11" ><h3>Archivos</h3></div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</button>    
+                        </div>
+
                         <div id = "contenedorArchivos" class="row col-md-12 col-md-offset-2 custyle">
+
                         </div>                      
 
                     </div>
