@@ -11,7 +11,7 @@ function submitdata() {
             Password: password
         },
         success: function (response) {
-            if (response == "correct") {
+            if (response === "correct") {
                 window.open("./php/Principal.php","_self");
             } else {
                 console.log(response);

@@ -46,12 +46,13 @@ function editarNombreCarpeta() {
                     $(this).parent().fadeTo(500, 0).slideUp(500);
                 });
 
+                $('#' + idCarpetaEditar).text(nombreCarpeta);
+
                 //Timeout cerrar modal
                 setTimeout(function () {
                     $('#modalEditarCarpeta').modal('hide');
                 }, 1000);
 
-                actualizarCarpetasEnPantalla();
             } else {
                 $('#resultadoEditarCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>No se puede renombrar la carpeta: Existe una carpeta con el mismo nombre</div>');
                 window.setTimeout(function () {
@@ -85,37 +86,44 @@ function actualizarCarpetaActual(idCarpetaMoverse) {
     });
 }
 
-function actualizarCarpetasEnPantalla() {
+function actualizarCarpetas() {
     // ajax para actualizar la seccion de carpetas
     $.ajax({
         type: "POST",
         url: "../php/manejoCarpeta.php",
         data: {
-            Operation: "actualizarCarpetasEnPantalla"
+            Operation: "actualizarCarpetas"
         },
         success: function (response) {
-
-            //document.write("hola");
-            $('#contenedorCarpetas').empty();
-            $('#contenedorCarpetas').html(response);
+            $('#tablaCarpetas').append(response);
         }
     });
     return true;
 }
 
-function actualizarArchivosEnPantalla() {
+// Se agrego este metodo
+function listarCarpetas() {
+    $('#tablaCarpetas').empty();
+    actualizarCarpetas();
+}
+
+//Se agregó este metodo(Cambiar nombre o inclusive quitarlo y poner unicamente empty donde lo requiera al igual que para listar carpetas)
+function listarArchivos() {
+    $('#tablaArchivos').empty();
+    actualizarArchivos();
+}
+
+
+function actualizarArchivos(){
     // ajax para actualizar la seccion de carpetas
     $.ajax({
         type: "POST",
         url: "../php/manejoCarpeta.php",
         data: {
-            Operation: "actualizarArchivosEnPantalla"
+            Operation: "actualizarArchivos"
         },
         success: function (response) {
-
-            //document.write("hola");
-            $('#contenedorArchivos').empty();
-            $('#contenedorArchivos').html(response);
+            $('#tablaArchivos').append(response);
         }
     });
     return true;
@@ -123,8 +131,8 @@ function actualizarArchivosEnPantalla() {
 
 function actualizarContenidoEnPantalla(idCarpetaMoverse) {
     actualizarCarpetaActual(idCarpetaMoverse);
-    actualizarCarpetasEnPantalla();
-    actualizarArchivosEnPantalla();
+    listarCarpetas();
+    listarArchivos();
 }
 
 function irCarpetaAtras() {
@@ -137,9 +145,9 @@ function irCarpetaAtras() {
             Operation: "irCarpetaAtras"
         },
         success: function (response) {
-            if (response.localeCompare("incorrect") !== 0) {
-                actualizarCarpetasEnPantalla();
-                actualizarArchivosEnPantalla();
+            if (response.localeCompare("incorrect") != 0) {
+                listarCarpetas();
+                listarArchivos();
             }
         }
     });
@@ -161,13 +169,14 @@ function validarNombreCarpeta(nomCarpeta, classError) {
         muestraMensajeError("La carpeta no puede llamarse . o ..", classError);
     }
 
-    if (nomCarpeta.length === 0) {
+    if (nomCarpeta.trim().length === 0) {
         r4 = false;
         muestraMensajeError("El nombre de la carpeta debe contener al menos un caracter", classError);
     }
     return r1 && r2 && r3 && r4;
 }
 
+//Se Modifico este método
 function crearNuevaCarpeta() {
     var nombreCarpeta = $('#nombreCarpeta').val();
     var flag = validarNombreCarpeta(nombreCarpeta, "ErrorNombreCarpeta");
@@ -183,9 +192,9 @@ function crearNuevaCarpeta() {
             nombreCarpeta: nombreCarpeta
         },
         success: function (response) {
-            if (response === "correct") {
-
-                $('#resultadoCrearCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Carpeta creada correctamente</div>');
+            var jsonResponse = $.parseJSON(response);
+            if (jsonResponse.Status === "correct") {
+                $('#resultadoCrearCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Nueva carpeta creada</div>');
                 window.setTimeout(function () {
                     $(".alert").fadeTo(100, 0).slideUp(100, function () {
                         $(this).remove();
@@ -195,28 +204,24 @@ function crearNuevaCarpeta() {
                 $('.alert .close').on("click", function (e) {
                     $(this).parent().fadeTo(500, 0).slideUp(500);
                 });
-
-                //Timeout cerrar modal
-                setTimeout(function () {
-                    $('#modalCrearCarpeta').modal('hide');
-                }, 1000);
-
-                actualizarCarpetasEnPantalla();
+                $('#tablaCarpetas').append(jsonResponse.Html);
             } else {
-                muestraMensajeError("Ya existe una carpeta con el mismo nombre", "resultadoCrearCarpeta");
-                
-                //Timeout cerrar modal
-                setTimeout(function () {
-                    $('#modalCrearCarpeta').modal('hide');
-                }, 1000);
+                $('#resultadoCrearCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>Ya existe una carpeta con el mismo nombre</div>');
+                window.setTimeout(function () {
+                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
+                        $(this).remove();
+                    });
+                }, 5000);
+                /* Button for close alert */
+                $('.alert .close').on("click", function (e) {
+                    $(this).parent().fadeTo(500, 0).slideUp(500);
+                });
             }
         }
     });
-
-    //Resetar nombre de la carpeta del modal
-
     return false;
 }
+
 
 function eliminarCarpeta( ) {
 
@@ -234,8 +239,8 @@ function eliminarCarpeta( ) {
         success: function (response) {
             console.log(response);
             if (response === "correct") {
-                actualizarCarpetasEnPantalla();
                 $('#modalEliminarCarpeta').modal('hide');
+                $('#row' + idCarpeta).remove();
             } else {
                 console.log("no pude");
             }

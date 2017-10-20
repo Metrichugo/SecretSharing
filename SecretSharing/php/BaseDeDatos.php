@@ -57,7 +57,7 @@ class BaseDeDatos {
             $sentencia->execute();
             $sentencia->bind_result($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
             while ($sentencia->fetch()) {
-                $User = new Usuario();
+                $User = new Usuario($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
                 $User->setidUsuario($idUsuario);
                 $User->setContrasenia($contrasenia);
                 $User->setAlias($alias);
@@ -168,37 +168,26 @@ class BaseDeDatos {
     }
 
     public function listaCarpetas($Usuario, $carpetaActual) {
-        $ans = '<table class="table table-striped custab">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Nombre</th>
-                                    <th class="text-center">Fecha de creación</th>
-                                    <th class="text-center">Acción</th>
-                                </tr>
-                            </thead>';
-
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaActual = $carpetaActual->getIdCarpeta();
-
+        $ans = null;
         if ($sentencia = $this->connection->prepare("select * from carpeta where  idUsuario = '$idUsuario' and  idCarpetaSuperior = '$idCarpetaActual' ")) {
             $sentencia->execute();
             $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
             while ($sentencia->fetch()) {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-                //$carpeta->toString(); // impresion de valores de carpeta
-                $ans = $ans . '<tr>
-							<td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
-							<td class="text-center"> ' . $carpeta->getFechaCreacion() . '</td>
-							<td class="text-center">
-								<a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-								<a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
-							</td>
-						</tr>';
+                $ans = $ans . '<tr id="row' . $carpeta->getIdCarpeta() . '">
+                                    <td class="text-center"><a href = "#"> <p id ="' . $carpeta->getIdCarpeta() . '"  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
+                                    <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
+                                    <td class="text-center">
+                                            <a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                                            <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+                                            <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                    </td>
+                                </tr>';
             }
             $sentencia->close();
         }
-        $ans = $ans . '</table>';
         return $ans;
     }
 
@@ -225,15 +214,7 @@ class BaseDeDatos {
 
     public function listaArchivos($Usuario, $carpetaActual) {
 
-        $ans = '<table class="table table-striped custab">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Nombre</th>
-                                <th class="text-center">Tamaño (bytes)</th>
-                                <th class="text-center">Fecha de subida</th>
-                                <th class="text-center">Acción</th>
-                            </tr>
-                        </thead>';
+        $ans = null;
 
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaActual = $carpetaActual->getIdCarpeta();
@@ -243,23 +224,20 @@ class BaseDeDatos {
             $sentencia->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
             while ($sentencia->fetch()) {
                 $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
-                //$archivo->toString(); // impresion de valores de carpeta
-
-                $ans = $ans . '<tr>
-								<td class="text-center">' . $archivo->getNombreArchivo() . '</td>
-								<td class="text-center"> ' . $archivo->getTamanio() . '</td>
+                $ans = $ans . '<tr id="row' . $archivo->getNombreArchivo() . '">
+								<td class="text-center"><p id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</p></td>
+								<td class="text-center">' . $archivo->getTamanio() . '</td>
 								<td class="text-center">' . $archivo->getFechaSubida() . '</td>
 								<td class="text-center">
-									<a class="btn btn-primary btn-sm" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Descargar</a>
-									<a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>
-									<a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta=' . $idCarpeta . ' data-nomArchivo=' . $nombreArchivo . '><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+									<a class="btn btn-primary btn-sm" href="#" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+									<a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+									<a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
 								</td>
 							</tr>';
             }
             $sentencia->close();
         }
-        $ans = $ans . '</table>';
         return $ans;
     }
 
@@ -307,7 +285,40 @@ class BaseDeDatos {
         return $archivo;
     }
 
+    public function editaEspacioUtilizado($usuario) {
+        $stmt = $this->connection->prepare("UPDATE usuario SET espacioUtilizado=? WHERE idUsuario=?");
+        $espacioUtilizado = $usuario->getEspacioUtilizado();
+        $idUsuario = $usuario->getidUsuario();
+        $stmt->bind_param("is", $espacioUtilizado, $idUsuario); //s->String, i->Integer
+        $stmt->execute();
+    }
+
     /*     * ***************************** */
+    
+    //Se creo este método
+    public function getHTMLCarpeta($Usuario,$carpetaActual,$nombreCarpeta){
+        $idUsuario = $Usuario->getidUsuario();
+        $idCarpetaSup = $carpetaActual->getIdCarpeta();
+        $htmlCarpeta = null;
+        if ($sentencia = $this->connection->prepare("select * from carpeta where  idUsuario = '$idUsuario' and  idCarpetaSuperior = '$idCarpetaSup' and nombreCarpeta = '$nombreCarpeta'")) {
+            $sentencia->execute();
+            $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($sentencia->fetch()) {
+                $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+                $htmlCarpeta = '<tr id=row'.$carpeta->getIdCarpeta().'>
+							<td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
+							<td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
+							<td class="text-center">
+								<a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+								<a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+								<a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+							</td>
+						</tr>';
+            }
+            $sentencia->close();
+        }
+        return $htmlCarpeta;
+    }
 }
 
 ?>

@@ -24,14 +24,13 @@ def main(argv):
 		print('Creando platilla de trabajo')
 		jt = s.createJobTemplate()
 		jt.remoteCommand = ruta_ejecutable
-		jt.args = [nombre_archivo, umbral, numero_shares, ruta_destino_grid , "servidores.txt"]
+		jt.args = [nombre_archivo,"/var/www/SecretSharing/files","rcss@Maestro",umbral ,numero_shares, ruta_destino_grid , "servidores.txt"]
 		jt.nativeSpecification = "should_transfer_files   = Yes\n" \
 			"when_to_transfer_output = ON_EXIT\n" \
 			"transfer_input_files = "+ruta_servidores+"\n"\
-			"transfer_output_files = "+nombre_archivo+"\n"\
 			"initialdir = "+ruta_archivo_php+"\n"\
-			"output = out.txt\n"\
-			"error  = err.txt\n"\
+			"output = "+nombre_archivo+".out\n"\
+			"error  = "+nombre_archivo+".err\n"\
 			"jobLeaseDuration = 10\n"
 
 		jobid = s.runJob(jt)

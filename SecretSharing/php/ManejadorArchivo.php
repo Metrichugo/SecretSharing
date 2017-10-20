@@ -44,15 +44,27 @@ if ($operacion == "SubirArchivo") {
             $carpeta_usuario = "/" . $usuario->getidUsuario();
             $comando = "python ../python/comparte_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
             my_shell_exec($comando, $stdout, $stderr);
-            echo "Salida python: <p>" . $stdout . "</p>";
-            echo "<p>" . $stderr . "</p>";
-            exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID());
+            //echo "Salida python: <p>" . $stdout . "</p>";
+            //echo "<p>" . $stderr . "</p>";
             //Validar ejecucion de la GRID
-            // Insercion en la base de datos           
-            $DBConnection->insertaArchivo($archivo);
-            //Restar espacio disponible
-            //Fin
-            echo "<p>" . "UploadSuccesfull" . "</p>";
+            $string_ok = "El archivo se compartio correctamente";
+            $log = $dirsubida . $archivo->getNombreArchivoGRID() . ".out";
+            //Busca la cadena ok para saber si la ejecucion fue correcta
+            if (strpos(file_get_contents($log), $string_ok) !== false) {
+                // Insercion en la base de datos           
+                $DBConnection->insertaArchivo($archivo);
+                //Aumenta espacio utilizado
+                $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() + $archivo->getTamanio());
+                $DBConnection->editaEspacioUtilizado($usuario);
+                //Fin
+                echo "UploadSuccesfull";
+                my_shell_exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID());
+                //unlink($dirsubida . $archivo->getNombreArchivoGRID());
+                //unlink($log);
+                //unlink($dirsubida . $archivo->getNombreArchivoGRID().".err");
+            } else {
+                echo "UploadFailed";
+            }
         } else {
             echo "ErrorCantMove ";
         }

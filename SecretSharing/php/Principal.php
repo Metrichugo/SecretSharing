@@ -23,18 +23,24 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
         <title>Pantalla principal</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../assets/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
+
         <link rel="stylesheet" href="../css/index.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/sticky-footer.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+        <link rel="stylesheet" href="../assets/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
         <script src="../js/jquery-3.2.1.min.js"></script>
-        <script src="../js/tether.min.js"></script>
-        <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+        <script src="../js/tether.min.js"  ></script>
+        <script src="../assets/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js" ></script>
 
-        <script type="text/javascript" src = "../js/ajaxdownloader.min.js
-        "></script>
+        <!-- Bootstrap CSS 
+        <link rel="stylesheet" href="../assets/bootstrap-4.0.0-beta-dist/css/bootstrap.min.css">
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="../assets/bootstrap-4.0.0-beta-dist/js/bootstrap.min.js"></script>-->
+
+        <script type="text/javascript" src = "../js/ajaxdownloader.min.js"></script>
 
         <script src="../js/carpeta.js"></script>
         <script src="../js/archivo.js"></script>
@@ -57,7 +63,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <a class="nav-link" href="#">Principal <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Gestión de cuenta</a>
+                        <a class="nav-link" href="GestionCuenta.php">Gestión de cuenta</a>
                     </li>
                 </ul>                
                 <a class="btn btn-danger" role="button" href="logout.php">Cerrar Sesión</a>
@@ -66,33 +72,69 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
         <!-- Contenedor principal -->
         <div class="container-fluid" id="ContenidoPrincipal">
-            <div class = "row col-12" id = "ErroresPrincipal">
-            </div>
+            <div class = "row col-12" id = "ErroresPrincipal"></div>
             <div class="row">
-                <div class="col-11 col-md-11" id="Contenido">
+                <div class="col-12 col-md-12" id="Contenido">
                     <br>
-                    <div class="panel panel-default">
-                        <div class="row">
-                            <div class="panel-heading col-sm-11"><h3>Carpetas</h3></div>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCrearCarpeta" >Crear carpeta</button>
-                        </div>
-                        <div class="row col-md-12 col-md-offset-2 custyle">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>    Ir anterior</button>
-                        </div>
 
-                        <div class="panel-body" id = "contenedorCarpetas"> </div>
+                    <!-- Contenedor de carpetas -->
+                    <div class="card">
+
+                        <!--Encabezado del contenedor-->
+                        <div class="clearfix card-header">
+                            <!-- Titulo Carpeta -->
+                            <div class="panel-heading float-left"><h3>Carpetas</h3></div>
+                            <!-- Boton crear carpeta -->
+                            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#modalCrearCarpeta"> Crear carpeta</button>
+
+                            <!-- Boton carpeta atras -->
+                            <div class="row col-md-12 col-md-offset-2 custyle">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>Ir anterior</button>
+                            </div>
+
+                        </div> 
+
+                        <!-- Cuerpo del contenedor -->  
+                        <div class="card-body" id = "contenedorCarpetas">
+                            <!-- Tabla de carpetas -->
+                            <table class="table table-striped table-sm ">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Nombre</th>
+                                        <th class="text-center">Fecha de creación</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCarpetas">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    
+
                     <br>
-                    <div class="panel panel-default">                        
-                        <div class="row">
-                            <div class="panel-heading col-sm-11" ><h3>Archivos</h3></div>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</button>    
+
+                    <!-- Contenedor de archivos-->
+                    <div class="card">                        
+                        <div class="clearfix card-header">
+                            <div class="panel-heading float-left" ><h3>Archivos</h3></div>
+                            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#UploadFile" role="button">Subir archivo</button>    
                         </div>
 
-                        <div id = "contenedorArchivos" class="row col-md-12 col-md-offset-2 custyle">
-
+                        <div id = "contenedorArchivos" class="card-body">
+                            <!--Tabla de archivos -->
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Nombre</th>
+                                        <th class="text-center">Tamaño</th>
+                                        <th class="text-center">Fecha de subida</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaArchivos">
+                                </tbody>
+                            </table>
                         </div>                      
 
                     </div>
@@ -100,7 +142,6 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
             </div>
 
         </div>
-
 
         <!-- Modal Para crear nueva carpeta -->
         <div class="modal fade" id="modalCrearCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -111,12 +152,14 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
-                        <div class="col-sm-12 ">
-                            <input type="text" class="form-control" id="nombreCarpeta" placeholder="Introduce el nombre de la carpeta" name="nombreCarpeta" required>
-                        </div>
-                        <div class="col-sm-12" id = "ErrorNombreCarpeta">
-                        </div><div class="col-sm-12" id = "resultadoCrearCarpeta">
-                        </div>
+                        <form>
+                            <div class="col-sm-12 ">
+                                <input type="text" class="form-control" id="nombreCarpeta" placeholder="Introduce el nombre de la carpeta" name="nombreCarpeta" required>
+                            </div>
+                            <div class="col-sm-12" id = "ErrorNombreCarpeta">
+                            </div><div class="col-sm-12" id = "resultadoCrearCarpeta">
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -205,9 +248,8 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <div class="col-sm-12 ">
                             <input type="text" class="form-control" id="nombreEditarArchivo" placeholder="Introduce aqui nuevo nombre del archivo" name="nombreEditarArchivo">
                         </div>
-                        <div class="col-sm-12" id = "ErrorEditarArchivo">
-                        </div><div class="col-sm-12" id = "resultadoEditarArchivo">
-                        </div>
+                        <div class="col-sm-12" id = "ErrorEditarArchivo"></div>
+                        <div class="col-sm-12" id = "resultadoEditarArchivo"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -231,6 +273,8 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <div class="modal-body">
                             <label>Selecciona el archivo a subir:</label><br>  
                             <input type="file" name="fileToUpload" id="fileToUpload">
+                            <div class="col-sm-13" id = "errorSubirArchivo"></div>
+                            <div class="col-sm-13" id = "resultadoSubirArchivo"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -23,9 +23,9 @@ if ($operacion == "eliminarArchivo") {
     //echo $nombreArchivo;
     $result = $DBConnection->eliminarArchivo($usuario, $idCarpeta, $nombreArchivo);
 
-    if ($result)
+    if ($result) {
         echo "correct";
-    else {
+    } else {
         echo "incorrect";
     }
     exit();

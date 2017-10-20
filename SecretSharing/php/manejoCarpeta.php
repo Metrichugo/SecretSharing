@@ -28,12 +28,12 @@ if ($operacion == "actualizarCarpetaActual") {
 }
 
 
-if ($operacion == "actualizarCarpetasEnPantalla") {
+if ($operacion == "actualizarCarpetas") {
     $ans = $DBConnection->listaCarpetas($usuario, $carpetActual);
     echo ($ans);
 }
 
-if ($operacion == "actualizarArchivosEnPantalla") {
+if ($operacion == "actualizarArchivos") {                    //No deberia de ir en manejoArchivo?
     $ans = $DBConnection->listaArchivos($usuario, $carpetActual);
     echo ($ans);
 }
@@ -52,22 +52,31 @@ if ($operacion == "irCarpetaAtras") {
     echo( $idCarpetaSup );
 }
 
-if ($operacion == "crearNuevaCar") {
-    $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
-    $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-    if ($result) {
-        echo "incorrect";
+	//Se modificó esta parte del código
+    if($operacion == "crearNuevaCar"){
+        $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
+        $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
+        if($result){
+            echo json_encode(array(
+                "Status" => "incorrect"
+            ));
+            exit();
+        }
+        // lo insertamos en la basede datos
+        $result =  $DBConnection->insertaCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
+        if($result){
+            $htmlCarpeta = $DBConnection->getHTMLCarpeta($usuario,$carpetActual,$nombreNuevaCarpeta);
+            echo json_encode(array(
+                "Status" =>"correct",
+                "Html" => $htmlCarpeta
+            ));
+            exit();
+        }
+        echo json_encode(array(
+            "Status" => "incorrect"
+        ));
         exit();
     }
-    // lo insertamos en la basede datos
-    $result = $DBConnection->insertaCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-    if ($result) {
-        echo "correct";
-        exit();
-    }
-    echo "incorrect";
-    exit();
-}
 
 if ($operacion == "eliminarCarpeta") {
     $idCarpeta = $_POST['idCarpeta'];
