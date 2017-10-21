@@ -35,28 +35,25 @@ class BaseDeDatos {
         $alias = $Usuario->getAlias();
         $status = $Usuario->getStatus();
         $espacioUtilizado = $Usuario->getEspacioUtilizado();
-        if (!$this->connection->query("INSERT INTO USUARIO VALUES('$email','$password','$alias','$status','$espacioUtilizado')")) {
-            echo "Mistakes Were Made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("INSERT INTO usuario VALUES (?,?,?,?,?)");
+        $stmt->bind_param("sssii", $email, $password, $alias, $status, $espacioUtilizado);
+        return $stmt->execute();
     }
 
     public function borraUsuario($Usuario) {
         $email = $Usuario->getIdUsuario();
-        if (!$this->connection->query("DELETE FROM USUARIO WHERE idUsuario = '$email'")) {
-            echo "Mistakes Were Made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("DELETE FROM usuario WHERE idUsuario = ?");
+        $stmt->bind_param("s", $email);
+        return $stmt->execute();
     }
 
     public function consultaUsuario($Usuario) {
         $email = $Usuario->getidUsuario();
-        if ($sentencia = $this->connection->prepare("SELECT * FROM USUARIO WHERE idUsuario = '$email'")) {
-            $sentencia->execute();
-            $sentencia->bind_result($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("SELECT * FROM usuario WHERE idUsuario = ?");
+        $stmt->bind_param("s", $email);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
+            while ($stmt->fetch()) {
                 $User = new Usuario($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
                 $User->setidUsuario($idUsuario);
                 $User->setContrasenia($contrasenia);
@@ -64,7 +61,7 @@ class BaseDeDatos {
                 $User->setStatus($status);
                 $User->setEspacioUtilizado($espacioUtilizado);
             }
-            $sentencia->close();
+            $stmt->close();
             return $User;
         }
         return;
@@ -74,74 +71,67 @@ class BaseDeDatos {
         $email = $Usuario->getidUsuario();
         $password = $Usuario->getContrasenia();
         $alias = $Usuario->getAlias();
-        if ($sentencia = $this->connection->prepare("UPDATE USUARIO SET idUsuario = '$email', contrasenia = '$password', alias = '$alias'")) {
-            $sentencia->execute();
-            return true;
-        }
-        return;
+        $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
+        $stmt->bind_param("ssss", $email, $password, $alias, $email);
+        return $stmt->execute();
     }
 
     public function existeUsuario($Usuario) {
         $email = $Usuario->getidUsuario();
         $password = $Usuario->getContrasenia();
-        if ($sentencia = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM USUARIO WHERE idUsuario = '$email' AND contrasenia = '$password'")) {
-            $sentencia->execute();
-            $sentencia->bind_result($result);
-            while ($sentencia->fetch()) {
-                if ($result == 1) {
-                    $isUnique = true;
-                } else {
-                    $isUnique = false;
-                }
+        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia = ?");
+        $stmt->bind_param("ss", $email, $password);
+        if ($stmt->execute()) {
+            $stmt->bind_result($result);
+            while ($stmt->fetch()) {
+                return ($result == 1);
             }
         }
-        return $isUnique;
     }
 
     /*     * **********************************  Actions for CARPETAS  *********************************** */
 
     public function consultaCarpetaRaiz($Usuario) {
         $idUsuario = $Usuario->getidUsuario();
-        if ($sentencia = $this->connection->prepare(" select * from carpeta where idUsuario = '$idUsuario' and idCarpetaSuperior IS NULL")) {
-            $sentencia->execute();
-            $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE idUsuario = ? and idCarpetaSuperior IS NULL");
+        $stmt->bind_param("s", $idUsuario);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($stmt->fetch()) {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+                $stmt->close();
+                return $carpeta;
             }
-            $sentencia->close();
-            return $carpeta;
         }
         return;
     }
 
     public function consultaCarpeta($Usuario, $idCarpeta) {
         $idUsuario = $Usuario->getidUsuario();
-        if ($sentencia = $this->connection->prepare("select * from Carpeta where idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario' ")) {
-            $sentencia->execute();
-            $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE idCarpeta = ? AND idUsuario = ? ");
+        $stmt->bind_param("is", $idCarpeta, $idUsuario);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($stmt->fetch()) {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+                $stmt->close();
+                return $carpeta;
             }
-            $sentencia->close();
-            return $carpeta;
         }
         return;
     }
 
     public function existeCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta) {
-
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaSup = $carpetaActual->getIdCarpeta();
+        $stmt = $this->connection->prepare("SELECT COUNT(idCarpeta) AS result FROM carpeta "
+                . "WHERE  idUsuario = ? and nombreCarpeta = ? and idCarpetaSuperior = ?");
 
-        if ($sentencia = $this->connection->prepare("select count(idCarpeta) as result  from carpeta where  idUsuario = '$idUsuario' and nombreCarpeta = '$nombreNuevaCarpeta' and idCarpetaSuperior = '$idCarpetaSup' ")) {
-            $sentencia->execute();
-            $sentencia->bind_result($result);
-            while ($sentencia->fetch()) {
-                if ($result == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+        $stmt->bind_param("ssi", $idUsuario, $nombreNuevaCarpeta, $idCarpetaSup);
+        if ($stmt->execute()) {
+            $stmt->bind_result($result);
+            while ($stmt->fetch()) {
+                return ($result == 1);
             }
         }
     }
@@ -149,32 +139,30 @@ class BaseDeDatos {
     public function insertaCarpetaRaiz($Usuario) {
         $idUsuario = $Usuario->getidUsuario();
         $nombreNuevaCarpeta = $Usuario->getidUsuario();
-        if (!$this->connection->query("insert into carpeta (idUsuario,  nombreCarpeta, fechaCreacion) values  ('$idUsuario', '$nombreNuevaCarpeta', CURDATE() )")) {
-            echo "Mistakes Were Made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("INSERT INTO carpeta (idUsuario,  nombreCarpeta, fechaCreacion) "
+                . "VALUES  (?, ?, CURDATE() )");
+        $stmt->bind_param("ss", $idUsuario, $nombreNuevaCarpeta);
+        return $stmt->execute();
     }
 
     public function insertaCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta) {
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaSup = $carpetaActual->getIdCarpeta();
-
-        if (!$this->connection->query("insert into carpeta (idUsuario, idCarpetaSuperior,  nombreCarpeta, fechaCreacion) values  ('$idUsuario', '$idCarpetaSup'  ,'$nombreNuevaCarpeta', CURDATE() )")) {
-            echo "Mistakes Were Made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("INSERT INTO carpeta (idUsuario, idCarpetaSuperior,  nombreCarpeta, fechaCreacion) "
+                . "VALUES (?,?,?, CURDATE())");
+        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreNuevaCarpeta);
+        return $stmt->execute();
     }
 
     public function listaCarpetas($Usuario, $carpetaActual) {
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaActual = $carpetaActual->getIdCarpeta();
         $ans = null;
-        if ($sentencia = $this->connection->prepare("select * from carpeta where  idUsuario = '$idUsuario' and  idCarpetaSuperior = '$idCarpetaActual' ")) {
-            $sentencia->execute();
-            $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("SELECT * from carpeta WHERE  idUsuario = ? and  idCarpetaSuperior = ? ");
+        $stmt->bind_param("si", $idUsuario, $idCarpetaActual);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($stmt->fetch()) {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
                 $ans = $ans . '<tr id="row' . $carpeta->getIdCarpeta() . '">
                                     <td class="text-center"><a href = "#"> <p id ="' . $carpeta->getIdCarpeta() . '"  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
@@ -186,7 +174,7 @@ class BaseDeDatos {
                                     </td>
                                 </tr>';
             }
-            $sentencia->close();
+            $stmt->close();
         }
         return $ans;
     }
@@ -194,69 +182,64 @@ class BaseDeDatos {
     public function eliminarCarpeta($usuario, $carpeta) {
         $idUsuario = $usuario->getidUsuario();
         $idCarpetaEliminar = $carpeta->getIdCarpeta();
-        if (!$this->connection->query("delete from carpeta where idUsuario = '$idUsuario' and idCarpeta = '$idCarpetaEliminar'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("DELETE FROM carpeta WHERE idUsuario = ? and idCarpeta = ?");
+        $stmt->bind_param("si", $idUsuario, $idCarpetaEliminar);
+        return $stmt->execute();
     }
 
     public function editarCarpeta($usuario, $idCarpetaEditar, $nombreCarpeta) {
         $idUsuario = $usuario->getidUsuario();
-        if (!$this->connection->query("UPDATE carpeta SET nombreCarpeta = '$nombreCarpeta' WHERE idCarpeta = '$idCarpetaEditar' AND idUsuario = '$idUsuario'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("UPDATE carpeta SET nombreCarpeta = ? "
+                . "WHERE idCarpeta = ? AND idUsuario = ?");
+        $stmt->bind_param("sis", $nombreCarpeta, $idCarpetaEditar, $idUsuario);
+        return $stmt->execute();
     }
 
     /*     * **********************************  Actions for FILES  *********************************** */
 
     public function listaArchivos($Usuario, $carpetaActual) {
-
         $ans = null;
 
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaActual = $carpetaActual->getIdCarpeta();
 
-        if ($sentencia = $this->connection->prepare("select * from Archivo where  idUsuario = '$idUsuario' and  idCarpeta = '$idCarpetaActual' ")) {
-            $sentencia->execute();
-            $sentencia->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("SELECT * FROM Archivo WHERE idUsuario = ? AND idCarpeta = ?");
+        $stmt->bind_param("si", $idUsuario, $idCarpetaActual);
+
+        if ($stmt->execute()) {
+            $stmt->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
+            while ($stmt->fetch()) {
                 $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
                 $ans = $ans . '<tr id="row' . $archivo->getNombreArchivo() . '">
-								<td class="text-center"><p id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</p></td>
-								<td class="text-center">' . $archivo->getTamanio() . '</td>
-								<td class="text-center">' . $archivo->getFechaSubida() . '</td>
-								<td class="text-center">
-									<a class="btn btn-primary btn-sm" href="#" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-									<a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
-									<a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
-									<a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
-								</td>
-							</tr>';
+                                    <td class="text-center"><p id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</p></td>
+                                    <td class="text-center">' . $archivo->getTamanio() . '</td>
+                                    <td class="text-center">' . $archivo->getFechaSubida() . '</td>
+                                    <td class="text-center">
+                                            <a class="btn btn-primary btn-sm" href="#" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                                            <a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+                                            <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+                                            <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                    </td>
+                                </tr>';
             }
-            $sentencia->close();
+            $stmt->close();
         }
         return $ans;
     }
 
     public function eliminarArchivo($usuario, $idCarpeta, $nombreArchivo) {
         $idUsuario = $usuario->getidUsuario();
-        if (!$this->connection->query("DELETE FROM archivo WHERE nombreArchivo = '$nombreArchivo' AND idCarpeta = '$idCarpeta' AND idUsuario = '$idUsuario' ")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("DELETE FROM archivo WHERE nombreArchivo = ? AND idCarpeta = ? AND idUsuario = ? ");
+        $stmt->bind_param("sis", $nombreArchivo, $idCarpeta, $idUsuario);
+        return $stmt->execute();
     }
 
     public function editarArchivo($usuario, $idCarpeta, $nombreArchivo, $nuevoNomArch) {
         $idUsuario = $usuario->getidUsuario();
-        if (!$this->connection->query("update archivo set nombreArchivo = '$nuevoNomArch' where nombreArchivo = '$nombreArchivo' and idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("UPDATE archivo SET nombreArchivo = ? "
+                . "WHERE nombreArchivo = ? and idCarpeta = ? and idUsuario = ?");
+        $stmt->bind_param("ssis", $nuevoNomArch, $nombreArchivo, $idCarpeta, $idUsuario);
+        return $stmt->execute();
     }
 
     public function insertaArchivo($archivo) {
@@ -275,7 +258,7 @@ class BaseDeDatos {
 
     public function obtieneArchivo($nombreArchivo, $idCarpeta) {
         $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=?");
-        $stmt->bind_param("si", $nombreArchivo, $idCarpeta); //s->String, i->Integer
+        $stmt->bind_param("si", $nombreArchivo, $idCarpeta); //s->String, i->Integer        
         $stmt->execute();
         $stmt->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
         $archivo = null;
@@ -294,31 +277,33 @@ class BaseDeDatos {
     }
 
     /*     * ***************************** */
-    
+
     //Se creo este método
-    public function getHTMLCarpeta($Usuario,$carpetaActual,$nombreCarpeta){
+    public function getHTMLCarpeta($Usuario, $carpetaActual, $nombreCarpeta) {
         $idUsuario = $Usuario->getidUsuario();
         $idCarpetaSup = $carpetaActual->getIdCarpeta();
         $htmlCarpeta = null;
-        if ($sentencia = $this->connection->prepare("select * from carpeta where  idUsuario = '$idUsuario' and  idCarpetaSuperior = '$idCarpetaSup' and nombreCarpeta = '$nombreCarpeta'")) {
-            $sentencia->execute();
-            $sentencia->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-            while ($sentencia->fetch()) {
+        $stmt = $this->connection->prepare("select * from carpeta where  idUsuario = ? and  idCarpetaSuperior = ? and nombreCarpeta = ?");
+        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreCarpeta);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($stmt->fetch()) {
                 $carpeta = new Carpeta($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-                $htmlCarpeta = '<tr id=row'.$carpeta->getIdCarpeta().'>
-							<td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
-							<td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
-							<td class="text-center">
-								<a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-								<a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-								<a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
-							</td>
-						</tr>';
+                $htmlCarpeta = '<tr id=row' . $carpeta->getIdCarpeta() . '>
+                                    <td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
+                                    <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
+                                    <td class="text-center">
+                                            <a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                                            <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+                                            <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                    </td>
+                                </tr>';
             }
-            $sentencia->close();
+            $stmt->close();
         }
         return $htmlCarpeta;
     }
+
 }
 
 ?>

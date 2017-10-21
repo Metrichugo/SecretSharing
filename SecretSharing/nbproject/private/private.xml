@@ -8,12 +8,10 @@
             <file>file:/var/www/SecretSharing/php/manejoCarpeta.php</file>
             <file>file:/var/www/SecretSharing/php/BaseDeDatos.php</file>
             <file>file:/var/www/SecretSharing/php/ManejadorArchivo.php</file>
-            <file>file:/var/www/SecretSharing/php/logout.php</file>
-            <file>file:/var/www/SecretSharing/php/manejoArchivo.php</file>
             <file>file:/var/www/SecretSharing/php/descargaArchivo.php</file>
             <file>file:/var/www/SecretSharing/js/carpeta.js</file>
+            <file>file:/var/www/SecretSharing/php/GestionCuenta.php</file>
             <file>file:/var/www/SecretSharing/js/archivo.js</file>
-            <file>file:/var/www/SecretSharing/login.html</file>
             <file>file:/var/www/SecretSharing/js/ajaxdownloader.min.js</file>
             <file>file:/var/www/SecretSharing/js/descargaArchivo.js</file>
             <file>file:/var/www/SecretSharing/php/SignUp.php</file>
