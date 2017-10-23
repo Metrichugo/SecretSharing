@@ -30,6 +30,8 @@ if ($operacion == "eliminarArchivo") {
     }
     exit();
 }
+
+
 if ($operacion == "EditarArch") {
 
     $idCarpeta = $_POST["idCarpeta"];

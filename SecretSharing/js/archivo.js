@@ -18,7 +18,7 @@ $(document).ready(function () {
 });
 
 
-function eliminarArchivo(){
+function eliminarArchivo() {
     idCarpeta = $('#deleteFile').attr('data-idCarpeta');
     nombreArchivo = $('#deleteFile').attr('data-oldName');
     console.log("En funcion elminar Archivo");
@@ -27,16 +27,18 @@ function eliminarArchivo(){
         type: "POST",
         url: "manejoArchivo.php",
         data: {
-           Operation : "eliminarArchivo",
-           idCarpeta: idCarpeta,
-           nombreArchivo : nombreArchivo
+            Operation: "eliminarArchivo",
+            idCarpeta: idCarpeta,
+            nombreArchivo: nombreArchivo
         },
         success: function (response) {
-            console.log("Eliminacion del archivo " + response );
-            if (response == "correct"){
-                $('#row'+nombreArchivo).remove();
-                setTimeout(function(){  $('#modalEliminaArchivo').modal('hide'); }, 500);
-            }else{
+            console.log("Eliminacion del archivo " + response);
+            if (response == "correct") {
+                $('#row' + nombreArchivo).remove();
+                setTimeout(function () {
+                    $('#modalEliminaArchivo').modal('hide');
+                }, 500);
+            } else {
                 console.log("No se pudo eliminar el archivo");
             }
         }
@@ -175,6 +177,10 @@ function editarNombreArchivo() {
 
 
 function subirArchivo() {
+    $("#botonSubirArchivo").prop("disabled", true);
+    $("#botonSubirArchivo").html('Subiendo... <i class="fa fa-refresh fa-spin"></i>');
+    //<i class="fa fa-refresh fa-spin"></i>
+
     //var filedata = $('#fileToUpload')[0];
     var inputFile = document.getElementById("fileToUpload");
     var file = inputFile.files[0];
@@ -205,6 +211,8 @@ function subirArchivo() {
             } else if (response === "NoFileSelected") {
                 muestraMensajeError("Seleccione un archivo", "errorSubirArchivo");
             }
+            $("#botonSubirArchivo").prop("disabled", false);
+            $("#botonSubirArchivo").html('Subir archivo');
         }
 
     });
