@@ -21,8 +21,8 @@ $(document).ready(function () {
 function eliminarArchivo() {
     idCarpeta = $('#deleteFile').attr('data-idCarpeta');
     nombreArchivo = $('#deleteFile').attr('data-oldName');
-    console.log("En funcion elminar Archivo");
-    console.log("Elimando... " + idCarpeta + "/" + "nombreArchivo" + nombreArchivo);
+    console.log("En funcion eliminar Archivo");
+    console.log("Eliminando... archivo con idCarpeta: " + idCarpeta + " y nombre de archivo: " + nombreArchivo);
     $.ajax({
         type: "POST",
         url: "manejoArchivo.php",
@@ -33,7 +33,7 @@ function eliminarArchivo() {
         },
         success: function (response) {
             console.log("Eliminacion del archivo " + response);
-            if (response == "correct") {
+            if (response === "correct") {
                 $('#row' + nombreArchivo).remove();
                 setTimeout(function () {
                     $('#modalEliminaArchivo').modal('hide');

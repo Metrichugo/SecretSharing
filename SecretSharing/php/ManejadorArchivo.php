@@ -31,7 +31,7 @@ if ($operacion == "SubirArchivo") {
         $idCarpeta = $carpetActual->getIdCarpeta();
         $idUsuario = $usuario->getidUsuario();
         $tamanio = basename($_FILES['file']['size']);
-        $nombreArchivoGRID = trim($nombreArchivo . $timeStamp);
+        $nombreArchivoGRID = preg_replace('/\s+/', '_', trim($nombreArchivo . $timeStamp));
         $fechaSubida = date("Y-m-d");
 
         $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
@@ -58,10 +58,11 @@ if ($operacion == "SubirArchivo") {
                 $DBConnection->editaEspacioUtilizado($usuario);
                 //Fin
                 echo "UploadSuccesfull";
-                my_shell_exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID());
+                //my_shell_exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID(), $stdout, $stderr);
+                unlink($dirsubida . $archivo->getNombreArchivoGRID());
                 //unlink($dirsubida . $archivo->getNombreArchivoGRID());
                 //unlink($log);
-                //unlink($dirsubida . $archivo->getNombreArchivoGRID().".err");
+                unlink($dirsubida . $archivo->getNombreArchivoGRID().".err");                
             } else {
                 echo "UploadFailed";
             }

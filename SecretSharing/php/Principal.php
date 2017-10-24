@@ -85,7 +85,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
                             <!-- Boton carpeta atras -->
                             <div class="row col-md-12 col-md-offset-2 custyle">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>Ir anterior</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick = "irCarpetaAtras()" ><i class="fa fa-arrow-circle-left"></i>&nbsp;Ir anterior</button>
                             </div>
 
                         </div> 

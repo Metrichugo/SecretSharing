@@ -32,12 +32,11 @@ my_shell_exec($comando, $stdout, $stderr);
 //echo "<p>" . $stdout . "</p>";
 //echo "<p>" . $stderr . "</p>";
 //Validacion recuperacion
-
-
 //Renombrado del archivo
-rename($dirsubida.$archivo->getNombreArchivoGRID(),$dirsubida.$archivo->getNombreArchivo());
+rename($dirsubida . $archivo->getNombreArchivoGRID(), $dirsubida . $archivo->getNombreArchivo());
 $rutaArchivo = '../files/' . $archivo->getNombreArchivo();
-//
+
+//Contenido de la respuesta
 header('Content-Description: File Transfer');
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . basename($rutaArchivo) . '"');
@@ -47,6 +46,9 @@ header('Cache-Control: must-revalidate');
 ob_clean();
 flush();
 readfile($rutaArchivo);
+
+//Eliminacion del archivo en la carpeta del servidor
+unlink($dirsubida . $archivo->getNombreArchivo());
 exit();
 
 function my_shell_exec($cmd, &$stdout = null, &$stderr = null) {
