@@ -75,12 +75,20 @@ class BaseDeDatos {
         $stmt->bind_param("ssss", $email, $password, $alias, $email);
         return $stmt->execute();
     }
+    public function actualizaIdUsuario($Usuario, $newIdUsuario) {
+        $email = $Usuario->getidUsuario();
+        $password = $Usuario->getContrasenia();
+        $alias = $Usuario->getAlias();
+        $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
+        $stmt->bind_param("ssss", $newIdUsuario, $password, $alias, $email);
+        return $stmt->execute();
+    }
 
     public function existeUsuario($Usuario) {
         $email = $Usuario->getidUsuario();
         $password = $Usuario->getContrasenia();
-        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia = ?");
-        $stmt->bind_param("ss", $email, $password);
+        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ?");
+        $stmt->bind_param("s", $email);
         if ($stmt->execute()) {
             $stmt->bind_result($result);
             while ($stmt->fetch()) {

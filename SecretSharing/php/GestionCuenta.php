@@ -38,12 +38,14 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 
         <script src="../js/carpeta.js"></script>
         <script src="../js/archivo.js"></script>
+        <script src="../js/usuario.js"></script>
+        
         <script src="../js/descargaArchivo.js"></script>
-
+        
+        <script src="../js/GestionCuenta.js">
+        
         <script src="../assets/Highcharts/code/highcharts.js"></script>
         <script src="../assets/Highcharts/code/modules/exporting.js"></script>
-        <script src="../js/grafica.js"></script>
-
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         <script type="text/javascript">
@@ -67,6 +69,9 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                 chart.draw(data, options);
             }
         </script>       
+        
+
+
     </head>
 
     <body>
@@ -98,10 +103,10 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="GestionCuenta.php" > Visualizar detalles </a>
+                <a class="nav-link active" id = "visualizarDetalles" href="GestionCuenta.php" > Visualizar detalles </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Modificar cuenta</a>
+                <a class="nav-link"        id = "modificarCuenta"    href="#" data-toggle="modal" data-target="#modalModificarCuenta">Modificar cuenta</a>
             </li>
         </ul>
         <br>
@@ -119,7 +124,9 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                         </div>
                         <div class = "col-6">
                             <label for="nombreUsuario" class="col-12"><strong> Nombre de usuario (Email): </strong></label>
-                            <label id ="nombreUsuario" class="col-12">
+                            <label id ="nombreUsuario" class="col-12" data-nombreUsuario="<?php
+                                echo $usuario->getidUsuario();
+                                ?>">
                                 <?php
                                 echo $usuario->getidUsuario();
                                 ?>
@@ -183,6 +190,108 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
             </div>
 
         </div>
+        
+        
+        <!-- Contenedor para modificarCuenta -->
+        <div class = "container" id = "contenedorModificarCuenta">
+                    <div class = "row justify-content-center">
+            <div class="col-sm-12 col-md-4">
+               
+               <img  src="../assets/Login-Icon.png" width=70% height="auto" >
+               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+         
+            <button id= "eliminarCuenta" type="button" class="col-sm-12 btn btn-primary">Eliminar Cuenta</button>
+              
+               
+            </div>
+            <div class="col-sm-12 col-md-8">
+               <h4>Cambiar nombre de usuario</h4>
+                <div class="form-bottom" id = "formNombreUsuario">
+                    <form>
+                        <div class="form-group row">
+                            <label for="Email" class="col-sm-12 col-form-label">Nombre de Usuario (Email)</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
+                            </div>
+                            <label for="confirmaEmail" class="col-sm-12 col-form-label">Confirmación del nombre de usuario (Email)</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input type="email" class="form-control" id="confirmaEmail" placeholder="ejemplo@servidor.com" name="confirmacionEmail" required autofocus>
+                            </div>
+                            <div class="col-sm-12 col-md-10" id="ErrorCambiarEmail"> </div>
+                            <div class="col-sm-12 col-md-10" id="ResCambiarEmail"> </div>
+                           
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 offset-sm-3 offset-md-3">
+                                <button id = "cambiarNombreUsuario" type="button" class="btn btn-primary">Cambiar nombre de usuario</button>
+                            </div>
+                        </div>
+                        
+                </div>
+                
+                <h4>Cambiar contraseña</h4>
+                <div class="form-bottom" id="formPassword">
+                    <form>
+                        <div class="form-group row">
+                            <label for="pass" class="col-sm-12 col-form-label">Contraseña</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input type="password" class="form-control" id="password" placeholder="ejemplo: 1@Javier" name="Email" required autofocus>
+                            </div>
+                            <label for="confirmaPassword" class="col-sm-12 col-form-label">Confirmación de nueva contraseña</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input type="password" class="form-control" id="confirmaPassword" placeholder="ejemplo: 1@Javier" name="confirmacionEmail" required autofocus>
+                            </div>
+                            <div class="col-sm-12 col-md-10" id="ErrorPassword"> </div>
+                            <div class="col-sm-12 col-md-10" id="ResPassword"> </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 offset-sm-3 offset-md-3">
+                                <button  type="button" class="btn btn-primary" id="cambiarPassword">Cambiar contraseña</button>                          
+                            </div>
+                        </div>
+                        
+                </div>
+            </div>
+            
+        </div>
+    
+        </div>
+        
+        
+        <!-- Modal contraseña para modificar detalles de la cuenta -->
+        <div class="modal fade" id="modalModificarCuenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalEditarArchivo">Modificar cuenta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>                   
+                    </div>
 
+                    <div class="modal-body">
+                        <p>Para poder modificar tu cuenta introduce nuevamente tu contraseña <p>
+                        <div class="col-sm-12 ">
+                            
+                            <input type="password" class="form-control" id="contraseniaModal" placeholder="Introduce aqui tu contraseña" name="contraseña">
+                        </div>
+                        <div class="col-sm-12" id = "ErrorContrasenia"></div>                       
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modalCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button id="modalAceptar"  type="button" class="btn btn-primary"   >Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+        <div class="container">
+                
+        </div>
+        
     </body>
 </html>
+
