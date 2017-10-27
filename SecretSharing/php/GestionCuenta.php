@@ -211,27 +211,27 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
             <div class="col-sm-12 col-md-8">
                <h4>Cambiar nombre de usuario</h4>
-                <div class="form-bottom" id = "formNombreUsuario">
-                    <form>
+                <div class="form-bottom" >
+                    <form action="" id = "formNombreUsuario">
                         <div class="form-group row">
                             <label for="Email" class="col-sm-12 col-form-label">Nombre de Usuario (Email)</label>
                             <div class="col-sm-12 col-md-10">
-                                <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
+                                <input type="email" minLength="8" maxLength="255" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
                             </div>
                             <label for="confirmaEmail" class="col-sm-12 col-form-label">Confirmación del nombre de usuario (Email)</label>
                             <div class="col-sm-12 col-md-10">
-                                <input type="email" class="form-control" id="confirmaEmail" placeholder="ejemplo@servidor.com" name="confirmacionEmail" required autofocus>
+                                <input type="email" minLength="8" maxLength="255" class="form-control" id="confirmaEmail" placeholder="ejemplo@servidor.com" name="confirmacionEmail" required autofocus>
                             </div>
                             <div class="col-sm-12 col-md-10" id="ErrorCambiarEmail"> </div>
                             <div class="col-sm-12 col-md-10" id="ResCambiarEmail"> </div>
-                           
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6 offset-sm-3 offset-md-3">
-                                <button id = "cambiarNombreUsuario" type="button" class="btn btn-primary">Cambiar nombre de usuario</button>
+                           <div class="col-sm-6 offset-sm-3 offset-md-3">
+                                <button id = "cambiarNombreUsuario" type="submit"  class="btn btn-primary">Cambiar nombre de usuario</button>
                             </div>
                         </div>
-                        
+            
+                    </form>   
+                    
+               
                 </div>
                 
                 <h4>Cambiar contraseña</h4>
@@ -291,6 +291,10 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         <div class="container">
                 
         </div>
+        
+     
+        
+        
         
     </body>
 </html>

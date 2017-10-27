@@ -40,13 +40,17 @@ $(document).ready(function (){
         });
     });
     
-   //cambio de nombre de usuario
-   // retorno de  servidor
+    
+    
+    //cambio de nombre de usuario
+    
+    /* 0 se logro cambiar
+    * 1 no por ser igual a contraseñ2a
+    * 2 no por duplicida4d
+    * 3 cualquier otro error
+    */
    
-    
-    
- 
-   $(document).on("click", "#cambiarNombreUsuario", function(){  
+   $("#formNombreUsuario").submit(function(){
        var email = $("#Email").val();
        var confirmaEmail = $("#confirmaEmail").val();
        
@@ -65,11 +69,7 @@ $(document).ready(function (){
                 newNombreLocal: nombreLocal
             },
             success: function (response) {
-               /* 0 se logro cambiar
-                * 1 no por ser igual a contraseñ2a
-                * 2 no por duplicida4d
-                * 3 cualquier otro error
-                */
+              
                
                switch (response) {
                     case "0":
@@ -88,8 +88,10 @@ $(document).ready(function (){
                
             }
         });
+      
+        return false;
     });
-   
+    
    //cambio de contraseña
    $(document).on("click", "#cambiarPassword", function(){  
        var email = $("#nombreUsuario").attr("data-nombreUsuario");
