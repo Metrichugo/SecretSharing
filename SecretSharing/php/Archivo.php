@@ -45,7 +45,6 @@ class Archivo {
     public function toString() {
         printf("nombreArchivo = %s tamanio = %s fechaSubida = %s <br>", $this->nombreArchivo, $this->tamanio, $this->fechaSubida);
     }
-    
 
     function getIdCarpeta() {
         return $this->idCarpeta;

@@ -28,7 +28,7 @@ $carpeta_usuario = "/" . $usuario->getidUsuario();
 ////Ejecucion script
 $comando = "python ../python/recuperar_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
 //echo "<p>".$comando."</p>";
-my_shell_exec($comando, $stdout, $stderr);
+modif_shell_exec($comando, $stdout, $stderr);
 //echo "<p>" . $stdout . "</p>";
 //echo "<p>" . $stderr . "</p>";
 //Validacion recuperacion
@@ -51,7 +51,7 @@ readfile($rutaArchivo);
 unlink($dirsubida . $archivo->getNombreArchivo());
 exit();
 
-function my_shell_exec($cmd, &$stdout = null, &$stderr = null) {
+function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
     $proc = proc_open($cmd, [
         1 => ['pipe', 'w'],
         2 => ['pipe', 'w'],

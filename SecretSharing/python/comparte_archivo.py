@@ -15,7 +15,7 @@ def main(argv):
 
 	ruta_ejecutable="/home/victor/Documentos/Ejecutables/Share"
 	ruta_servidores="/home/victor/Documentos/Ejecutables/servidores.txt"
-	numero_shares=3
+	numero_shares=4
 	umbral=2
 
 	print("Nombre del archivo: "+nombre_archivo +" \nUbicacion: "+ruta_archivo_php+ "\nRuta destino: "+ruta_destino_grid)

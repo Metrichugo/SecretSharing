@@ -34,36 +34,16 @@ function editarNombreCarpeta() {
         },
         success: function (response) {
             if (response === "correct") {
-
-                $('#resultadoEditarCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Se ha actualizado del nombre de la carpeta</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
-
+                muestaMensajeOk("Se ha actualizado del nombre de la carpeta", "resultadoEditarCarpeta");
+                //Actualiza el nombre en pantalla
                 $('#' + idCarpetaEditar).text(nombreCarpeta);
-
                 //Timeout cerrar modal
                 setTimeout(function () {
                     $('#modalEditarCarpeta').modal('hide');
                 }, 1000);
 
             } else {
-                $('#resultadoEditarCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>No se puede renombrar la carpeta: Existe una carpeta con el mismo nombre</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
+                muestraMensajeError("No se puede renombrar la carpeta: Existe una carpeta con el mismo nombre", "resultadoEditarCarpeta");
             }
         }
     });
@@ -72,7 +52,7 @@ function editarNombreCarpeta() {
 
 
 function actualizarCarpetaActual(idCarpetaMoverse) {
-    // ajax para actualizar la variable de sesion de la carpeta actual
+    // ajax para actualizar la variable de sesion de PHP de la carpeta actual
     $.ajax({
         type: "POST",
         url: "../php/manejoCarpeta.php",
@@ -114,8 +94,8 @@ function listarArchivos() {
 }
 
 
-function actualizarArchivos(){
-    // ajax para actualizar la seccion de carpetas
+function actualizarArchivos() {
+    // AJAX para actualizar la seccion de carpetas
     $.ajax({
         type: "POST",
         url: "../php/manejoCarpeta.php",
@@ -136,8 +116,7 @@ function actualizarContenidoEnPantalla(idCarpetaMoverse) {
 }
 
 function irCarpetaAtras() {
-    // ajax para actualizar volver a la carpeta superior
-    var flag = true;
+    // AJAX para actualizar volver a la carpeta superior
     $.ajax({
         type: "POST",
         url: "../php/manejoCarpeta.php",
@@ -145,7 +124,7 @@ function irCarpetaAtras() {
             Operation: "irCarpetaAtras"
         },
         success: function (response) {
-            if (response.localeCompare("incorrect") != 0) {
+            if (response.localeCompare("incorrect") !== 0) {
                 listarCarpetas();
                 listarArchivos();
             }
@@ -176,7 +155,7 @@ function validarNombreCarpeta(nomCarpeta, classError) {
     return r1 && r2 && r3 && r4;
 }
 
-//Se Modifico este método
+//Se modifico este método
 function crearNuevaCarpeta() {
     var nombreCarpeta = $('#nombreCarpeta').val();
     var flag = validarNombreCarpeta(nombreCarpeta, "ErrorNombreCarpeta");
@@ -194,28 +173,15 @@ function crearNuevaCarpeta() {
         success: function (response) {
             var jsonResponse = $.parseJSON(response);
             if (jsonResponse.Status === "correct") {
-                $('#resultadoCrearCarpeta').html('<div class="alert alert-success"><button type="button" class="close">×</button>Nueva carpeta creada</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
+                muestaMensajeOk("Nueva carpeta creada", "resultadoCrearCarpeta");
+                //Actualiza contenido en pantalla
                 $('#tablaCarpetas').append(jsonResponse.Html);
+                //Timeout cerrar modal
+                setTimeout(function () {
+                    $('#modalCrearCarpeta').modal('hide');
+                }, 1000);
             } else {
-                $('#resultadoCrearCarpeta').html('<div class="alert alert-danger"><button type="button" class="close">×</button>Ya existe una carpeta con el mismo nombre</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
+                muestraMensajeError("Ya existe una carpeta con el mismo nombre", "resultadoCrearCarpeta");
             }
         }
     });
@@ -224,11 +190,8 @@ function crearNuevaCarpeta() {
 
 
 function eliminarCarpeta( ) {
-
     idCarpeta = idCarpetaGlobal;
-
     console.log("Desde eliminar carpeta () " + idCarpeta);
-
     $.ajax({
         type: "POST",
         url: "manejoCarpeta.php",
@@ -242,7 +205,7 @@ function eliminarCarpeta( ) {
                 $('#modalEliminarCarpeta').modal('hide');
                 $('#row' + idCarpeta).remove();
             } else {
-                console.log("no pude");
+                console.log("Error al eliminar la carpeta");
             }
         }
     });
@@ -251,8 +214,7 @@ function eliminarCarpeta( ) {
 }
 
 
-function cargarCarpetaRaiz(  ) {
-
+function cargarCarpetaRaiz() {
     $.ajax({
         type: "POST",
         url: "manejoCarpeta.php",
@@ -275,7 +237,19 @@ function muestraMensajeError(mensaje, classError) {
             $(this).remove();
         });
     }, 5000);
+    /* Button for close alert */
+    $('.alert .close').on("click", function (e) {
+        $(this).parent().fadeTo(500, 0).slideUp(500);
+    });
+}
 
+function muestaMensajeOk(mensaje, classOK) {
+    $('#' + classOK).html('<div class="alert alert-success"><button type="button" class="close">×</button>' + mensaje + '</div>');
+    window.setTimeout(function () {
+        $(".alert").fadeTo(100, 0).slideUp(100, function () {
+            $(this).remove();
+        });
+    }, 5000);
     /* Button for close alert */
     $('.alert .close').on("click", function (e) {
         $(this).parent().fadeTo(500, 0).slideUp(500);

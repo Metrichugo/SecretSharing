@@ -38,7 +38,6 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
         <script src="../js/carpeta.js"></script>
         <script src="../js/archivo.js"></script>
-        <script src="../js/descargaArchivo.js"></script>
 
     </head>
 
