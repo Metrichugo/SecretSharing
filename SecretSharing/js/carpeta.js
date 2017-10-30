@@ -26,7 +26,7 @@ function editarNombreCarpeta() {
     //Nombre de carpeta, ahora llamada a ajax para verificar duplicidad
     $.ajax({
         type: "POST",
-        url: "manejoCarpeta.php",
+        url: "manejadorCarpeta.php",
         data: {
             Operation: "EditarCar",
             nombreCarpeta: nombreCarpeta,
@@ -55,7 +55,7 @@ function actualizarCarpetaActual(idCarpetaMoverse) {
     // ajax para actualizar la variable de sesion de PHP de la carpeta actual
     $.ajax({
         type: "POST",
-        url: "../php/manejoCarpeta.php",
+        url: "../php/manejadorCarpeta.php",
         data: {
             Operation: "actualizarCarpetaActual",
             idCarpetaMoverse: idCarpetaMoverse
@@ -70,7 +70,7 @@ function actualizarCarpetas() {
     // ajax para actualizar la seccion de carpetas
     $.ajax({
         type: "POST",
-        url: "../php/manejoCarpeta.php",
+        url: "../php/manejadorCarpeta.php",
         data: {
             Operation: "actualizarCarpetas"
         },
@@ -98,7 +98,7 @@ function actualizarArchivos() {
     // AJAX para actualizar la seccion de carpetas
     $.ajax({
         type: "POST",
-        url: "../php/manejoCarpeta.php",
+        url: "../php/manejadorCarpeta.php",
         data: {
             Operation: "actualizarArchivos"
         },
@@ -119,7 +119,7 @@ function irCarpetaAtras() {
     // AJAX para actualizar volver a la carpeta superior
     $.ajax({
         type: "POST",
-        url: "../php/manejoCarpeta.php",
+        url: "../php/manejadorCarpeta.php",
         data: {
             Operation: "irCarpetaAtras"
         },
@@ -165,7 +165,7 @@ function crearNuevaCarpeta() {
     //Nombre de carpeta, ahora llamada a ajax para verificar duplicidad
     $.ajax({
         type: "POST",
-        url: "manejoCarpeta.php",
+        url: "manejadorCarpeta.php",
         data: {
             Operation: "crearNuevaCar",
             nombreCarpeta: nombreCarpeta
@@ -194,7 +194,7 @@ function eliminarCarpeta( ) {
     console.log("Desde eliminar carpeta () " + idCarpeta);
     $.ajax({
         type: "POST",
-        url: "manejoCarpeta.php",
+        url: "manejadorCarpeta.php",
         data: {
             Operation: "eliminarCarpeta",
             idCarpeta: idCarpeta
@@ -217,7 +217,7 @@ function eliminarCarpeta( ) {
 function cargarCarpetaRaiz() {
     $.ajax({
         type: "POST",
-        url: "manejoCarpeta.php",
+        url: "manejadorCarpeta.php",
         data: {
             Operation: "cargarCarpetaRaiz"
         },
@@ -253,6 +253,46 @@ function muestaMensajeOk(mensaje, classOK) {
     /* Button for close alert */
     $('.alert .close').on("click", function (e) {
         $(this).parent().fadeTo(500, 0).slideUp(500);
+    });
+}
+
+$(document).ready(function () {
+    $('#modalMoverCarpeta').on('show.bs.modal', function (e) {
+        var opener = e.relatedTarget;
+        var idCarpeta = $(opener).attr('data-idCarpeta');
+        console.log("Desde la carpeta:" + idCarpeta);
+        $.ajax({
+            type: "POST",
+            url: "manejadorCarpeta.php",
+            data: {
+                Operation: "obtenerSubCarpetas",
+                idCarpeta: idCarpeta
+            },
+            success: function (response) {
+                console.log(response);
+                $('#selectCarpetas').empty();
+                $('#selectCarpetas').append(response);
+                $('#moveCarpeta').attr("data-idCarpeta", idCarpeta);
+            }
+        });
+    });
+});
+
+function moverCarpeta() {
+    var idCarpetaDest = $('#selectCarpetas').val();
+    var idCarpeta = $('#moveCarpeta').attr("data-idCarpeta");
+    $.ajax({
+        type: "POST",
+        url: "manejadorCarpeta.php",
+        data: {
+            Operation: "moverCarpeta",
+            idCarpetaDest: idCarpetaDest,
+            idCarpeta: idCarpeta
+        },
+        success: function (response) {
+            console.log(response);
+            $('#row' + idCarpeta).remove();
+        }
     });
 }
 

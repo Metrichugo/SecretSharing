@@ -1,5 +1,25 @@
+function cerrarSesion() {
+    $.ajax({
+        type: "POST",
+        url: "manejadorUsuario.php",
+        data: {
+            Operation: "cerrarSesion",
+        },
+        success: function (response) {
+            console.log("Cierre de sesion: " + response);
+            if (response === "correct") {
+                window.open("../login.html", "_self");
+            } else {
+                console.log("No se pudo cerrar sesión");
+            }
+        }
+    });
+    return true;
 
-function mostrarError(elemento, mensaje){
+}
+
+
+function mostrarError(elemento, mensaje) {
     $(elemento).html('<div class="alert alert-danger"><button type="button" class="close">×</button><p class="text-justify">' + mensaje + '</p></div>');
     window.setTimeout(function () {
         $(".alert").fadeTo(100, 0).slideUp(100, function () {
@@ -10,7 +30,7 @@ function mostrarError(elemento, mensaje){
         $(this).parent().fadeTo(500, 0).slideUp(500);
     });
 }
-function mostrarRes(elemento, mensaje){
+function mostrarRes(elemento, mensaje) {
     $(elemento).html('<div class="alert alert-success"><button type="button" class="close">×</button><p class="text-justify">' + mensaje + '</p></div>');
     window.setTimeout(function () {
         $(".alert").fadeTo(100, 0).slideUp(100, function () {
@@ -29,22 +49,22 @@ function mostrarRes(elemento, mensaje){
 //rn-c2 longitud de la contraseña
 //rn-c3 robustez
 
-    
-function robustezPassword(password){
+
+function robustezPassword(password) {
     var exp = /^(?=.*\d)(?=.*[\u0021-\u002f\u003A-\u0040\u005B-\u005F])(?=.*[A-Z])(?=.*[a-z])\S{8,64}$/;
     var res = exp.test(password);
     if (!res) {
-       var mensaje = "Contraseña no válida: La contraseña debe de tener al menos 1 mayúscula, 1 minúscula, 1 caracter especial y 1 número; además de una longitud entre 8 y 64 caracteres";
-       mostrarError('#ErrorPassword', mensaje);
+        var mensaje = "Contraseña no válida: La contraseña debe de tener al menos 1 mayúscula, 1 minúscula, 1 caracter especial y 1 número; además de una longitud entre 8 y 64 caracteres";
+        mostrarError('#ErrorPassword', mensaje);
     }
     return res;
 }
 
 //rn-c4 contraseña diferente de nombre usuario
-function passwordNotEmail(password, email){
+function passwordNotEmail(password, email) {
     email = email.split("@")[0];
     console.log(email);
-    if((password.search(email) >= 0)){
+    if ((password.search(email) >= 0)) {
         var mensaje = "Contraseña no válida: La contraseña no puede ser la misma que nombre de usuario (email)";
         mostrarError('#ErrorPassword', mensaje);
         return false;
@@ -52,7 +72,7 @@ function passwordNotEmail(password, email){
     return true;
 }
 //rn-c? contraseña igual a confirmacion 
-function passwordEqualConf( password, conf){
+function passwordEqualConf(password, conf) {
     if (password === conf) {
         return true;
     } else {
@@ -63,10 +83,10 @@ function passwordEqualConf( password, conf){
 }
 
 function validarPassword(email, password, conf) {
-    
+
     var r1 = robustezPassword(password);
     var r2 = passwordNotEmail(password, email);
-    var r3 = passwordEqualConf( password, conf);  
+    var r3 = passwordEqualConf(password, conf);
     return r1 && r2 && r3;
 }
 
@@ -74,20 +94,21 @@ function validarPassword(email, password, conf) {
 
 //NOMBRE DE USUARIO
 
-function getNombreLocal(email){
+function getNombreLocal(email) {
     return email.split("@")[0];
 }
 
-function usuarioEqualConf(email, confirmaEmail){
-    if(email === confirmaEmail)return true;
-    else{
+function usuarioEqualConf(email, confirmaEmail) {
+    if (email === confirmaEmail)
+        return true;
+    else {
         var mensaje = "Error. El nombre de usuario y la confirmación no coinciden";
         mostrarError('#ErrorCambiarEmail', mensaje);
     }
     return false;
 }
 
-function validarNombreUsuario(email, confirmaEmail ){
+function validarNombreUsuario(email, confirmaEmail) {
     var r1 = usuarioEqualConf(email, confirmaEmail);
     return r1;
 }

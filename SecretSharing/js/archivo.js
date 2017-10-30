@@ -98,15 +98,16 @@ function editarNombreArchivo() {
                 $(jq('row' + nombreArch)).attr('id', 'row' + nuevoNomArch);
                 $(jq('arch' + nombreArch)).text(nuevoNomArch);
                 $(jq('arch' + nombreArch)).attr('id', 'arch' + nuevoNomArch);
-                /* Cundo se tenga lo de mover hacer lo mismo
-                 $('#mov'+nombreArch).attr('data-nomArchivo',nuevoNomArch);
-                 */
+                // Cundo se tenga lo de mover hacer lo mismo
+                $(jq('mov' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+
                 $(jq('down' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
                 $(jq('edit' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
                 $(jq('del' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
                 $(jq('down' + nombreArch)).attr('id', 'down' + nuevoNomArch);
                 $(jq('edit' + nombreArch)).attr('id', 'edit' + nuevoNomArch);
                 $(jq('del' + nombreArch)).attr('id', 'del' + nuevoNomArch);
+                $(jq('mov' + nombreArch)).attr('id', 'mov' + nuevoNomArch);
 
                 //Mostrar mensaje de confirmación 
                 muestaMensajeOk("Se ha actualizado del nombre del archivo", "resultadoEditarArchivo");
@@ -231,8 +232,9 @@ $(document).ready(function () {
 
         console.log("Ejecutando ...");
         $.AjaxDownloader({
-            url: "../php/descargaArchivo.php",
+            url: "../php/manejadorArchivo.php",
             data: {
+                Operation: "descargarArchivo",
                 idCarpeta: idCarpeta,
                 nombreArchivo: nombreArchivo
             }
@@ -240,3 +242,48 @@ $(document).ready(function () {
 
     });
 });
+
+
+//Mover archivo //
+$(document).ready(function () {
+    $('#modalMoverArchivo').on('show.bs.modal', function (e) {
+        var opener = e.relatedTarget;
+        var idCarpeta = $(opener).attr('data-idCarpeta');
+        var idArchivo = $(opener).attr('data-nomArchivo');
+        console.log("Desde la carpeta:" + idCarpeta);
+        $.ajax({
+            type: "POST",
+            url: "manejadorCarpeta.php",
+            data: {
+                Operation: "obtenerSubCarpetas",
+                idCarpeta: idCarpeta
+            },
+            success: function (response) {
+                console.log(response);
+                $('#selectCarpetasArch').empty();
+                $('#selectCarpetasArch').append(response);
+                $('#moveArchivo').attr("data-idCarpeta", idCarpeta);
+                $('#moveArchivo').attr("data-nomArchivo", idArchivo);
+            }
+        });
+    });
+});
+
+function moverArchivo() {
+    var idCarpetaDest = $('#selectCarpetasArch').val();
+    var nomArchivo = $('#moveArchivo').attr("data-nomArchivo");
+    $.ajax({
+        type: "POST",
+        url: "manejadorArchivo.php",
+        data: {
+            Operation: "moverArchivo",
+            idCarpetaDest: idCarpetaDest,
+            nomArchivo: nomArchivo
+        },
+        success: function (response) {
+            console.log(response);
+            $('#row' + nomArchivo).remove();
+        }
+    });
+}
+

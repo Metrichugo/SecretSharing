@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
     <head>
         <meta charset="utf-8">
@@ -20,60 +20,52 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded" id="Navigation">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Barra de navegación -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Secret Sharing</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="#">SecretSharing</a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="index.html">Descubrir<span class="sr-only">(current)</span></a>
+                    </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Descubir <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#">Inicio de sesión</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <a class="btn btn-success my-2 my-sm-0 mr-sm-2" href="login.html" role="button">Iniciar Sesión</a>
-                    <a class="btn btn-secondary my-2 my-sm-0" href="index.html#SignUp" role="button" style="color:black">Crear Cuenta</a>
-                </form>
+                </ul>              
             </div>
         </nav>
 
         <div class="container">
-            <div class="wrapper">                
-                <div class="offset-sm-1 col-sm-10">
-                    <p class="h1 text-center" id="header">Ingresa a tu cuenta</p>
-                </div>
-                <div class="text-center form-top">
-                    <img src="assets/Login-Icon.png" width="20%" height:auto class="rounded">
-                </div>
-                <div class="form-bottom">
+            <div class="card text-center">
+                <h4 class="card-header">Ingresa a tu cuenta</h4>
+                <div class="card-body">                
+                    <div class="form-top">
+                        <img src="assets/Login-Icon.png" width:auto height="20%" class="rounded">
+                    </div>
+                    <br>
                     <form method="POST" onsubmit="return submitdata()">
-                        <div class="form-group row">
-                            <label for="Email" class="col-sm-5 offset-sm-1 col-form-label">Nombre de Usuario (Email)</label>
-                            <div class="col-sm-5 offset-sm-0">
-                                <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
-                            </div>
+                        <div class="form-group">
+                            <label for="Email" class="col-form-label">Nombre de Usuario (Email)</label>
+                            <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
                         </div>
-                        <div class="form-group row">
-                            <label for="Password" class="col-sm5 offset-sm-2 col-form-label" >Contraseña</label>
-                            <div class="col-sm-5 offset-sm-2">
-                                <input type="password" class="form-control" id="Password" placeholder="************" name="Password" required> 
-                            </div>
+                        <div class="form-group">
+                            <label for="Password" class="col-form-label" >Contraseña</label>                        
+                            <input type="password" class="form-control" id="Password" placeholder="************" name="Password" required> 
                         </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6 offset-sm-3">
-                                <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
-                            </div>
-                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">Iniciar Sesión</button>
                     </form>
+                </div>
+                <div class="card-footer">
                     <div class="offset-sm-1 col-sm-10" id="Error"></div>
                 </div>
             </div>
         </div>
+
+
+
 
         <!--<footer class="footer" id="PiePagina">
             <div class="container">

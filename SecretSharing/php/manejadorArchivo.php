@@ -17,16 +17,22 @@ $operacion = filter_input(INPUT_POST, 'Operation');
 $carpetActual = unserialize($_SESSION["carpetActual"]);
 
 switch ($operacion) {
-    case "EliminarArchivo":
+    case "EliminarArchivo";
         eliminarArchivo($usuario, $DBConnection, $carpetActual);
         break;
-    case "EditarArchivo":
+    case "EditarArchivo";
         editarArchivo($usuario, $DBConnection, $carpetActual);
         break;
-    case "SubirArchivo":
+    case "SubirArchivo";
         subirArchivo($usuario, $DBConnection, $carpetActual);
         break;
-    default:
+    case "descargarArchivo";
+        descargarArchivo($usuario, $DBConnection, $carpetActual);
+        break;
+    case "moverArchivo";
+        moverArchivo($DBConnection, $usuario);
+        break;
+    default;
         echo "incorrect";
         break;
 }
@@ -50,6 +56,56 @@ function editarArchivo($usuario, $DBConnection, $carpetActual) {
     } else {
         echo "incorrect";
     }
+}
+
+function moverArchivo($DBConnection, $usuario) {
+    $idCarpetaDest = $_POST['idCarpetaDest'];
+    $nombreArchivo = $_POST['nomArchivo'];
+    $result = $DBConnection->moverArchivo($usuario, $idCarpetaDest, $nombreArchivo);
+    if ($result) {
+        echo "Se movio el archivo";
+    } else {
+        echo "Error al mover el archivo";
+    }
+}
+
+function descargarArchivo($usuario, $DBConnection, $carpetActual) {
+    //// Variables del POST
+    $nombreArchivo = $_POST["nombreArchivo"];
+    $idCarpeta = $_POST["idCarpeta"];
+    //
+    //
+    $dirsubida = "../files/";
+    $archivo = $DBConnection->obtieneArchivo($nombreArchivo, $idCarpeta);
+    $carpeta_usuario = "/" . $usuario->getidUsuario();
+
+    //echo $archivo->toString();
+    //
+    ////Ejecucion script
+    $comando = "python ../python/recuperar_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
+    //echo "<p>".$comando."</p>";
+    modif_shell_exec($comando, $stdout, $stderr);
+    //echo "<p>" . $stdout . "</p>";
+    //echo "<p>" . $stderr . "</p>";
+    //Validacion recuperacion
+    //Renombrado del archivo
+    rename($dirsubida . $archivo->getNombreArchivoGRID(), $dirsubida . $archivo->getNombreArchivo());
+    $rutaArchivo = '../files/' . $archivo->getNombreArchivo();
+
+    //Contenido de la respuesta
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($rutaArchivo) . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Cache-Control: must-revalidate');
+    ////header('Content-Length: '.filesize($filepath));
+    ob_clean();
+    flush();
+    readfile($rutaArchivo);
+
+    //Eliminacion del archivo en la carpeta del servidor
+    unlink($dirsubida . $archivo->getNombreArchivo());
+    exit();
 }
 
 function subirArchivo($usuario, $DBConnection, $carpetActual) {
@@ -123,4 +179,5 @@ function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
     fclose($pipes[2]);
     return proc_close($proc);
 }
+
 ?>

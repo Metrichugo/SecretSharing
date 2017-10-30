@@ -75,6 +75,7 @@ class BaseDeDatos {
         $stmt->bind_param("ssss", $email, $password, $alias, $email);
         return $stmt->execute();
     }
+
     public function actualizaIdUsuario($Usuario, $newIdUsuario) {
         $email = $Usuario->getidUsuario();
         $password = $Usuario->getContrasenia();
@@ -89,6 +90,19 @@ class BaseDeDatos {
         $password = $Usuario->getContrasenia();
         $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ?");
         $stmt->bind_param("s", $email);
+        if ($stmt->execute()) {
+            $stmt->bind_result($result);
+            while ($stmt->fetch()) {
+                return ($result == 1);
+            }
+        }
+    }
+
+    public function existeUsuarioContrasenia($Usuario) {
+        $email = $Usuario->getidUsuario();
+        $password = $Usuario->getContrasenia();
+        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia=?");
+        $stmt->bind_param("ss", $email, $password);
         if ($stmt->execute()) {
             $stmt->bind_result($result);
             while ($stmt->fetch()) {
@@ -176,7 +190,7 @@ class BaseDeDatos {
                                     <td class="text-center"><a href = "#"> <p id ="' . $carpeta->getIdCarpeta() . '"  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
                                     <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
                                     <td class="text-center">
-                                            <a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                                            <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>					                                         
                                             <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
                                             <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
                                     </td>
@@ -203,6 +217,43 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
+    /* Se agregaron los 2 metodos siguientes */
+
+    public function moverCarpeta($usuario, $idCarpeta, $idCarpetaDest) {
+        $idUsuario = $usuario->getidUsuario();
+        if (!$this->connection->query("UPDATE carpeta SET idCarpetaSuperior = '$idCarpetaDest' WHERE idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario'")) {
+            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
+            return false;
+        }
+        return true;
+    }
+
+    public function obtenerSubCarpetas($usuario, $idCarpetaSuperior, $idCarpeta) {
+        $idUsuario = $usuario->getidUsuario();
+        $result = null;
+        if ($sentencia = $this->connection->prepare("SELECT idCarpeta,nombreCarpeta FROM carpeta INNER JOIN (SELECT idCarpetaSuperior FROM carpeta WHERE idCarpeta = '$idCarpetaSuperior' )sup on carpeta.idCarpeta = sup.idCarpetaSuperior")) {
+            $sentencia->execute();
+            $sentencia->bind_result($idCarpetaPadre, $nombreCarpetaPadre);
+            while ($sentencia->fetch()) {
+                if ($nombreCarpetaPadre != $idUsuario) {
+                    $result = $result . '<option value="' . $idCarpetaPadre . '">' . $nombreCarpetaPadre . '</option>';
+                } else {
+                    $result = $result . '<option value="' . $idCarpetaPadre . '">Carpeta Raiz</option>';
+                }
+            }
+            $sentencia->close();
+        }
+        if ($sentencia = $this->connection->prepare("SELECT idCarpeta,nombreCarpeta FROM carpeta WHERE idCarpetaSuperior = '$idCarpetaSuperior' and idCarpeta <> '$idCarpeta' and idUsuario = '$idUsuario'")) {
+            $sentencia->execute();
+            $sentencia->bind_result($idCarpeta, $nombreCarpeta);
+            while ($sentencia->fetch()) {
+                $result = $result . '<option value="' . $idCarpeta . '">' . $nombreCarpeta . '</option>';
+            }
+            $sentencia->close();
+        }
+        return $result;
+    }
+
     /*     * **********************************  Actions for FILES  *********************************** */
 
     public function listaArchivos($Usuario, $carpetaActual) {
@@ -223,7 +274,7 @@ class BaseDeDatos {
                                     <td class="text-center">' . $archivo->getTamanio() . '</td>
                                     <td class="text-center">' . $archivo->getFechaSubida() . '</td>
                                     <td class="text-center">
-                                            <a class="btn btn-primary btn-sm" href="#" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>
+                                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>									
                                             <a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
                                             <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
                                             <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $idCarpeta . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
@@ -301,15 +352,24 @@ class BaseDeDatos {
                                     <td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
                                     <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
                                     <td class="text-center">
-                                            <a class="btn btn-primary btn-sm btn-sel-carp" href="#"><span class="glyphicon glyphicon-remove"></span> Mover</a>
-                                            <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-                                            <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                        <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>								                                            
+                                        <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+                                        <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
                                     </td>
                                 </tr>';
             }
             $stmt->close();
         }
         return $htmlCarpeta;
+    }
+
+    public function moverArchivo($usuario, $idCarpetaDest, $nombreArchivo) {
+        $idUsuario = $usuario->getidUsuario();
+        if (!$this->connection->query("UPDATE archivo set idCarpeta = '$idCarpetaDest' where nombreArchivo = '$nombreArchivo' and idUsuario ='$idUsuario'")) {
+            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
+            return false;
+        }
+        return true;
     }
 
 }

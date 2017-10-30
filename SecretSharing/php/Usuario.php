@@ -7,7 +7,6 @@ class Usuario {
     protected $alias;
     protected $status;
     protected $espacioUtilizado;
-    
 
     public function getidUsuario() {
         return $this->idUsuario;
@@ -60,7 +59,6 @@ class Usuario {
         session_unset();
         // destroy the session 
         session_destroy();
-        header('Location: ../login.html');
     }
 
     public function modificarContrasenia($Contrasenia) {

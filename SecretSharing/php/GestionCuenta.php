@@ -81,7 +81,8 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                 </ul>
                 <ul class="navbar-nav navbar-right ml-auto">
                     <li>
-                        <a class="btn btn-danger" href="logout.php">Cerrar sesión</a>
+                        <!-- Boton cierre de sesion-->
+                        <button type="button" class="btn btn-danger" onclick = "return cerrarSesion()">Cerrar sesión</button>
                     </li>
                 </ul>
             </div>

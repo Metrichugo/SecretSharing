@@ -7,6 +7,7 @@ function submitdata() {
         type: "POST",
         url: "php/Login.php",
         data: {
+            Operation: "iniciarSesion",
             Email: email,
             Password: password
         },

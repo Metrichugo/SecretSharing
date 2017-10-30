@@ -7,7 +7,7 @@ $(document).ready(function (){
       
         $.ajax({
             type: "POST",
-            url: "../php/ManejadorUsuario.php",
+            url: "../php/manejadorUsuario.php",
             data:{
                 Operation: "validarPassword",
                 password: password
@@ -62,7 +62,7 @@ $(document).ready(function (){
        
        $.ajax({
             type: "POST",
-            url: "../php/ManejadorUsuario.php",
+            url: "../php/manejadorUsuario.php",
             data: {
                 Operation: "cambiarNombreUsuario",
                 newNombreUsuario: email,
@@ -102,7 +102,7 @@ $(document).ready(function (){
        
         $.ajax({
             type: "POST",
-            url: "../php/ManejadorUsuario.php",
+            url: "../php/manejadorUsuario.php",
             data: {
                 Operation: "cambiarPassword",
                 newPassword: password

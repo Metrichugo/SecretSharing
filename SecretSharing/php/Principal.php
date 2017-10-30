@@ -38,6 +38,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
         <script src="../js/carpeta.js"></script>
         <script src="../js/archivo.js"></script>
+        <script src="../js/usuario.js"></script>
 
     </head>
 
@@ -59,7 +60,8 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                 </ul>
                 <ul class="navbar-nav navbar-right ml-auto">
                     <li>
-                        <a class="btn btn-danger" href="logout.php">Cerrar sesión</a>
+                        <!-- Boton cierre de sesion-->
+                        <button type="button" class="btn btn-danger" onclick = "return cerrarSesion()">Cerrar sesión</button>
                     </li>
                 </ul>
             </div>
@@ -274,9 +276,61 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary" id="botonSubirArchivo">Subir archivo</button>
-                            
+
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mover un archivo -->
+        <div class="modal fade" id="modalMoverArchivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Mover Archivo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-sm-12 ">
+                            <label for="listaCarpetas">Seleccione la carpeta a la cual desea mover el archivo</label>
+                            <select class="form-control" id="selectCarpetasArch">
+                            </select>
+                        </div>
+                        <div class="col-sm-12" id = "ErrorMoverArchivo">
+                        </div><div class="col-sm-12" id = "resultadoMoverArchivo">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary"  id="moveArchivo" onclick = "return moverArchivo()">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mover una carpeta -->
+        <div class="modal fade" id="modalMoverCarpeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Mover Carpeta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-sm-12 ">
+                            <label for="listaCarpetas">Seleccione la carpeta a la cual desea mover la carpeta actual</label>
+                            <select class="form-control" id="selectCarpetas">
+                            </select>
+                        </div>
+                        <div class="col-sm-12" id = "ErrorMoverCarpeta">
+                        </div><div class="col-sm-12" id = "resultadoMoverCarpeta">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary"  id="moveCarpeta" onclick = "return moverCarpeta()">Aceptar</button>
+                    </div>
                 </div>
             </div>
         </div>
