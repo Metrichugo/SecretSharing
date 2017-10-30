@@ -59,8 +59,8 @@ function editarArchivo($usuario, $DBConnection, $carpetActual) {
 }
 
 function moverArchivo($DBConnection, $usuario) {
-    $idCarpetaDest = $_POST['idCarpetaDest'];
-    $nombreArchivo = $_POST['nomArchivo'];
+    $idCarpetaDest = filter_input(INPUT_POST, 'idCarpetaDest', FILTER_SANITIZE_NUMBER_INT);
+    $nombreArchivo = filter_input(INPUT_POST, 'nombreArch', FILTER_SANITIZE_STRING);
     $result = $DBConnection->moverArchivo($usuario, $idCarpetaDest, $nombreArchivo);
     if ($result) {
         echo "Se movio el archivo";

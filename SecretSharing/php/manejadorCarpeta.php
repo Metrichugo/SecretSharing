@@ -14,37 +14,68 @@ $usuario = unserialize($_SESSION["usuario"]);
 $DBConnection = unserialize($_SESSION["DBConnection"]);
 $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 
-$operacion = $_POST['Operation'];
+$operacion = filter_input(INPUT_POST, 'Operation');
 $carpetActual = unserialize($_SESSION["carpetActual"]);
 
+switch ($operacion) {
+    case "actualizarCarpetaActual";
+        actualizarCarpetaActual($usuario, $DBConnection, $carpetActual);
+        break;
+    case "actualizarCarpetas";
+        actualizarCarpetas($usuario, $carpetActual, $DBConnection);
+        break;
+    case "actualizarArchivos";
+        actualizarArchivos($usuario, $carpetActual, $DBConnection);
+        break;
+    case "irCarpetaAtras";
+        irCarpetaAtras($usuario, $carpetActual, $DBConnection);
+        break;
+    case "crearNuevaCar";
+        crearNuevaCarpeta($usuario, $carpetActual, $DBConnection);
+        break;
+    case "eliminarCarpeta";
+        eliminarCarpeta($usuario, $carpetActual, $DBConnection);
+        break;
+    case "cargarCarpetaRaiz";
+        cargarCarpetaRaiz();
+        break;
+    case "EditarCar";
+        editarCarpeta($usuario, $carpetActual, $DBConnection);
+        break;
+    case "obtenerSubCarpetas";
+        obtenerSubCarpetas($DBConnection, $usuario, $carpetActual);
+        break;
+    case "moverCarpeta";
+        moverCarpeta($DBConnection, $usuario);
+        break;
+    default;
+        echo "incorrect";
+        break;
+}
 
-
-if ($operacion == "actualizarCarpetaActual") {
-    $idcarpetaMoverse = $_POST['idCarpetaMoverse'];
+function actualizarCarpetaActual($usuario, $DBConnection) {
+    $idcarpetaMoverse = filter_input(INPUT_POST, 'idCarpetaMoverse', FILTER_SANITIZE_NUMBER_INT);
     //Actualizamos el objeto carpeta a la que se va a mostrar en pantalla
     $carpeta = $DBConnection->consultaCarpeta($usuario, $idcarpetaMoverse);
     $_SESSION["carpetActual"] = serialize($carpeta);
     echo "correct";
 }
 
-
-if ($operacion == "actualizarCarpetas") {
+function actualizarCarpetas($usuario, $carpetActual, $DBConnection) {
     $ans = $DBConnection->listaCarpetas($usuario, $carpetActual);
     echo ($ans);
 }
 
-if ($operacion == "actualizarArchivos") {                    //No deberia de ir en manejoArchivo?
+function actualizarArchivos($usuario, $carpetActual, $DBConnection) {
     $ans = $DBConnection->listaArchivos($usuario, $carpetActual);
     echo ($ans);
 }
 
-
-if ($operacion == "irCarpetaAtras") {
+function irCarpetaAtras($usuario, $carpetActual, $DBConnection) {
     if ($carpetActual->getIdCarpeta() == $_SESSION['idCarpetaRaiz']) {
         echo "incorrect";
         exit();
     }
-
     $idCarpetaSup = $carpetActual->getIdCarpetaSuperior();
     $carpetActual->toString();
     $carpetaSup = $DBConnection->consultaCarpeta($usuario, $idCarpetaSup);
@@ -52,8 +83,7 @@ if ($operacion == "irCarpetaAtras") {
     echo( $idCarpetaSup );
 }
 
-//Se modificó esta parte del código
-if ($operacion == "crearNuevaCar") {
+function crearNuevaCarpeta($usuario, $carpetActual, $DBConnection) {//Se modificó esta parte del código
     $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
     $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
     if ($result) {
@@ -78,7 +108,7 @@ if ($operacion == "crearNuevaCar") {
     exit();
 }
 
-if ($operacion == "eliminarCarpeta") {
+function eliminarCarpeta($usuario, $DBConnection) {
     $idCarpeta = $_POST['idCarpeta'];
     $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpeta);
     $result = $DBConnection->eliminarCarpeta($usuario, $carpeta);
@@ -91,18 +121,14 @@ if ($operacion == "eliminarCarpeta") {
     exit();
 }
 
-if ($operacion == "cargarCarpetaRaiz") {
-    //al cargar la pagina la carpeta actual es la carpeta raiz con id = 1;
+function cargarCarpetaRaiz() {
     $carpetaRaiz = unserialize($_SESSION["carpetActual"]);
-
     $_SESSION['idCarpetaRaiz'] = $carpetaRaiz->getIdCarpeta();
-
+    //Devuelve el ID de la carpeta raiz 
     echo( $carpetaRaiz->getIdCarpeta() );
 }
 
-if ($operacion == "EditarCar") {
-
-
+function editarCarpeta($usuario, $carpetActual, $DBConnection) {
     $nombreCarpeta = $_POST['nombreCarpeta'];
     $idCarpetaEditar = $_POST['idCarpetaEditar'];
 
@@ -121,12 +147,6 @@ if ($operacion == "EditarCar") {
 }
 
 /* Se agregaron estos 2 metodos */
-if ($operacion == "obtenerSubCarpetas") {
-    obtenerSubCarpetas($DBConnection, $usuario, $carpetActual);
-}
-if ($operacion == "moverCarpeta") {
-    moverCarpeta($DBConnection, $usuario);
-}
 
 function moverCarpeta($DBConnection, $usuario) {
     $idCarpeta = $_POST['idCarpeta'];
