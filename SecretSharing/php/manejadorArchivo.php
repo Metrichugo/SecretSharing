@@ -9,82 +9,79 @@ include_once("BaseDeDatos.php");
 include_once("Usuario.php");
 include_once("Carpeta.php");
 
-$usuario = unserialize($_SESSION["usuario"]);
-$DBConnection = unserialize($_SESSION["DBConnection"]);
-$DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
-
-$operacion = filter_input(INPUT_POST, 'Operation');
-$carpetActual = unserialize($_SESSION["carpetActual"]);
+//Variables de sesión
+$usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
+$carpetActual = unserialize($_SESSION["carpetActual"]); //Objeto de sesion de tipo 
+$DBConnection = unserialize($_SESSION["DBConnection"]); //Objeto para la conexion con la DB
+$DBConnection->connect(); // Conexion con la BD
+//Lectura desde el metodo POST
+$operacion = filter_input(INPUT_POST, 'Operation', FILTER_SANITIZE_STRING); //Operacion a realizar leida desde el metodo POST
+$nombreArchivo = filter_input(INPUT_POST, 'nombreArchivo', FILTER_SANITIZE_STRING); //Nombre del archivo leido desde el metodo POST
 
 switch ($operacion) {
     case "EliminarArchivo";
-        eliminarArchivo($usuario, $DBConnection, $carpetActual);
+        //Construcción del objeto de tipo archivo
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        eliminarArchivo($archivo, $DBConnection);
         break;
     case "EditarArchivo";
-        editarArchivo($usuario, $DBConnection, $carpetActual);
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        editarArchivo($archivo, $DBConnection);
         break;
     case "SubirArchivo";
-        subirArchivo($usuario, $DBConnection, $carpetActual);
+        subirArchivo($usuario, $carpetActual, $DBConnection);
         break;
     case "descargarArchivo";
-        descargarArchivo($usuario, $DBConnection, $carpetActual);
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        descargarArchivo($archivo);
         break;
     case "moverArchivo";
-        moverArchivo($DBConnection, $usuario);
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        moverArchivo($archivo, $DBConnection);
         break;
     default;
-        echo "incorrect";
+        echo "invalidrequest";
         break;
 }
 
-function eliminarArchivo($usuario, $DBConnection, $carpetActual) {
-    $idCarpeta = filter_input(INPUT_POST, 'idCarpeta', FILTER_SANITIZE_NUMBER_INT);
-    $nombreArchivo = filter_input(INPUT_POST, 'nombreArchivo', FILTER_SANITIZE_STRING);
-    if ($DBConnection->eliminarArchivo($usuario, $idCarpeta, $nombreArchivo)) {
+function eliminarArchivo($archivo, $DBConnection) {
+    if ($DBConnection->eliminarArchivo($archivo)) {
         echo "correct";
     } else {
         echo "incorrect";
     }
 }
 
-function editarArchivo($usuario, $DBConnection, $carpetActual) {
-    $idCarpeta = filter_input(INPUT_POST, 'idCarpeta', FILTER_SANITIZE_NUMBER_INT);
-    $nombreArch = filter_input(INPUT_POST, 'nombreArch', FILTER_SANITIZE_STRING);
+function editarArchivo($archivo, $DBConnection) {
     $nuevoNomArch = filter_input(INPUT_POST, 'nuevoNomArch', FILTER_SANITIZE_STRING);
-    if ($DBConnection->editarArchivo($usuario, $idCarpeta, $nombreArch, $nuevoNomArch)) {
+    if ($DBConnection->actualizaArchivo($archivo, $nuevoNomArch)) {
         echo "correct";
     } else {
         echo "incorrect";
     }
 }
 
-function moverArchivo($DBConnection, $usuario) {
+function moverArchivo($archivo, $DBConnection) {
     $idCarpetaDest = filter_input(INPUT_POST, 'idCarpetaDest', FILTER_SANITIZE_NUMBER_INT);
-    $nombreArchivo = filter_input(INPUT_POST, 'nombreArch', FILTER_SANITIZE_STRING);
-    $result = $DBConnection->moverArchivo($usuario, $idCarpetaDest, $nombreArchivo);
-    if ($result) {
+    if ($DBConnection->moverArchivo($archivo, $idCarpetaDest)) {
         echo "Se movio el archivo";
     } else {
         echo "Error al mover el archivo";
     }
 }
 
-function descargarArchivo($usuario, $DBConnection, $carpetActual) {
-    //// Variables del POST
-    $nombreArchivo = $_POST["nombreArchivo"];
-    $idCarpeta = $_POST["idCarpeta"];
+function descargarArchivo($archivo) {
     //
     //
     $dirsubida = "../files/";
-    $archivo = $DBConnection->obtieneArchivo($nombreArchivo, $idCarpeta);
-    $carpeta_usuario = "/" . $usuario->getidUsuario();
+    $carpeta_usuario = "/" . $archivo->getIdUsuario();
 
     //echo $archivo->toString();
     //
     ////Ejecucion script
     $comando = "python ../python/recuperar_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
     //echo "<p>".$comando."</p>";
-    modif_shell_exec($comando, $stdout, $stderr);
+    modif_shell_exec($comando, $stdout = null, $stderr = null);
     //echo "<p>" . $stdout . "</p>";
     //echo "<p>" . $stderr . "</p>";
     //Validacion recuperacion
@@ -108,13 +105,11 @@ function descargarArchivo($usuario, $DBConnection, $carpetActual) {
     exit();
 }
 
-function subirArchivo($usuario, $DBConnection, $carpetActual) {
-
-    $dirsubida = "../files/";
-    $dateTime = new DateTime();
-    $timeStamp = $dateTime->getTimestamp();
-
-    if (!empty($_FILES['file']['name'])) {
+function subirArchivo($usuario, $carpetActual, $DBConnection) {
+    $dirsubida = "../files/"; //Directorio de Apache donde se almacenan los archivos 
+    if (!empty($_FILES['file']['name'])) { //Se verifica que el usuario haya seleccionado un archivo
+        $dateTime = new DateTime();
+        $timeStamp = $dateTime->getTimestamp();
         //Objeto de tipo archivo
         $nombreArchivo = basename($_FILES['file']['name']);
         $idCarpeta = $carpetActual->getIdCarpeta();
@@ -145,6 +140,8 @@ function subirArchivo($usuario, $DBConnection, $carpetActual) {
                 //Aumenta espacio utilizado
                 $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() + $archivo->getTamanio());
                 $DBConnection->editaEspacioUtilizado($usuario);
+                //Actualiza la variable de sesion 
+                $_SESSION["usuario"] = serialize($usuario);
                 //Fin
                 echo "UploadSuccesfull";
                 //my_shell_exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID(), $stdout, $stderr);

@@ -29,7 +29,6 @@ function eliminarArchivo() {
         url: "manejadorArchivo.php",
         data: {
             Operation: "EliminarArchivo",
-            idCarpeta: idCarpeta,
             nombreArchivo: nombreArchivo
         },
         success: function (response) {
@@ -88,9 +87,8 @@ function editarNombreArchivo() {
         url: "manejadorArchivo.php",
         data: {
             Operation: "EditarArchivo",
-            nombreArch: nombreArch,
-            nuevoNomArch: nuevoNomArch,
-            idCarpeta: idCarpeta
+            nombreArchivo: nombreArch,
+            nuevoNomArch: nuevoNomArch
         },
         success: function (response) {
             console.log(response);
@@ -278,7 +276,7 @@ function moverArchivo() {
         data: {
             Operation: "moverArchivo",
             idCarpetaDest: idCarpetaDest,
-            nomArchivo: nomArchivo
+            nombreArchivo: nomArchivo
         },
         success: function (response) {
             console.log(response);

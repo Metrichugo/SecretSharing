@@ -111,6 +111,14 @@ class BaseDeDatos {
         }
     }
 
+    public function editaEspacioUtilizado($usuario) {
+        $stmt = $this->connection->prepare("UPDATE usuario SET espacioUtilizado=? WHERE idUsuario=?");
+        $espacioUtilizado = $usuario->getEspacioUtilizado();
+        $idUsuario = $usuario->getidUsuario();
+        $stmt->bind_param("is", $espacioUtilizado, $idUsuario); //s->String, i->Integer
+        $stmt->execute();
+    }
+
     /*     * **********************************  Actions for CARPETAS  *********************************** */
 
     public function consultaCarpetaRaiz($Usuario) {
@@ -286,15 +294,19 @@ class BaseDeDatos {
         return $ans;
     }
 
-    public function eliminarArchivo($usuario, $idCarpeta, $nombreArchivo) {
-        $idUsuario = $usuario->getidUsuario();
+    public function eliminarArchivo($archivo) {
+        $nombreArchivo = $archivo->getNombreArchivo();
+        $idCarpeta = $archivo->getIdCarpeta();
+        $idUsuario = $archivo->getIdUsuario();
         $stmt = $this->connection->prepare("DELETE FROM archivo WHERE nombreArchivo = ? AND idCarpeta = ? AND idUsuario = ? ");
         $stmt->bind_param("sis", $nombreArchivo, $idCarpeta, $idUsuario);
         return $stmt->execute();
     }
 
-    public function editarArchivo($usuario, $idCarpeta, $nombreArchivo, $nuevoNomArch) {
-        $idUsuario = $usuario->getidUsuario();
+    public function actualizaArchivo($archivo, $nuevoNomArch) {
+        $idUsuario = $archivo->getIdUsuario();
+        $nombreArchivo = $archivo->getNombreArchivo();
+        $idCarpeta = $archivo->getIdCarpeta();
         $stmt = $this->connection->prepare("UPDATE archivo SET nombreArchivo = ? "
                 . "WHERE nombreArchivo = ? and idCarpeta = ? and idUsuario = ?");
         $stmt->bind_param("ssis", $nuevoNomArch, $nombreArchivo, $idCarpeta, $idUsuario);
@@ -327,12 +339,26 @@ class BaseDeDatos {
         return $archivo;
     }
 
-    public function editaEspacioUtilizado($usuario) {
-        $stmt = $this->connection->prepare("UPDATE usuario SET espacioUtilizado=? WHERE idUsuario=?");
-        $espacioUtilizado = $usuario->getEspacioUtilizado();
-        $idUsuario = $usuario->getidUsuario();
-        $stmt->bind_param("is", $espacioUtilizado, $idUsuario); //s->String, i->Integer
+    public function consultaArchivo($nombreArchivo, $idCarpeta, $idUsuario) {
+        $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=? AND idUsuario=?");
+        $stmt->bind_param("sis", $nombreArchivo, $idCarpeta, $idUsuario); //s->String, i->Integer        
         $stmt->execute();
+        $stmt->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
+        $archivo = null;
+        while ($stmt->fetch()) {
+            $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
+        }
+        return $archivo;
+    }
+
+    public function moverArchivo($archivo, $idCarpetaDest) {
+        $idUsuario = $archivo->getIdUsuario();
+        $nombreArchivo = $archivo->getNombreArchivo();
+        if (!$this->connection->query("UPDATE archivo set idCarpeta = '$idCarpetaDest' where nombreArchivo = '$nombreArchivo' and idUsuario ='$idUsuario'")) {
+            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
+            return false;
+        }
+        return true;
     }
 
     /*     * ***************************** */
@@ -361,15 +387,6 @@ class BaseDeDatos {
             $stmt->close();
         }
         return $htmlCarpeta;
-    }
-
-    public function moverArchivo($usuario, $idCarpetaDest, $nombreArchivo) {
-        $idUsuario = $usuario->getidUsuario();
-        if (!$this->connection->query("UPDATE archivo set idCarpeta = '$idCarpetaDest' where nombreArchivo = '$nombreArchivo' and idUsuario ='$idUsuario'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
     }
 
 }

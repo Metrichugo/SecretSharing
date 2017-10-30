@@ -34,7 +34,7 @@ switch ($operacion) {
         crearNuevaCarpeta($usuario, $carpetActual, $DBConnection);
         break;
     case "eliminarCarpeta";
-        eliminarCarpeta($usuario, $carpetActual, $DBConnection);
+        eliminarCarpeta($usuario, $DBConnection);
         break;
     case "cargarCarpetaRaiz";
         cargarCarpetaRaiz();
@@ -49,7 +49,7 @@ switch ($operacion) {
         moverCarpeta($DBConnection, $usuario);
         break;
     default;
-        echo "incorrect";
+        echo "invalidrequest";
         break;
 }
 
