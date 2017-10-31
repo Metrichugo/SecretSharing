@@ -21,22 +21,22 @@ $nombreArchivo = filter_input(INPUT_POST, 'nombreArchivo', FILTER_SANITIZE_STRIN
 switch ($operacion) {
     case "EliminarArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual, $usuario);
         eliminarArchivo($archivo, $DBConnection);
         break;
     case "EditarArchivo";
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual, $usuario);
         editarArchivo($archivo, $DBConnection);
         break;
     case "SubirArchivo";
         subirArchivo($usuario, $carpetActual, $DBConnection);
         break;
     case "descargarArchivo";
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual, $usuario);
         descargarArchivo($archivo);
         break;
     case "moverArchivo";
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual->getIdCarpeta(), $usuario->getidUsuario());
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual, $usuario);
         moverArchivo($archivo, $DBConnection);
         break;
     default;
@@ -46,6 +46,13 @@ switch ($operacion) {
 
 function eliminarArchivo($archivo, $DBConnection) {
     if ($DBConnection->eliminarArchivo($archivo)) {
+        $archivo->eliminaGRID();
+        //Actualiza la variable de sesion
+        $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
+        $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() - $archivo->getTamanio());
+        $DBConnection->editaEspacioUtilizado($usuario);
+        //Actualiza la variable de sesion 
+        $_SESSION["usuario"] = serialize($usuario);
         echo "correct";
     } else {
         echo "incorrect";
@@ -71,19 +78,19 @@ function moverArchivo($archivo, $DBConnection) {
 }
 
 function descargarArchivo($archivo) {
-    //
-    //
+    //Directorio de subida
     $dirsubida = "../files/";
     $carpeta_usuario = "/" . $archivo->getIdUsuario();
 
     //echo $archivo->toString();
-    //
+  
     ////Ejecucion script
     $comando = "python ../python/recuperar_archivo.py " . $archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
     //echo "<p>".$comando."</p>";
     modif_shell_exec($comando, $stdout = null, $stderr = null);
     //echo "<p>" . $stdout . "</p>";
     //echo "<p>" . $stderr . "</p>";
+  
     //Validacion recuperacion
     //Renombrado del archivo
     rename($dirsubida . $archivo->getNombreArchivoGRID(), $dirsubida . $archivo->getNombreArchivo());
@@ -144,7 +151,7 @@ function subirArchivo($usuario, $carpetActual, $DBConnection) {
                 $_SESSION["usuario"] = serialize($usuario);
                 //Fin
                 echo "UploadSuccesfull";
-                //my_shell_exec("rm " . $dirsubida . $archivo->getNombreArchivoGRID(), $stdout, $stderr);
+                //Borrado del archivo
                 unlink($dirsubida . $archivo->getNombreArchivoGRID());
                 //unlink($dirsubida . $archivo->getNombreArchivoGRID());
                 //unlink($log);

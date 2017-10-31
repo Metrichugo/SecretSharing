@@ -16,8 +16,8 @@ $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 $carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
 $_SESSION["carpetActual"] = serialize($carpetActual);
 
-$EspacioTotal = 1000000000;
-$EspacioUtilizado = $usuario->getEspacioUtilizado();
+$EspacioTotal = 5000; //5GB
+$EspacioUtilizado = ($usuario->getEspacioUtilizado()/1E6);
 $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 ?>
 
@@ -49,7 +49,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
             // Draw the chart and set the chart values
             function drawChart() {
                 var data = google.visualization.arrayToDataTable([
-                    ['Task', 'Hours per Day'],
+                    ['Concepto', 'Megabytes'],
                     ['Espacio disponible', <?php echo $EspacioDisponible; ?>],
                     ['Espacio utilizado', <?php echo $EspacioUtilizado; ?>],
                 ]);
@@ -148,14 +148,14 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                             <label for="EspDisp" class="col-12"><strong>Espacio disponible </strong></label>
                             <label id ="EspDisp" class="col-12">
                                 <?php
-                                echo $EspacioDisponible . " Mb";
+                                echo $EspacioDisponible . " MB";
                                 ?>
                             </label>
 
                             <label for="EspUtilizado" class="col-12"><strong>Espacio utilizado</strong></label>
                             <label id ="EspUtilizado" class="col-12">
                                 <?php
-                                echo $EspacioUtilizado . " Mb";
+                                echo $EspacioUtilizado . " MB";
                                 ?>
                             </label>
 
@@ -163,7 +163,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 
                             <label id ="EspTotal" class="col-12">
                                 <?php
-                                echo $EspacioTotal . " Mb";
+                                echo $EspacioTotal . " MB";
                                 ?>
                             </label>
 

@@ -14,20 +14,20 @@ $usuario = unserialize($_SESSION["usuario"]);
 $DBConnection = unserialize($_SESSION["DBConnection"]);
 $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 
-$operacion = filter_input(INPUT_POST, 'Operation');
+$operacion = filter_input(INPUT_POST, 'Operation', FILTER_SANITIZE_STRING);
 $carpetActual = unserialize($_SESSION["carpetActual"]);
 
 switch ($operacion) {
-    case "actualizarCarpetaActual";
-        actualizarCarpetaActual($usuario, $DBConnection, $carpetActual);
+    case "actualizarCarpetaActual"; //Actualiza la variable de sesion sobre la carpeta en la que esta el usuario
+        actualizarCarpetaActual($usuario, $DBConnection);
         break;
-    case "actualizarCarpetas";
-        actualizarCarpetas($usuario, $carpetActual, $DBConnection);
+    case "actualizarCarpetas"; //Enlista las subcarpetas de la carpeta actual - OK
+        actualizarCarpetas($carpetActual, $DBConnection);
         break;
-    case "actualizarArchivos";
-        actualizarArchivos($usuario, $carpetActual, $DBConnection);
+    case "actualizarArchivos"; //Enlista los archivos de la carpeta actual - OK
+        actualizarArchivos($carpetActual, $DBConnection);
         break;
-    case "irCarpetaAtras";
+    case "irCarpetaAtras"; //Regresa a la carpeta padre de la carpeta actual - OK
         irCarpetaAtras($usuario, $carpetActual, $DBConnection);
         break;
     case "crearNuevaCar";
@@ -36,7 +36,7 @@ switch ($operacion) {
     case "eliminarCarpeta";
         eliminarCarpeta($usuario, $DBConnection);
         break;
-    case "cargarCarpetaRaiz";
+    case "cargarCarpetaRaiz"; //Regresa la carpeta actual a su carpeta raiz
         cargarCarpetaRaiz();
         break;
     case "EditarCar";
@@ -54,20 +54,49 @@ switch ($operacion) {
 }
 
 function actualizarCarpetaActual($usuario, $DBConnection) {
-    $idcarpetaMoverse = filter_input(INPUT_POST, 'idCarpetaMoverse', FILTER_SANITIZE_NUMBER_INT);
+    $idCarpetaMoverse = filter_input(INPUT_POST, 'idCarpetaMoverse', FILTER_SANITIZE_NUMBER_INT);
     //Actualizamos el objeto carpeta a la que se va a mostrar en pantalla
-    $carpeta = $DBConnection->consultaCarpeta($usuario, $idcarpetaMoverse);
+    $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpetaMoverse);
     $_SESSION["carpetActual"] = serialize($carpeta);
     echo "correct";
 }
 
-function actualizarCarpetas($usuario, $carpetActual, $DBConnection) {
-    $ans = $DBConnection->listaCarpetas($usuario, $carpetActual);
+function actualizarCarpetas($carpetActual, $DBConnection) {
+    $stack = $DBConnection->listaCarpetas($carpetActual);
+    $ans = "";
+    while (!$stack->isEmpty()) {
+        $carpeta = $stack->pop();
+        $ans = $ans . '<tr id="row' . $carpeta->getIdCarpeta() . '">
+                            <td class="text-center"><a href = "#"> <p id ="' . $carpeta->getIdCarpeta() . '"  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
+                            <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
+                            <td class="text-center">
+                                    <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>					                                         
+                                    <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
+                                    <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                            </td>
+                        </tr>';
+    }
     echo ($ans);
 }
 
-function actualizarArchivos($usuario, $carpetActual, $DBConnection) {
-    $ans = $DBConnection->listaArchivos($usuario, $carpetActual);
+function actualizarArchivos($carpetActual, $DBConnection) {
+    $stack = $DBConnection->listaArchivos($carpetActual);
+    //Pila donde se almacena los archivos de la carpeta
+    $ans = "";
+    while (!$stack->isEmpty()) {
+        $archivo = $stack->pop();
+        $ans = $ans . '<tr id="row' . $archivo->getNombreArchivo() . '">
+                                    <td class="text-center"><p id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</p></td>
+                                    <td class="text-center">' . $archivo->getTamanio() . '</td>
+                                    <td class="text-center">' . $archivo->getFechaSubida() . '</td>
+                                    <td class="text-center">
+                                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>									
+                                            <a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+                                            <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+                                            <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                    </td>
+                        </tr>';
+    }
     echo ($ans);
 }
 
@@ -77,7 +106,6 @@ function irCarpetaAtras($usuario, $carpetActual, $DBConnection) {
         exit();
     }
     $idCarpetaSup = $carpetActual->getIdCarpetaSuperior();
-    $carpetActual->toString();
     $carpetaSup = $DBConnection->consultaCarpeta($usuario, $idCarpetaSup);
     $_SESSION["carpetActual"] = serialize($carpetaSup);
     echo( $idCarpetaSup );
@@ -86,7 +114,8 @@ function irCarpetaAtras($usuario, $carpetActual, $DBConnection) {
 function crearNuevaCarpeta($usuario, $carpetActual, $DBConnection) {//Se modificó esta parte del código
     $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
     $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-    if ($result) {
+    //Se verifica existencia en la BD
+    if ($result) { //Carpeta repetida
         echo json_encode(array(
             "Status" => "incorrect"
         ));
@@ -111,14 +140,34 @@ function crearNuevaCarpeta($usuario, $carpetActual, $DBConnection) {//Se modific
 function eliminarCarpeta($usuario, $DBConnection) {
     $idCarpeta = $_POST['idCarpeta'];
     $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpeta);
-    $result = $DBConnection->eliminarCarpeta($usuario, $carpeta);
-
-    if ($result) {
+    eliminaCarpetaYArchivosGRID($carpeta, $DBConnection);
+    if ($DBConnection->eliminarCarpeta($usuario, $carpeta)) {
         echo "correct";
     } else {
         echo "incorrect";
     }
     exit();
+}
+
+function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
+    //Eliminación de subcarpetas
+    $pilaSubcarpetas = $DBConnection->listaCarpetas($carpeta);
+    while (!$pilaSubcarpetas->isEmpty()) {
+        eliminaCarpetaYArchivosGRID($pilaSubcarpetas->pop(), $DBConnection);
+    }
+    
+    //Eliminacion de archivos de la carpeta
+    $pilaArchivos = $DBConnection->listaArchivos($carpeta);
+    while (!$pilaArchivos->isEmpty()) {
+        $archivo = $pilaArchivos->pop();
+        $archivo->eliminaGRID();
+        //Actualiza la variable de sesion
+        $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
+        $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() - $archivo->getTamanio());
+        $DBConnection->editaEspacioUtilizado($usuario);
+        //Actualiza la variable de sesion 
+        $_SESSION["usuario"] = serialize($usuario);
+    }
 }
 
 function cargarCarpetaRaiz() {
@@ -146,7 +195,7 @@ function editarCarpeta($usuario, $carpetActual, $DBConnection) {
     }
 }
 
-/* Se agregaron estos 2 metodos */
+// Se agregaron estos 2 metodos //
 
 function moverCarpeta($DBConnection, $usuario) {
     $idCarpeta = $_POST['idCarpeta'];
@@ -162,6 +211,18 @@ function moverCarpeta($DBConnection, $usuario) {
 function obtenerSubCarpetas($DBConnection, $usuario, $carpetActual) {
     $idCarpeta = $_POST['idCarpeta'];
     echo $DBConnection->obtenerSubCarpetas($usuario, $carpetActual->getIdCarpeta(), $idCarpeta);
+}
+
+function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
+    $proc = proc_open($cmd, [
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+            ], $pipes);
+    $stdout = stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    $stderr = stream_get_contents($pipes[2]);
+    fclose($pipes[2]);
+    return proc_close($proc);
 }
 
 ?>

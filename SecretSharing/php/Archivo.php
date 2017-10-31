@@ -73,6 +73,20 @@ class Archivo {
         return $this;
     }
 
+    function eliminaGRID() {
+        $handle = fopen("../ejecutables/servidores.txt", "r");
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $line = str_replace("\n", "", $line);
+                $comando = "ssh " . $line . " \"rm -rf ~/RCSS/" . $this->idUsuario . "/" . $this->nombreArchivoGRID . "\"";
+                //echo $comando;                
+                modif_shell_exec($comando, $stdout, $stderr);
+                //echo "Salida:" . $stdout . $stderr . " ";
+            }
+            fclose($handle);
+        }
+    }
+
 }
 
 ?>

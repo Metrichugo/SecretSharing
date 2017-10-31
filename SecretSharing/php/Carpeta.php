@@ -3,15 +3,26 @@
 class Carpeta {
 
     protected $idCarpeta;
+    protected $idUsuario;
     protected $idCarpetaSuperior;
     protected $nombreCarpeta;
     protected $fechaCreacion;
 
-    function __construct($idCarpeta, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion) {
+    function __construct($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion) {
         $this->idCarpeta = $idCarpeta;
+        $this->idUsuario = $idUsuario;
         $this->idCarpetaSuperior = $idCarpetaSuperior;
         $this->nombreCarpeta = $nombreCarpeta;
         $this->fechaCreacion = $fechaCreacion;
+    }
+
+    function getIdUsuario() {
+        return $this->idUsuario;
+    }
+
+    function setIdUsuario($idUsuario) {
+        $this->idUsuario = $idUsuario;
+        return $this;
     }
 
     public function getIdCarpeta() {
