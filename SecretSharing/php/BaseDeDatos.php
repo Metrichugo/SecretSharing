@@ -322,9 +322,9 @@ class BaseDeDatos {
         return $archivo;
     }
 
-    public function consultaArchivo($nombreArchivo, $carpeta, $usuario) {
+    public function consultaArchivo($nombreArchivo, $carpeta) {
         $idCarpeta = $carpeta->getIdCarpeta();
-        $idUsuario = $usuario->getidUsuario();
+        $idUsuario = $carpeta->getIdUsuario();
         $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=? AND idUsuario=?");
         $stmt->bind_param("sis", $nombreArchivo, $idCarpeta, $idUsuario); //s->String, i->Integer        
         $stmt->execute();
