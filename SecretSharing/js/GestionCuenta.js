@@ -1,6 +1,13 @@
 $(document).ready(function (){
     $("#contenedorModificarCuenta").hide();
     
+    $(document).on("click", "#modificarCuenta", function(){
+        var disp = $(this).attr("data-disp");
+        if( disp === "true"){            
+            $("#modalModificarCuenta").modal("show");                
+        }
+    });
+
     //validacion de contraseña
     $(document).on("click", "#modalAceptar", function(){
         var password = $("#contraseniaModal").val();
@@ -20,9 +27,8 @@ $(document).ready(function (){
                     $("#contenedorGestion").hide();
                     $("#visualizarDetalles").attr('class', 'nav-link');
                     $("#modificarCuenta").attr('class', 'nav-link  active');
-                    $("#contenedorModificarCuenta").show();
-                    
- 
+                    $("#contenedorModificarCuenta").show();                    
+                    $("#modificarCuenta").attr('data-disp', 'false');
                     
                 }else{
                     console.log(response);
