@@ -83,11 +83,14 @@ function passwordEqualConf(password, conf) {
 }
 
 function validarPassword(email, password, conf) {
-
-    var r1 = robustezPassword(password);
-    var r2 = passwordNotEmail(password, email);
-    var r3 = passwordEqualConf(password, conf);
-    return r1 && r2 && r3;
+    var r1 = false, r2 = false, r3 = false;
+    r3 = passwordEqualConf(password, conf);
+    if(!r3) return r3;
+    r1 = robustezPassword(password);
+    if(!r1) return r1;
+    r2 = passwordNotEmail(password, email);
+    if(!r2) return r2;
+    return true;
 }
 
 
