@@ -78,8 +78,9 @@ function submitdata() {
     $.ajax({
 
         type: "POST",
-        url: "php/SignUp.php",
+        url: "php/manejadorUsuario.php",
         data: {
+            Operation: "registrarUsuario",
             Email: email,
             Password: password,
             Alias: alias

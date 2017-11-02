@@ -48,19 +48,6 @@ class Usuario {
         $this->espacioUtilizado = $espacioUtilizado;
     }
 
-    public function iniciaSesion() {
-        session_start();
-        $_SESSION["idUsuario"] = $this->idUsuario;
-        return true;
-    }
-
-    public function cerrarSesion() {
-        // remove all session variables
-        session_unset();
-        // destroy the session 
-        session_destroy();
-    }
-
     public function modificarContrasenia($Contrasenia) {
         $this->setContrasenia($Contrasenia);
     }
@@ -73,12 +60,7 @@ class Usuario {
         printf("idUsuario = %s Contrasenia = %s alias = %s status = %s espacioUtilizado = %s \n", $this->idUsuario, $this->contrasenia, $this->alias, $this->status, $this->espacioUtilizado);
     }
 
-    public function validaContrasenia() {
-        $regex_contrasenia = '/^(?=.*\d)(?=.*[\!-\/:-@\[-_)(?=.*[A-Z])(?=.*[a-z])\S{8,64}$/';
-        $resultado_regex = preg_match($regex_contrasenia, $this->contrasenia);
-        $igual = ($this->idUsuario == $this->contrasenia);
-        return $resultado_regex && !$igual;
-    }
+
 
 }
 

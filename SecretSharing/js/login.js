@@ -5,7 +5,7 @@ function submitdata() {
 
     $.ajax({
         type: "POST",
-        url: "php/Login.php",
+        url: "./php/manejadorUsuario.php",
         data: {
             Operation: "iniciarSesion",
             Email: email,

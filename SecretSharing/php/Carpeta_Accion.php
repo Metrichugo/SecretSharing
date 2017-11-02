@@ -1,5 +1,7 @@
 <?php
 
+include_once("Carpeta.php");
+
 class Carpeta_Accion {
 
     protected $carpeta;
@@ -11,12 +13,18 @@ class Carpeta_Accion {
     }
 
     public function crearCarpeta() {
+        //Se verifica el nombre de la carpeta
+        if (!$this->validaNombreCarpeta($this->carpeta->getNombreCarpeta())) {
+            echo "invalidrequest";
+            return;
+        }
+
         //Se verifica existencia en la BD
         if ($this->DBConnection->existeCarpeta($this->carpeta)) { //Carpeta repetida
             echo json_encode(array(
                 "Status" => "incorrect"
             ));
-            exit();
+            return;
         }
         //Creacion de objeto de tipo carpeta
         //Inserción en la base de datos
@@ -54,7 +62,7 @@ class Carpeta_Accion {
         } else {
             echo "incorrect";
         }
-        exit();
+        return;
     }
 
     private function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
@@ -79,13 +87,17 @@ class Carpeta_Accion {
     }
 
     public function moverCarpeta() {//Falta llenar este método
-        
     }
 
     public function renombrarCarpeta($nuevoNombreCarpeta, $carpetaActual) {
+        //Se verifica el nombre de la carpeta
+        if (!$this->validaNombreCarpeta($nuevoNombreCarpeta)) {
+            echo "invalidrequest";
+            return;
+        }
         //Comprueba si existe una carpeta con el mismo nombre
-        $carpetaTemporal=new Carpeta(null, $carpetaActual->getIdUsuario(), $carpetaActual->getIdCarpeta(), $nuevoNombreCarpeta, null);
-         if ($this->DBConnection->existeCarpeta($carpetaTemporal)) {
+        $carpetaTemporal = new Carpeta(null, $carpetaActual->getIdUsuario(), $carpetaActual->getIdCarpeta(), $nuevoNombreCarpeta, null);
+        if ($this->DBConnection->existeCarpeta($carpetaTemporal)) {
             echo "incorrect";
             return;
         }
@@ -94,6 +106,18 @@ class Carpeta_Accion {
             echo "correct";
         } else {
             echo "incorrect";
+        }
+    }
+
+    private function validaNombreCarpeta($nombreCarpeta) {
+        if (strlen($nombreCarpeta) > 255) {//Mayor a 255
+            return false;
+        } else if ($nombreCarpeta == '.' || $nombreCarpeta = '..') {//Es igual a . o ..
+            return false;
+        } else if (substr_count($nombreCarpeta, '/')) {//Contiene el caracter barra
+            return false;
+        } else {
+            return true;
         }
     }
 

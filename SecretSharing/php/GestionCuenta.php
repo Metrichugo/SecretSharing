@@ -15,9 +15,8 @@ $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 //al cargar la pagina la carpeta actual es la carpeta raiz con idCarpetaSuperior=null;
 $carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
 $_SESSION["carpetActual"] = serialize($carpetActual);
-
 $EspacioTotal = 5000; //5GB
-$EspacioUtilizado = ($usuario->getEspacioUtilizado()/1E6);
+$EspacioUtilizado = ($usuario->getEspacioUtilizado() / 1E6);
 $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 ?>
 
@@ -45,7 +44,6 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
             // Load google charts
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawChart);
-
             // Draw the chart and set the chart values
             function drawChart() {
                 var data = google.visualization.arrayToDataTable([
@@ -55,7 +53,6 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                 ]);
                 // Optional; add a title and set the width and height of the chart
                 var options = {'width': 400, 'height': 300};
-
                 // Display the chart inside the <div> element with id="piechart"
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
                 chart.draw(data, options);
@@ -271,4 +268,3 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
         </div>  
     </body>
 </html>
-
