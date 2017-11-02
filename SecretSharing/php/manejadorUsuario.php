@@ -38,6 +38,9 @@ if ($operacion != "iniciarSesion" && $operacion != "registrarUsuario") {    //Mo
             $newNombreLocal = filter_input(INPUT_POST, 'newNombreLocal');
             $usuarioAccion->modificarNombreUsuario($newNombreUsuario, $newNombreLocal);
             break;
+        case "EliminarUsuario";
+            $usuarioAccion->eliminarCuentaUsuario();
+            break;
         default;
             echo "invalidrequest";
             break;

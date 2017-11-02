@@ -2,7 +2,7 @@
 
 include_once("Usuario.php");
 include_once("BaseDeDatos.php");
-
+include_once("Carpeta.php");
 //Constantes para crear un usuario
 const STATUS = 1;
 const ESP_UTILIZADO = 0;
@@ -112,7 +112,7 @@ class Usuario_Accion {
         $newUsuario->setidUsuario($newNombreUsuario);
         $es_valido_email = $this->validarIdUsuario($newUsuario->getidUsuario());
         if (!$es_valido_email) {
-            echo "3";
+            echo "4";
         } else if (!$this->DBConnection->existeUsuario($newUsuario)) {
             if (strcmp($newNombreLocal, $oldUsuario->getContrasenia()) !== 0) {
                 if ($this->DBConnection->actualizaIdUsuario($oldUsuario, $newNombreUsuario)) {
@@ -130,4 +130,13 @@ class Usuario_Accion {
         }
     }
 
+    public function eliminarCuentaUsuario(){
+        if ($this->DBConnection->borraUsuario($this->usuario)) {              
+            $this->usuario->eliminaGRID();            
+            $this->cerrarSesion();            
+        } else {
+            $this->DBConnection->close();
+            echo "incorrect";
+        }
+    }
 }

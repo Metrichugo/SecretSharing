@@ -64,7 +64,7 @@ class Carpeta_Accion {
         }
         return;
     }
-
+    
     private function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
         //Eliminación de subcarpetas
         $pilaSubcarpetas = $DBConnection->listaCarpetas($carpeta);

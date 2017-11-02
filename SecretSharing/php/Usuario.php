@@ -61,6 +61,32 @@ class Usuario {
     }
 
 
+    function eliminaGRID() {
+        $handle = fopen("../ejecutables/servidores.txt", "r");
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $line = str_replace("\n", "", $line);
+                $comando = "ssh " . $line . " \"rm -rf ~/RCSS/" . $this->idUsuario . "/" . "\"";
+                //echo $comando;                
+                $this->modif_shell_exec($comando, $stdout, $stderr);
+                //echo "Salida:" . $stdout . $stderr . " ";
+            }
+            fclose($handle);
+        }
+    }
+    
+    private function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
+        $pipes = null;
+        $proc = proc_open($cmd, [
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+                ], $pipes);
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+        return proc_close($proc);
+    }
 
 }
 

@@ -185,7 +185,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                         cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                         proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-                    <button id= "eliminarCuenta" type="button" class="col-sm-12 btn btn-primary">Eliminar Cuenta</button>
+                    <button id= "eliminarCuenta" type="button" class="col-sm-12 btn btn-primary" data-toggle="modal" data-target="#modalEliminarCuenta" >Eliminar Cuenta</button>
 
 
                 </div>
@@ -196,11 +196,11 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                             <div class="form-group row">
                                 <label for="Email" class="col-sm-12 col-form-label">Nombre de Usuario (Email)</label>
                                 <div class="col-sm-12 col-md-10">
-                                    <input type="email"  class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
+                                    <input type="email"  class="form-control" minlength="8" maxlength="255" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
                                 </div>
-                                <label for="confirmaEmail" class="col-sm-12 col-form-label">Confirmación del nombre de usuario (Email)</label>
+                                <label for="confirmaEmail" class="col-sm-12 col-form-label"  >Confirmación del nombre de usuario (Email)</label>
                                 <div class="col-sm-12 col-md-10">
-                                    <input type="email" class="form-control" id="confirmaEmail" placeholder="ejemplo@servidor.com" name="confirmacionEmail" required autofocus>
+                                    <input type="email" class="form-control" id="confirmaEmail"  minlength="8" maxlength="255" placeholder="ejemplo@servidor.com" name="confirmacionEmail" required autofocus>
                                 </div>
                                 <div class="col-sm-12 col-md-10" id="ErrorCambiarEmail"> </div>
                                 <div class="col-sm-12 col-md-10" id="ResCambiarEmail"> </div>
@@ -266,5 +266,31 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                 </div>
             </div>
         </div>  
+
+        <!-- Modal para eliminar la cuenta-->
+        <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalEditarArchivo">Eliminación de cuenta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>                   
+                    </div>
+
+                    <div class="modal-body">
+                        <p>Al dar clic en aceptar usted estará eliminando su cuenta. 
+                        <p>                                                
+                        <p>Su directorio completo de archivos y carpetas
+                            será eliminado de forma permanente asi como los detalles almacenados acerca de su cuenta.</p>
+                        <div class="col-sm-12" id = "ErrorEliminarCuenta"></div>
+                        <div class="col-sm-12" id = "OkEliminarCuenta"></div>                       
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modalCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button id="modalEliminarAceptar"  type="button" class="btn btn-primary"   >Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+
     </body>
 </html>
