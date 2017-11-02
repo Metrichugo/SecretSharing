@@ -14,8 +14,8 @@ class Carpeta_Accion {
 
     public function crearCarpeta() {
         //Se verifica el nombre de la carpeta
-        if (!$this->validaNombreCarpeta($this->carpeta->getNombreCarpeta())) {
-            echo "invalidrequest";
+        if ($this->validaNombreCarpeta($this->carpeta->getNombreCarpeta())) {
+            echo "invalidname";
             return;
         }
 
@@ -69,7 +69,7 @@ class Carpeta_Accion {
         //Eliminación de subcarpetas
         $pilaSubcarpetas = $DBConnection->listaCarpetas($carpeta);
         while (!$pilaSubcarpetas->isEmpty()) {
-            eliminaCarpetaYArchivosGRID($pilaSubcarpetas->pop(), $DBConnection);
+            $this->eliminaCarpetaYArchivosGRID($pilaSubcarpetas->pop(), $DBConnection);
         }
 
         //Eliminacion de archivos de la carpeta
@@ -86,7 +86,18 @@ class Carpeta_Accion {
         }
     }
 
-    public function moverCarpeta() {//Falta llenar este método
+    public function moverCarpeta($carpetaDestino) {
+        // Le movi a este método(31-10-2017)
+        $this->carpeta->setIdCarpetaSuperior($carpetaDestino->getIdCarpeta());
+        if (!$this->DBConnection->existeCarpeta($this->carpeta)) {
+            if ($this->DBConnection->moverCarpeta($this->carpeta, $carpetaDestino)) {
+                echo "Se movio la carpeta";
+            } else {
+                echo "Error al mover la carpeta";
+            }
+        } else {
+            echo "Error al mover la carpeta";
+        }
     }
 
     public function renombrarCarpeta($nuevoNombreCarpeta, $carpetaActual) {

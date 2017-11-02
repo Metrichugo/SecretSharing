@@ -260,8 +260,15 @@ $(document).ready(function () {
                 console.log(response);
                 $('#selectCarpetasArch').empty();
                 $('#selectCarpetasArch').append(response);
-                $('#moveArchivo').attr("data-idCarpeta", idCarpeta);
-                $('#moveArchivo').attr("data-nomArchivo", idArchivo);
+                var numSubCarpetas = $('#selectCarpetasArch > option').length;
+                if (numSubCarpetas === 0) {
+                    $('#moveArchivo').attr("disabled", "disabled");
+                } else {
+                    $('#moveArchivo').attr("data-idCarpeta", idCarpeta);
+                    $('#moveArchivo').attr("data-nomArchivo", idArchivo);
+                    $('#moveArchivo').removeAttr("disabled");
+                    console.log("Hay carpetas");
+                }
             }
         });
     });
@@ -280,8 +287,19 @@ function moverArchivo() {
         },
         success: function (response) {
             console.log(response);
-            $('#row' + nomArchivo).remove();
+            if (response === "correct") {
+                muestaMensajeOk("Se movió correctamente el archivo", "resultadoMoverArchivo");
+                setTimeout(function () {
+                    $('#modalMoverArchivo').modal('hide');
+                }, 1000);
+                $(jq('row' + nomArchivo)).remove();
+            } else if (response === "duplicated") {
+                muestraMensajeError("Existe un archivo con el mismo nombre en la carpeta destino", "resultadoMoverArchivo");
+            } else {
+                muestraMensajeError("Ocurrió un error intertno al mover el archivo", "resultadoMoverArchivo");
+            }
         }
     });
+    return false;
 }
 

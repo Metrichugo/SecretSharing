@@ -240,8 +240,10 @@ class BaseDeDatos {
 
     /* Se agregaron los 2 metodos siguientes */
 
-    public function moverCarpeta($usuario, $idCarpeta, $idCarpetaDest) {
-        $idUsuario = $usuario->getidUsuario();
+    public function moverCarpeta($carpeta, $carpetaDestino) {
+        $idUsuario = $carpeta->getIdUsuario();
+        $idCarpeta = $carpeta->getIdCarpeta();
+        $idCarpetaDest = $carpetaDestino->getIdCarpeta();
         if (!$this->connection->query("UPDATE carpeta SET idCarpetaSuperior = '$idCarpetaDest' WHERE idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario'")) {
             echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
             return false;
@@ -357,14 +359,29 @@ class BaseDeDatos {
         return $archivo;
     }
 
-    public function moverArchivo($archivo, $idCarpetaDest) {
+    public function moverArchivo($archivo) {
         $idUsuario = $archivo->getIdUsuario();
         $nombreArchivo = $archivo->getNombreArchivo();
+        $idCarpetaDest = $archivo->getIdCarpeta();
         if (!$this->connection->query("UPDATE archivo set idCarpeta = '$idCarpetaDest' where nombreArchivo = '$nombreArchivo' and idUsuario ='$idUsuario'")) {
             echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
             return false;
         }
         return true;
+    }
+
+    public function existeArchivo($archivo) {
+        $nombreArchivo = $archivo->getNombreArchivo();
+        $idCarpeta = $archivo->getIdCarpeta();
+        $idUsuario = $archivo->getIdUsuario();
+        $stmt = $this->connection->prepare("SELECT COUNT(nombreArchivo) AS result FROM archivo WHERE nombreArchivo=? AND idCarpeta=? AND idUsuario=?");
+        $stmt->bind_param("sis", $nombreArchivo, $idCarpeta, $idUsuario);
+        if ($stmt->execute()) {
+            $stmt->bind_result($result);
+            while ($stmt->fetch()) {
+                return ($result == 1);
+            }
+        }
     }
 
     /*     * ***************************** */

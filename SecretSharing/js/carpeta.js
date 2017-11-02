@@ -273,6 +273,14 @@ $(document).ready(function () {
                 $('#selectCarpetas').empty();
                 $('#selectCarpetas').append(response);
                 $('#moveCarpeta').attr("data-idCarpeta", idCarpeta);
+                var numSubCarpetas = $('#selectCarpetas > option').length;
+                if (numSubCarpetas === 0) {
+                    $('#moveCarpeta').attr("disabled", "disabled");
+                    console.log("Subcarpetas existentes: " + numSubCarpetas);
+                } else {
+                    $('#moveCarpeta').removeAttr("disabled");
+                    console.log("Hay carpetas");
+                }
             }
         });
     });
@@ -290,11 +298,19 @@ function moverCarpeta() {
             idCarpeta: idCarpeta
         },
         success: function (response) {
-            console.log(response);
-            $('#row' + idCarpeta).remove();
+            if (response === "Se movio la carpeta") {
+                muestaMensajeOk("La carpeta se movio correctamente", "resultadoMoverCarpeta");
+                $('#row' + idCarpeta).remove();
+                setTimeout(function () {
+                    $('#modalMoverCarpeta').modal('hide');
+                }, 1000);
+            } else {
+                muestraMensajeError("Ya existe una carpeta con el mismo nombre", "resultadoMoverCarpeta");
+            }
         }
     });
 }
+
 
 
 cargarCarpetaRaiz();
