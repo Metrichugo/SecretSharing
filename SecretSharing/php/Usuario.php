@@ -66,7 +66,7 @@ class Usuario {
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
                 $line = str_replace("\n", "", $line);
-                $comando = "ssh " . $line . " \"rm -rf ~/RCSS/" . $this->idUsuario . "/" . $this->nombreArchivoGRID . "\"";
+                $comando = "ssh " . $line . " \"rm -rf ~/RCSS/" . $this->idUsuario . "/" . "\"";
                 //echo $comando;                
                 $this->modif_shell_exec($comando, $stdout, $stderr);
                 //echo "Salida:" . $stdout . $stderr . " ";
