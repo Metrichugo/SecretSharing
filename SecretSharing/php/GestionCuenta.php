@@ -95,7 +95,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                 <a class="nav-link active" id = "visualizarDetalles" href="GestionCuenta.php" > Visualizar detalles </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"        id = "modificarCuenta"    href="#" data-toggle="modal" data-target="#modalModificarCuenta">Modificar cuenta</a>
+                <a class="nav-link"        id = "modificarCuenta"    href="#" data-disp="true">Modificar cuenta</a>
             </li>
         </ul>
         <br>
