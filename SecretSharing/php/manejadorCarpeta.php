@@ -52,7 +52,17 @@ switch ($operacion) {
         $carpetaAccion->renombrarCarpeta($nuevoNombreCarpeta, $carpetActual);
         break;
     case "moverCarpeta";
-        moverCarpeta($DBConnection, $usuario);
+        //Construcción de los objetos de tipo carpeta
+        //Carpeta a mover
+        $idCarpeta = $_POST['idCarpeta'];
+        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
+        //Carpeta destino
+        $idCarpetaDest = $_POST['idCarpetaDest'];
+        $carpetaDestino = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpetaDest);
+        //Construcción del objeto de tipo Carpeta_Action
+        $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
+        //Accion
+        $carpetaAccion->moverCarpeta($carpetaDestino);
         break;
 
     //Vista
@@ -78,18 +88,6 @@ switch ($operacion) {
     default;
         echo "invalidrequest";
         break;
-}
-
-//Falta mover este metodo
-function moverCarpeta($DBConnection, $usuario) {
-    $idCarpeta = $_POST['idCarpeta'];
-    $idCarpetaDest = $_POST['idCarpetaDest'];
-    $result = $DBConnection->moverCarpeta($usuario, $idCarpeta, $idCarpetaDest);
-    if ($result) {
-        echo "Se movio la carpeta";
-    } else {
-        echo "Error al mover la carpeta";
-    }
 }
 
 function actualizarCarpetaActual($usuario, $DBConnection) {
@@ -161,4 +159,5 @@ function obtenerSubCarpetas($DBConnection, $usuario, $carpetActual) {
     $idCarpeta = $_POST['idCarpeta'];
     echo $DBConnection->obtenerSubCarpetas($usuario, $carpetActual->getIdCarpeta(), $idCarpeta);
 }
+
 ?>

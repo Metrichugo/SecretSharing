@@ -280,8 +280,19 @@ function moverArchivo() {
         },
         success: function (response) {
             console.log(response);
-            $('#row' + nomArchivo).remove();
+            if (response === "correct") {
+                muestaMensajeOk("Se movió correctamente el archivo", "resultadoMoverArchivo");
+                setTimeout(function () {
+                    $('#modalMoverArchivo').modal('hide');
+                }, 1000);
+                $(jq('row' + nomArchivo)).remove();
+            } else if (response === "duplicated") {
+                muestraMensajeError("Existe un archivo con el mismo nombre en la carpeta destino", "resultadoMoverArchivo");
+            } else {
+                muestraMensajeError("Ocurrió un error intertno al mover el archivo", "resultadoMoverArchivo");
+            }
         }
     });
+    return false;
 }
 

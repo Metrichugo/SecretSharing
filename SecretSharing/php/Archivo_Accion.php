@@ -75,7 +75,11 @@ class Archivo_Accion {
     }
 
     public function moverArchivo($idCarpetaDestino) {
-        if ($this->DBConnection->moverArchivo($this->archivo, $idCarpetaDestino)) {
+        $this->archivo->setIdCarpeta($idCarpetaDestino);
+        if ($this->DBConnection->existeArchivo($this->archivo)) {
+            echo "duplicated";
+            return;
+        } else if ($this->DBConnection->moverArchivo($this->archivo)) {
             echo "correct";
         } else {
             echo "incorrect";
