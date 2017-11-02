@@ -136,8 +136,7 @@ class BaseDeDatos {
         return;
     }
 
-    public function consultaCarpeta($Usuario, $idCarpeta) {
-        $idUsuario = $Usuario->getidUsuario();
+    public function consultaCarpeta($idUsuario, $idCarpeta) {
         $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE idCarpeta = ? AND idUsuario = ? ");
         $stmt->bind_param("is", $idCarpeta, $idUsuario);
         if ($stmt->execute()) {
@@ -151,9 +150,29 @@ class BaseDeDatos {
         return;
     }
 
-    public function existeCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta) {
-        $idUsuario = $Usuario->getidUsuario();
-        $idCarpetaSup = $carpetaActual->getIdCarpeta();
+    //Se creo este método
+    public function consultaCarpetaObjeto($carpeta) {
+        $idUsuario = $carpeta->getIdUsuario();
+        $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
+        $nombreCarpeta = $carpeta->getNombreCarpeta();
+        $stmt = $this->connection->prepare("select * from carpeta where  idUsuario = ? and  idCarpetaSuperior = ? and nombreCarpeta = ?");
+        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreCarpeta);
+        if ($stmt->execute()) {
+            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+            while ($stmt->fetch()) {
+                $carpeta = new Carpeta($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
+                return $carpeta;
+            }
+            $stmt->close();
+        }
+        return;
+    }
+
+    public function existeCarpeta($carpeta) {
+        $idUsuario = $carpeta->getIdUsuario();
+        $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
+        $nombreNuevaCarpeta = $carpeta->getNombreCarpeta();
+
         $stmt = $this->connection->prepare("SELECT COUNT(idCarpeta) AS result FROM carpeta "
                 . "WHERE  idUsuario = ? and nombreCarpeta = ? and idCarpetaSuperior = ?");
 
@@ -175,12 +194,13 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
-    public function insertaCarpeta($Usuario, $carpetaActual, $nombreNuevaCarpeta) {
-        $idUsuario = $Usuario->getidUsuario();
-        $idCarpetaSup = $carpetaActual->getIdCarpeta();
+    public function insertaCarpeta($carpeta) {
+        $idUsuario = $carpeta->getIdUsuario();
+        $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
+        $nombreCarpeta = $carpeta->getNombreCarpeta();
         $stmt = $this->connection->prepare("INSERT INTO carpeta (idUsuario, idCarpetaSuperior,  nombreCarpeta, fechaCreacion) "
                 . "VALUES (?,?,?, CURDATE())");
-        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreNuevaCarpeta);
+        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreCarpeta);
         return $stmt->execute();
     }
 
@@ -201,19 +221,20 @@ class BaseDeDatos {
         return $stack;
     }
 
-    public function eliminarCarpeta($usuario, $carpeta) {
-        $idUsuario = $usuario->getidUsuario();
+    public function eliminarCarpeta($carpeta) {
+        $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaEliminar = $carpeta->getIdCarpeta();
         $stmt = $this->connection->prepare("DELETE FROM carpeta WHERE idUsuario = ? and idCarpeta = ?");
         $stmt->bind_param("si", $idUsuario, $idCarpetaEliminar);
         return $stmt->execute();
     }
 
-    public function editarCarpeta($usuario, $idCarpetaEditar, $nombreCarpeta) {
-        $idUsuario = $usuario->getidUsuario();
+    public function editarCarpeta($carpeta, $nuevoNombreCarpeta) {
+        $idUsuario = $carpeta->getIdUsuario();
+        $idCarpetaEditar = $carpeta->getIdCarpeta();
         $stmt = $this->connection->prepare("UPDATE carpeta SET nombreCarpeta = ? "
                 . "WHERE idCarpeta = ? AND idUsuario = ?");
-        $stmt->bind_param("sis", $nombreCarpeta, $idCarpetaEditar, $idUsuario);
+        $stmt->bind_param("sis", $nuevoNombreCarpeta, $idCarpetaEditar, $idUsuario);
         return $stmt->execute();
     }
 
@@ -347,33 +368,6 @@ class BaseDeDatos {
     }
 
     /*     * ***************************** */
-
-    //Se creo este método
-    public function getHTMLCarpeta($Usuario, $carpetaActual, $nombreCarpeta) {
-        $idUsuario = $Usuario->getidUsuario();
-        $idCarpetaSup = $carpetaActual->getIdCarpeta();
-        $htmlCarpeta = null;
-        $stmt = $this->connection->prepare("select * from carpeta where  idUsuario = ? and  idCarpetaSuperior = ? and nombreCarpeta = ?");
-        $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreCarpeta);
-        if ($stmt->execute()) {
-            $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-            while ($stmt->fetch()) {
-                $carpeta = new Carpeta($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
-                $htmlCarpeta = '<tr id=row' . $carpeta->getIdCarpeta() . '>
-                                    <td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
-                                    <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
-                                    <td class="text-center">
-                                        <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>								                                            
-                                        <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-                                        <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
-                                    </td>
-                                </tr>';
-            }
-            $stmt->close();
-        }
-        return $htmlCarpeta;
-    }
-
 }
 
 ?>

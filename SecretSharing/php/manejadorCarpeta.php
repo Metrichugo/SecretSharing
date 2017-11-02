@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario'])) {
 include_once("BaseDeDatos.php");
 include_once("Usuario.php");
 include_once("Carpeta.php");
-
+include_once("./Carpeta_Accion.php");
 
 $usuario = unserialize($_SESSION["usuario"]);
 $DBConnection = unserialize($_SESSION["DBConnection"]);
@@ -18,6 +18,44 @@ $operacion = filter_input(INPUT_POST, 'Operation', FILTER_SANITIZE_STRING);
 $carpetActual = unserialize($_SESSION["carpetActual"]);
 
 switch ($operacion) {
+    //CRUD
+    case "crearNuevaCar";
+        //Construcción del objeto de tipo carpeta
+        $nombreCarpeta = filter_input(INPUT_POST, 'nombreCarpeta', FILTER_SANITIZE_STRING);
+        $idUsuario = $carpetActual->getIdUsuario();
+        $idCarpetaSuperior = $carpetActual->getIdCarpeta();
+        $carpeta = new Carpeta(null, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, null); //Los argumentos en null se asignan automaticamente en el manejador de la BD
+        //Construcción del objeto de tipo Carpeta_Action
+        $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
+        //Accion
+        $carpetaAccion->crearCarpeta();
+        break;
+
+    case "eliminarCarpeta";
+        //Construcción del objeto de tipo carpeta
+        $idCarpeta = filter_input(INPUT_POST, 'idCarpeta', FILTER_SANITIZE_NUMBER_INT);
+        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
+        //Construcción del objeto de tipo Carpeta_Action
+        $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
+        //Accion
+        $carpetaAccion->eliminarCarpeta();
+        break;
+
+    case "EditarCar";
+        //Construcción del objeto de tipo carpeta
+        $nuevoNombreCarpeta = filter_input(INPUT_POST, 'nombreCarpeta', FILTER_SANITIZE_STRING);
+        $idCarpetaEditar = filter_input(INPUT_POST, 'idCarpetaEditar', FILTER_SANITIZE_NUMBER_INT);
+        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpetaEditar);
+        //Construcción del objeto de tipo Carpeta_Action
+        $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
+        //Accion
+        $carpetaAccion->renombrarCarpeta($nuevoNombreCarpeta, $carpetActual);
+        break;
+    case "moverCarpeta";
+        moverCarpeta($DBConnection, $usuario);
+        break;
+
+    //Vista
     case "actualizarCarpetaActual"; //Actualiza la variable de sesion sobre la carpeta en la que esta el usuario
         actualizarCarpetaActual($usuario, $DBConnection);
         break;
@@ -30,33 +68,34 @@ switch ($operacion) {
     case "irCarpetaAtras"; //Regresa a la carpeta padre de la carpeta actual - OK
         irCarpetaAtras($usuario, $carpetActual, $DBConnection);
         break;
-    case "crearNuevaCar";
-        crearNuevaCarpeta($usuario, $carpetActual, $DBConnection);
-        break;
-    case "eliminarCarpeta";
-        eliminarCarpeta($usuario, $DBConnection);
-        break;
     case "cargarCarpetaRaiz"; //Regresa la carpeta actual a su carpeta raiz
         cargarCarpetaRaiz();
-        break;
-    case "EditarCar";
-        editarCarpeta($usuario, $carpetActual, $DBConnection);
         break;
     case "obtenerSubCarpetas";
         obtenerSubCarpetas($DBConnection, $usuario, $carpetActual);
         break;
-    case "moverCarpeta";
-        moverCarpeta($DBConnection, $usuario);
-        break;
+
     default;
         echo "invalidrequest";
         break;
 }
 
+//Falta mover este metodo
+function moverCarpeta($DBConnection, $usuario) {
+    $idCarpeta = $_POST['idCarpeta'];
+    $idCarpetaDest = $_POST['idCarpetaDest'];
+    $result = $DBConnection->moverCarpeta($usuario, $idCarpeta, $idCarpetaDest);
+    if ($result) {
+        echo "Se movio la carpeta";
+    } else {
+        echo "Error al mover la carpeta";
+    }
+}
+
 function actualizarCarpetaActual($usuario, $DBConnection) {
     $idCarpetaMoverse = filter_input(INPUT_POST, 'idCarpetaMoverse', FILTER_SANITIZE_NUMBER_INT);
     //Actualizamos el objeto carpeta a la que se va a mostrar en pantalla
-    $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpetaMoverse);
+    $carpeta = $DBConnection->consultaCarpeta($usuario->getidUsuario(), $idCarpetaMoverse);
     $_SESSION["carpetActual"] = serialize($carpeta);
     echo "correct";
 }
@@ -106,68 +145,9 @@ function irCarpetaAtras($usuario, $carpetActual, $DBConnection) {
         exit();
     }
     $idCarpetaSup = $carpetActual->getIdCarpetaSuperior();
-    $carpetaSup = $DBConnection->consultaCarpeta($usuario, $idCarpetaSup);
+    $carpetaSup = $DBConnection->consultaCarpeta($usuario->getidUsuario(), $idCarpetaSup);
     $_SESSION["carpetActual"] = serialize($carpetaSup);
     echo( $idCarpetaSup );
-}
-
-function crearNuevaCarpeta($usuario, $carpetActual, $DBConnection) {//Se modificó esta parte del código
-    $nombreNuevaCarpeta = $_POST['nombreCarpeta'];
-    $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-    //Se verifica existencia en la BD
-    if ($result) { //Carpeta repetida
-        echo json_encode(array(
-            "Status" => "incorrect"
-        ));
-        exit();
-    }
-    // lo insertamos en la basede datos
-    $result = $DBConnection->insertaCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-    if ($result) {
-        $htmlCarpeta = $DBConnection->getHTMLCarpeta($usuario, $carpetActual, $nombreNuevaCarpeta);
-        echo json_encode(array(
-            "Status" => "correct",
-            "Html" => $htmlCarpeta
-        ));
-        exit();
-    }
-    echo json_encode(array(
-        "Status" => "incorrect"
-    ));
-    exit();
-}
-
-function eliminarCarpeta($usuario, $DBConnection) {
-    $idCarpeta = $_POST['idCarpeta'];
-    $carpeta = $DBConnection->consultaCarpeta($usuario, $idCarpeta);
-    eliminaCarpetaYArchivosGRID($carpeta, $DBConnection);
-    if ($DBConnection->eliminarCarpeta($usuario, $carpeta)) {
-        echo "correct";
-    } else {
-        echo "incorrect";
-    }
-    exit();
-}
-
-function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
-    //Eliminación de subcarpetas
-    $pilaSubcarpetas = $DBConnection->listaCarpetas($carpeta);
-    while (!$pilaSubcarpetas->isEmpty()) {
-        eliminaCarpetaYArchivosGRID($pilaSubcarpetas->pop(), $DBConnection);
-    }
-    
-    //Eliminacion de archivos de la carpeta
-    $pilaArchivos = $DBConnection->listaArchivos($carpeta);
-    while (!$pilaArchivos->isEmpty()) {
-        $archivo = $pilaArchivos->pop();
-        $archivo->eliminaGRID();
-        //Actualiza la variable de sesion
-        $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
-        $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() - $archivo->getTamanio());
-        $DBConnection->editaEspacioUtilizado($usuario);
-        //Actualiza la variable de sesion 
-        $_SESSION["usuario"] = serialize($usuario);
-    }
 }
 
 function cargarCarpetaRaiz() {
@@ -177,52 +157,8 @@ function cargarCarpetaRaiz() {
     echo( $carpetaRaiz->getIdCarpeta() );
 }
 
-function editarCarpeta($usuario, $carpetActual, $DBConnection) {
-    $nombreCarpeta = $_POST['nombreCarpeta'];
-    $idCarpetaEditar = $_POST['idCarpetaEditar'];
-
-    $result = $DBConnection->existeCarpeta($usuario, $carpetActual, $nombreCarpeta);
-    if ($result) {
-        echo "incorrect";
-        exit();
-    }
-
-    $result = $DBConnection->editarCarpeta($usuario, $idCarpetaEditar, $nombreCarpeta);
-    if ($result) {
-        echo "correct";
-    } else {
-        echo "incorrect";
-    }
-}
-
-// Se agregaron estos 2 metodos //
-
-function moverCarpeta($DBConnection, $usuario) {
-    $idCarpeta = $_POST['idCarpeta'];
-    $idCarpetaDest = $_POST['idCarpetaDest'];
-    $result = $DBConnection->moverCarpeta($usuario, $idCarpeta, $idCarpetaDest);
-    if ($result) {
-        echo "Se movio la carpeta";
-    } else {
-        echo "Error al mover la carpeta";
-    }
-}
-
 function obtenerSubCarpetas($DBConnection, $usuario, $carpetActual) {
     $idCarpeta = $_POST['idCarpeta'];
     echo $DBConnection->obtenerSubCarpetas($usuario, $carpetActual->getIdCarpeta(), $idCarpeta);
 }
-
-function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
-    $proc = proc_open($cmd, [
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-            ], $pipes);
-    $stdout = stream_get_contents($pipes[1]);
-    fclose($pipes[1]);
-    $stderr = stream_get_contents($pipes[2]);
-    fclose($pipes[2]);
-    return proc_close($proc);
-}
-
 ?>

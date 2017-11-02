@@ -22,7 +22,7 @@ switch ($operacion) {
     case "EliminarArchivo";
         //Construcción del objeto de tipo archivo
         $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
-        //Construcción del objeto de tipo Arcchivo_Action
+        //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
         $archivoAccion->eliminarArchivo();
@@ -33,7 +33,7 @@ switch ($operacion) {
         $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
         //Lectura del nuevo nombre de archivo desde POST
         $nuevoNombreArchivo = filter_input(INPUT_POST, 'nuevoNomArch', FILTER_SANITIZE_STRING);
-        //Construcción del objeto de tipo Arcchivo_Action
+        //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
         $archivoAccion->renombrarArchivo($nuevoNombreArchivo);
@@ -53,7 +53,7 @@ switch ($operacion) {
             $fechaSubida = date("Y-m-d");
             //Construcción del objeto de tipo archivo
             $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
-            //Construcción del objeto de tipo Arcchivo_Action
+            //Construcción del objeto de tipo Archivo_Action
             $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
             //Accion
             $archivoAccion->subirArchivo();
@@ -65,7 +65,7 @@ switch ($operacion) {
     case "descargarArchivo";
         //Construcción del objeto de tipo archivo
         $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
-        //Construcción del objeto de tipo Arcchivo_Action
+        //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
         $archivoAccion->descargarArchivo();
@@ -76,7 +76,7 @@ switch ($operacion) {
         $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
         //Lectura del nuevo idCarpeta desde POST
         $idCarpetaDestino = filter_input(INPUT_POST, 'idCarpetaDest', FILTER_SANITIZE_NUMBER_INT);
-        //Construcción del objeto de tipo Arcchivo_Action
+        //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
         $archivoAccion->moverArchivo($idCarpetaDestino);
