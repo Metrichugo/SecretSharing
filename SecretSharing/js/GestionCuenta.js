@@ -76,8 +76,6 @@ $(document).ready(function () {
                 newNombreLocal: nombreLocal
             },
             success: function (response) {
-
-
                 switch (response) {
                     case "0":
                         mostrarRes("#ResCambiarEmail", "Se ha cambiado el nombre de usuario de forma satisfactoria");
@@ -91,8 +89,10 @@ $(document).ready(function () {
                     case "3":
                         mostrarError("#ErrorCambiarEmail", "Lo sentimos. No se pudo cambiar el nombre de usauario debido a un error interno");
                         break;
+                    case "4":
+                        mostrarError("#ErrorCambiarEmail", "Lo sentimos. La longitud del correo tiene que ser entre 8 y 255 caracteres");
+                        break;
                 }
-
             }
         });
 
@@ -121,6 +121,33 @@ $(document).ready(function () {
 
                 } else {
                     mostrarError("#ErrorPassword", "Lo sentimos. No se pudo cambiar la contraseña debido a un error interno");
+                }
+            }
+        });
+    });
+
+    
+    
+    //eliminacion de cuenta 
+     $(document).on("click", "#modalEliminarAceptar", function () {         
+        
+        $.ajax({
+            type: "POST",
+            url: "../php/manejadorUsuario.php",
+            data: {
+                Operation: "EliminarUsuario",                
+            },
+            success: function (response) {
+                console.log(response);
+                                
+                if (response === "correct") {
+                    mostrarRes("#OkEliminarCuenta", "Se ha eliminado su cuenta con exito");
+                    setTimeout(function(){
+                        window.open("../index.html","_self");
+                    }, 2000);
+                    
+                } else {
+                    mostrarError("#ErrorEliminarCuenta", "Lo sentimos. No se pudo eliminar su cuenta debido a un error interno");
                 }
             }
         });
