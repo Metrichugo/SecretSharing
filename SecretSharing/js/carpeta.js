@@ -274,7 +274,7 @@ $(document).ready(function () {
                 $('#selectCarpetas').append(response);
                 $('#moveCarpeta').attr("data-idCarpeta", idCarpeta);
                 var numSubCarpetas = $('#selectCarpetas > option').length;
-                if (numSubCarpetas == 0) {
+                if (numSubCarpetas === 0) {
                     $('#moveCarpeta').attr("disabled", "disabled");
                     console.log("Subcarpetas existentes: " + numSubCarpetas);
                 } else {

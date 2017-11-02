@@ -260,8 +260,15 @@ $(document).ready(function () {
                 console.log(response);
                 $('#selectCarpetasArch').empty();
                 $('#selectCarpetasArch').append(response);
-                $('#moveArchivo').attr("data-idCarpeta", idCarpeta);
-                $('#moveArchivo').attr("data-nomArchivo", idArchivo);
+                var numSubCarpetas = $('#selectCarpetasArch > option').length;
+                if (numSubCarpetas === 0) {
+                    $('#moveArchivo').attr("disabled", "disabled");
+                } else {
+                    $('#moveArchivo').attr("data-idCarpeta", idCarpeta);
+                    $('#moveArchivo').attr("data-nomArchivo", idArchivo);
+                    $('#moveArchivo').removeAttr("disabled");
+                    console.log("Hay carpetas");
+                }
             }
         });
     });
