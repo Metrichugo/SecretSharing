@@ -58,7 +58,7 @@ switch ($operacion) {
             //Accion
             $archivoAccion->subirArchivo();
         } else {
-            echo 'NoFileSelected';
+            echo json_encode(array("Status" => 'NoFileSelected'));
         }
         break;
 

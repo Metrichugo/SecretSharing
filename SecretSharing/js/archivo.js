@@ -145,15 +145,18 @@ function subirArchivo() {
         processData: false,
         success: function (response) {
             console.log(response);
-            if (response === "UploadSuccesfull") {
+            var jsonResponse = $.parseJSON(response);
+            if (jsonResponse.Status === "UploadSuccesfull") {
                 muestaMensajeOk("Archivo subido correctamente", "resultadoSubirArchivo");
+                $('#tablaArchivos').append(jsonResponse.Html);
                 //Timeout cerrar modal
                 setTimeout(function () {
                     $('#UploadFile').modal('hide');
                 }, 1000);
-            } else if (response === "UploadFailed") {
+
+            } else if (jsonResponse.Status === "UploadFailed") {
                 muestraMensajeError("Ocurrió un error interno en el servidor, intentelo más tarde", "errorSubirArchivo");
-            } else if (response === "NoFileSelected") {
+            } else if (jsonResponse === "NoFileSelected") {
                 muestraMensajeError("Seleccione un archivo", "errorSubirArchivo");
             }
             $("#botonSubirArchivo").prop("disabled", false);

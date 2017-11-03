@@ -175,20 +175,13 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
         <!-- Contenedor para modificarCuenta -->
         <div class = "container" id = "contenedorModificarCuenta">
             <div class = "row justify-content-center">
-                <div class="col-sm-12 col-md-4">
-
-                    <img  src="../assets/Login-Icon.png" width=70% height="auto" >
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                    <button id= "eliminarCuenta" type="button" class="col-sm-12 btn btn-primary" data-toggle="modal" data-target="#modalEliminarCuenta" >Eliminar Cuenta</button>
-
+                <div class="col-sm-12 col-md-4 justify-content-md-center">
+                    <img  src="../assets/Login-Icon.png" class="img-thumbnail" >
+                    <br>
+                    <button id= "eliminarCuenta" type="button" class="col-sm-9 btn btn-primary" data-toggle="modal" data-target="#modalEliminarCuenta" >Eliminar Cuenta</button>
 
                 </div>
+                
                 <div class="col-sm-12 col-md-8">
                     <h4>Cambiar nombre de usuario</h4>
                     <div class="form-bottom" >
@@ -204,10 +197,14 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                                 </div>
                                 <div class="col-sm-12 col-md-10" id="ErrorCambiarEmail"> </div>
                                 <div class="col-sm-12 col-md-10" id="ResCambiarEmail"> </div>
+
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-sm-6 offset-sm-3 offset-md-3">
                                     <button id = "cambiarNombreUsuario" type="submit"  class="btn btn-primary">Cambiar nombre de usuario</button>
                                 </div>
                             </div>
+
 
                         </form>   
 
@@ -277,10 +274,8 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                     </div>
 
                     <div class="modal-body">
-                        <p>Al dar clic en aceptar usted estará eliminando su cuenta. 
-                        <p>                                                
-                        <p>Su directorio completo de archivos y carpetas
-                            será eliminado de forma permanente asi como los detalles almacenados acerca de su cuenta.</p>
+                        <p>Al dar clic en Aceptar usted estará eliminando su cuenta.          </p>                                                
+                        <p>Su directorio completo de archivos y carpetas será eliminado de forma permanente así como los detalles almacenados acerca de su cuenta.</p>
                         <div class="col-sm-12" id = "ErrorEliminarCuenta"></div>
                         <div class="col-sm-12" id = "OkEliminarCuenta"></div>                       
                     </div>

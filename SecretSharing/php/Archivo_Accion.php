@@ -31,24 +31,44 @@ class Archivo_Accion {
                 $this->DBConnection->editaEspacioUtilizado($usuario);
                 //Actualiza la variable de sesion 
                 $_SESSION["usuario"] = serialize($usuario);
-                //Fin
-                echo "UploadSuccesfull";
+
                 //Borrado del archivo
                 unlink($dirsubida . $this->archivo->getNombreArchivoGRID());
                 //unlink($dirsubida . $this->archivo->getNombreArchivoGRID());
                 //unlink($log);
                 unlink($dirsubida . $this->archivo->getNombreArchivoGRID() . ".err");
+                //Enviar JSON a la vista 
+                $htmlArchivo = $this->getHTMLArchivo($this->archivo);
+                echo json_encode(array(
+                    "Status" => "UploadSuccesfull",
+                    "Html" => $htmlArchivo
+                ));
             } else {
-                echo "UploadFailed";
+                echo json_encode(array("Status" => "UploadFailed"));
             }
         } else {
-            echo "ErrorCantMove ";
+            echo json_encode(array("Status" => "ErrorCantMove"));
         }
     }
 
     private function seMovioTemporal($nombreArchivoGRID, $dirsubida) {
         $uploadedFile = $dirsubida . $nombreArchivoGRID;
         return (move_uploaded_file($_FILES['file']['tmp_name'], $uploadedFile));
+    }
+
+    // Se agrego este método
+    private function getHTMLArchivo($archivo) {
+        return $htmlArchivo = '<tr id="row' . $archivo->getNombreArchivo() . '">
+                                    <td class="text-center"><p id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</p></td>
+                                    <td class="text-center">' . $archivo->getTamanio() . '</td>
+                                    <td class="text-center">' . $archivo->getFechaSubida() . '</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>									
+                                        <a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+                                        <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+                                        <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                    </td>
+                                </tr>';
     }
 
     public function eliminarArchivo() {

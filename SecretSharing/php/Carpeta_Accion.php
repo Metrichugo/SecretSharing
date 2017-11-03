@@ -102,7 +102,7 @@ class Carpeta_Accion {
 
     public function renombrarCarpeta($nuevoNombreCarpeta, $carpetaActual) {
         //Se verifica el nombre de la carpeta
-        if (!$this->validaNombreCarpeta($nuevoNombreCarpeta)) {
+        if ($this->validaNombreCarpeta($nuevoNombreCarpeta)) {
             echo "invalidrequest";
             return;
         }
