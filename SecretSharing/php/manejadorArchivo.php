@@ -49,7 +49,7 @@ switch ($operacion) {
             $idCarpeta = $carpetActual->getIdCarpeta();
             $idUsuario = $carpetActual->getIdUsuario();
             $tamanio = basename($_FILES['file']['size']);
-            $nombreArchivoGRID = preg_replace('/\s+/', '_', trim($nombreArchivo . $timeStamp));
+            $nombreArchivoGRID = hash('sha256', $nombreArchivo . $timeStamp);
             $fechaSubida = date("Y-m-d");
             //Construcción del objeto de tipo archivo
             $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
@@ -69,6 +69,15 @@ switch ($operacion) {
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
         $archivoAccion->descargarArchivo();
+        break;
+
+    case "prepararArchivo";
+        //Construcción del objeto de tipo archivo
+        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        //Construcción del objeto de tipo Archivo_Action
+        $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
+        //Accion
+        $archivoAccion->prepararArchivo();
         break;
 
     case "moverArchivo";

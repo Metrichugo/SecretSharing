@@ -1,3 +1,8 @@
+$.getScript("../js/funcionesComunes.js", function () {
+    console.log("Funciones comunes cargadas");
+});
+
+
 /**
  Variables globales
  cuando el usuario quiera hacer alguna operacion sobre un archivo 
@@ -19,10 +24,13 @@ $(document).ready(function () {
 
 
 function eliminarArchivo() {
+    $("#deleteFile").prop("disabled", true);
+    console.log("Ejecutando accion de elimnacio de archivo");
     idCarpeta = $('#deleteFile').attr('data-idCarpeta');
-    nombreArchivo = $(jq('deleteFile')).attr('data-oldName');
+    nombreArchivo = $('#deleteFile').attr('data-oldName');
     console.log("En funcion eliminar Archivo");
     console.log("Eliminando archivo con idCarpeta: " + idCarpeta + " y nombre de archivo: " + nombreArchivo);
+
     //Petición AJAX
     $.ajax({
         type: "POST",
@@ -38,11 +46,15 @@ function eliminarArchivo() {
                 setTimeout(function () {
                     $('#modalEliminaArchivo').modal('hide');
                 }, 500);
+                $("#deleteFile").prop("disabled", false);
             } else {
                 console.log("No se pudo eliminar el archivo");
+                $("#deleteFile").prop("disabled", false);
             }
         }
     });
+
+    return false;
 
 }
 
@@ -70,56 +82,6 @@ function validarNombreArchivo(nuevoNomArch, classError) {
         muestraMensajeError("El nombre del archivo debe contener al menos un caracter", classError);
     }
     return r1 && r2 && r3 && r4;
-}
-
-
-function editarNombreArchivo() {
-    var idCarpeta = $('#nombreEditarArchivo').attr('data-idCarpeta');
-    var nombreArch = $('#nombreEditarArchivo').attr('data-oldName');
-    var nuevoNomArch = $('#nombreEditarArchivo').val();
-    var flag = validarNombreArchivo(nuevoNomArch, "ErrorEditarArchivo");
-    if (!flag)
-        return false;
-    console.log("Nombre del Archivo " + nombreArch + " Nuevo Nombre " + nuevoNomArch);
-    //Nombre de archivo, ahora llamada a ajax para verificar duplicidad
-    $.ajax({
-        type: "POST",
-        url: "manejadorArchivo.php",
-        data: {
-            Operation: "EditarArchivo",
-            nombreArchivo: nombreArch,
-            nuevoNomArch: nuevoNomArch
-        },
-        success: function (response) {
-            console.log(response);
-            if (response === "correct") {
-                $(jq('row' + nombreArch)).attr('id', 'row' + nuevoNomArch);
-                $(jq('arch' + nombreArch)).text(nuevoNomArch);
-                $(jq('arch' + nombreArch)).attr('id', 'arch' + nuevoNomArch);
-                // Cundo se tenga lo de mover hacer lo mismo
-                $(jq('mov' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
-
-                $(jq('down' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
-                $(jq('edit' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
-                $(jq('del' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
-                $(jq('down' + nombreArch)).attr('id', 'down' + nuevoNomArch);
-                $(jq('edit' + nombreArch)).attr('id', 'edit' + nuevoNomArch);
-                $(jq('del' + nombreArch)).attr('id', 'del' + nuevoNomArch);
-                $(jq('mov' + nombreArch)).attr('id', 'mov' + nuevoNomArch);
-
-                //Mostrar mensaje de confirmación 
-                muestaMensajeOk("Se ha actualizado del nombre del archivo", "resultadoEditarArchivo");
-                //Cerrar modal
-                setTimeout(function () {
-                    $('#modalEditarArchivo').modal('hide');
-                }, 500);
-
-            } else {
-                muestraMensajeError("Ya existe un archivo con el mismo nombre", "resultadoEditarArchivo");
-            }
-        }
-    });
-    return false;
 }
 
 
@@ -156,8 +118,14 @@ function subirArchivo() {
 
             } else if (jsonResponse.Status === "UploadFailed") {
                 muestraMensajeError("Ocurrió un error interno en el servidor, intentelo más tarde", "errorSubirArchivo");
-            } else if (jsonResponse === "NoFileSelected") {
+            } else if (jsonResponse.Status === "NoFileSelected") {
                 muestraMensajeError("Seleccione un archivo", "errorSubirArchivo");
+            } else if (jsonResponse.Status === "duplicated") {
+                muestraMensajeError("Existe un archivo con el mismo nombre en ésta carpeta", "errorSubirArchivo");
+            } else if (jsonResponse.Status === "notenoughspace") {
+                muestraMensajeError("El archivo sobrepasa la capacidad del sistema: El usuario no cuenta con suficiente espacio disponible", "errorSubirArchivo");
+            } else if (jsonResponse.Status === "overload") {
+                muestraMensajeError("El archivo sobrepasa la capacidad del sistema: El archivo pesa mas de 1 GB", "errorSubirArchivo");
             }
             $("#botonSubirArchivo").prop("disabled", false);
             $("#botonSubirArchivo").html('Subir archivo');
@@ -167,36 +135,15 @@ function subirArchivo() {
     return false;
 }
 
-function muestraMensajeError(mensaje, classError) {
-    $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>' + mensaje + '</div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-    /* Button for close alert */
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
-    });
-}
-
-function muestaMensajeOk(mensaje, classOK) {
-    $('#' + classOK).html('<div class="alert alert-success"><button type="button" class="close">×</button>' + mensaje + '</div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-    /* Button for close alert */
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
-    });
-}
-
-//Función para seleccionar correctamente el nombre del archivo cuando tiene caracteres especiales como
+//Funciones para seleccionar correctamente el nombre del archivo cuando tiene caracteres especiales
 function jq(myid) {
     return "#" + myid.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1");
 }
+
+function jq2(myid) {
+    return myid.replace(/(:|\.|\[|\]|,|=|@)/g, "\\$1");
+}
+//
 
 /* Se obtiene la referencia del objeto que invocó al modal, se obtienen sus
  valores y se ponen como atributos para ser utilizados posteriormente*/
@@ -210,6 +157,55 @@ $(document).ready(function () {
         $('#nombreEditarArchivo').attr("data-idCarpeta", idCarpeta);
     });
 });
+
+function editarNombreArchivo() {
+    var idCarpeta = $('#nombreEditarArchivo').attr('data-idCarpeta');
+    var nombreArch = $('#nombreEditarArchivo').attr('data-oldName');
+    var nuevoNomArch = $('#nombreEditarArchivo').val();
+    var flag = validarNombreArchivo(nuevoNomArch, "ErrorEditarArchivo");
+    if (!flag)
+        return false;
+    console.log("Nombre del Archivo " + nombreArch + " Nuevo Nombre " + nuevoNomArch);
+    //Nombre de archivo, ahora llamada a ajax para verificar duplicidad
+    $.ajax({
+        type: "POST",
+        url: "manejadorArchivo.php",
+        data: {
+            Operation: "EditarArchivo",
+            nombreArchivo: nombreArch,
+            nuevoNomArch: nuevoNomArch
+        },
+        success: function (response) {
+            console.log(response);
+            if (response === "correct") {
+                $(jq('row' + nombreArch)).attr('id', jq2('row' + nuevoNomArch));
+                $(jq('arch' + nombreArch)).text(nuevoNomArch);
+                $(jq('arch' + nombreArch)).attr('id', 'arch' + nuevoNomArch);
+                $(jq('mov' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+
+                $(jq('down' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+                $(jq('edit' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+                $(jq('del' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+                $(jq('down' + nombreArch)).attr('id', 'down' + nuevoNomArch);
+                $(jq('edit' + nombreArch)).attr('id', 'edit' + nuevoNomArch);
+                $(jq('del' + nombreArch)).attr('id', 'del' + nuevoNomArch);
+                $(jq('mov' + nombreArch)).attr('id', 'mov' + nuevoNomArch);
+
+                //Mostrar mensaje de confirmación 
+                muestaMensajeOk("Se ha actualizado del nombre del archivo", "resultadoEditarArchivo");
+                //Cerrar modal
+                setTimeout(function () {
+                    $('#modalEditarArchivo').modal('hide');
+                }, 500);
+
+            } else {
+                muestraMensajeError("Ya existe un archivo con el mismo nombre", "resultadoEditarArchivo");
+            }
+        }
+    });
+    return false;
+}
+
 //Eliminar
 $(document).ready(function () {
     $('#modalEliminaArchivo').on('show.bs.modal', function (e) {
@@ -223,24 +219,51 @@ $(document).ready(function () {
 
 //Descargar 
 $(document).ready(function () {
-    $(document).on("click", ".descargaArch", function () {
+    $(document).on("click", ".descargaArch", function (e) {
+        //e.target.id;
+        $(e.target).html('Descargando... <i class="fa fa-refresh fa-spin"></i>');
+        $(e.target).prop("disabled", true);
 
         var idCarpeta = $(this).attr("data-idCarpeta");
         var nombreArchivo = $(this).attr("data-nomArchivo");
 
         console.log("idCarpeta " + idCarpeta);
         console.log("nombreArchivo " + nombreArchivo);
-
-        console.log("Ejecutando ...");
-        $.AjaxDownloader({
+        //Peticion de preparacion
+        $.ajax({
+            type: "POST",
             url: "../php/manejadorArchivo.php",
             data: {
-                Operation: "descargarArchivo",
+                Operation: "prepararArchivo",
                 idCarpeta: idCarpeta,
                 nombreArchivo: nombreArchivo
+            },
+            success: function (response) {
+                console.log(response);
+                if (response === "correct") {
+                    //Recuperacion correcta
+                    console.log("Ejecutando descarga...");
+                    $.AjaxDownloader({
+                        url: "../php/manejadorArchivo.php",
+                        data: {
+                            Operation: "descargarArchivo",
+                            idCarpeta: idCarpeta,
+                            nombreArchivo: nombreArchivo
+                        }
+                    });
+                    $(this).prop("disabled", false);
+                    $(this).html('Descargar');
+                } else {
+                    muestraMensajeError("No se pudo recuperar el archivo en este momento, intente más tarde", "ErroresPrincipal");
+
+                }
+                console.log("Fin de descarga");
+                $(e.target).prop("disabled", false);
+                $(e.target).html('Descargar');
             }
         });
 
+        return true;
     });
 });
 

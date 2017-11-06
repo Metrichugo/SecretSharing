@@ -69,7 +69,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
         <!-- Contenedor principal -->
         <div class="container-fluid" id="ContenidoPrincipal">
-            <div class = "row col-12" id = "ErroresPrincipal"></div>
+            <div id = "ErroresPrincipal"></div>
             <div class="row">
                 <div class="col-12 col-md-12" id="Contenido">
                     <br>
@@ -124,7 +124,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                                 <thead>
                                     <tr>
                                         <th class="text-center">Nombre</th>
-                                        <th class="text-center">Tamaño</th>
+                                        <th class="text-center">Tamaño (bytes)</th>
                                         <th class="text-center">Fecha de subida</th>
                                         <th class="text-center">Acción</th>
                                     </tr>
@@ -206,7 +206,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary"  onclick = "return eliminarCarpeta()">Aceptar</button>
+                        <button type="button" class="btn btn-primary" id="deleteFolder" onclick = "return eliminarCarpeta()">Aceptar</button>
                     </div>
                 </div>
             </div>

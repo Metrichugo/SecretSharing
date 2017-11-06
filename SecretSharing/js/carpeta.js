@@ -1,3 +1,8 @@
+$.getScript("../js/funcionesComunes.js", function () {
+    console.log("Funciones comunes cargadas");
+});
+
+
 /****** Funciones para actualizar contenido en pantalla principal *****************/
 var idCarpetaGlobal = 0;
 
@@ -136,21 +141,21 @@ function validarNombreCarpeta(nomCarpeta, classError) {
     var r1 = true, r2 = true, r3 = true, r4 = true;
     if (nomCarpeta.length >= 255) {
         r1 = false;
-        muestraMensajeError("El nombre de la carpeta no puede exceder los 255 caracteres");
+        muestraMensajeError("Introduce un nombre de carpeta válido: El nombre de la carpeta no puede exceder los 255 caracteres");
     }
     if (nomCarpeta.indexOf("/") !== -1) {
         r2 = false;
-        muestraMensajeError("La carpeta no puede contener el caracter /", classError);
+        muestraMensajeError("Introduce un nombre de carpeta válido: La carpeta no puede contener el caracter /", classError);
     }
 
     if (nomCarpeta.localeCompare(".") === 0 || nomCarpeta.localeCompare("..") === 0) {
         r3 = false;
-        muestraMensajeError("La carpeta no puede llamarse . o ..", classError);
+        muestraMensajeError("Introduce un nombre de carpeta válido: La carpeta no puede llamarse . o ..", classError);
     }
 
     if (nomCarpeta.trim().length === 0) {
         r4 = false;
-        muestraMensajeError("El nombre de la carpeta debe contener al menos un caracter", classError);
+        muestraMensajeError("Introduce un nombre de carpeta válido: El nombre de la carpeta debe contener al menos un caracter", classError);
     }
     return r1 && r2 && r3 && r4;
 }
@@ -192,6 +197,8 @@ function crearNuevaCarpeta() {
 function eliminarCarpeta( ) {
     idCarpeta = idCarpetaGlobal;
     console.log("Desde eliminar carpeta () " + idCarpeta);
+    $("#deleteFolder").prop("disabled", true);
+
     $.ajax({
         type: "POST",
         url: "manejadorCarpeta.php",
@@ -204,8 +211,10 @@ function eliminarCarpeta( ) {
             if (response === "correct") {
                 $('#modalEliminarCarpeta').modal('hide');
                 $('#row' + idCarpeta).remove();
+                $("#deleteFolder").prop("disabled", false);
             } else {
                 console.log("Error al eliminar la carpeta");
+                $("#deleteFolder").prop("disabled", false);
             }
         }
     });
@@ -227,32 +236,6 @@ function cargarCarpetaRaiz() {
 
             return response;
         }
-    });
-}
-
-function muestraMensajeError(mensaje, classError) {
-    $("#" + classError).html('<div class="alert alert-danger"><button type="button" class="close">×</button>' + mensaje + '</div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-    /* Button for close alert */
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
-    });
-}
-
-function muestaMensajeOk(mensaje, classOK) {
-    $('#' + classOK).html('<div class="alert alert-success"><button type="button" class="close">×</button>' + mensaje + '</div>');
-    window.setTimeout(function () {
-        $(".alert").fadeTo(100, 0).slideUp(100, function () {
-            $(this).remove();
-        });
-    }, 5000);
-    /* Button for close alert */
-    $('.alert .close').on("click", function (e) {
-        $(this).parent().fadeTo(500, 0).slideUp(500);
     });
 }
 

@@ -28,7 +28,7 @@ class Usuario_Accion {
         //User exists?
         if ($this->DBConnection->existeUsuario($this->usuario)) {
             $this->DBConnection->close();
-            echo "Duplicated User";
+            echo "duplicated";
         } else {
             $this->usuario->setStatus(STATUS);
             $this->usuario->setEspacioUtilizado(ESP_UTILIZADO);

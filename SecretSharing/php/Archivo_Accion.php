@@ -11,10 +11,17 @@ class Archivo_Accion {
     }
 
     public function subirArchivo() {
+
+        $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
+        if (!$this->validarArchivo($usuario)) {//Archivo no válido
+            return; //
+        }
+
         $dirsubida = "../files/"; //Directorio de Apache donde se almacenan los archivos 
         if ($this->seMovioTemporal($this->archivo->getNombreArchivoGRID(), $dirsubida)) { //Si se movio el archivo del directorio temporal al directorio files
             $carpeta_usuario = "/" . $this->archivo->getIdUsuario();
-            $comando = "python ../python/comparte_archivo.py " . $this->archivo->getNombreArchivoGRID() . " " . $dirsubida . " " . $carpeta_usuario;
+            $comando = "python ../python/comparte_archivo.py " . "\"" . $this->archivo->getNombreArchivoGRID() . "\" " . $dirsubida . " " . $carpeta_usuario;
+            //echo $comando;
             $this->modif_shell_exec($comando, $stdout, $stderr);
             //echo "Salida python: <p>" . $stdout . "</p>";
             //echo "<p>" . $stderr . "</p>";
@@ -26,7 +33,7 @@ class Archivo_Accion {
                 // Insercion en la base de datos           
                 $this->DBConnection->insertaArchivo($this->archivo);
                 //Aumenta espacio utilizado
-                $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
+
                 $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() + $this->archivo->getTamanio());
                 $this->DBConnection->editaEspacioUtilizado($usuario);
                 //Actualiza la variable de sesion 
@@ -34,9 +41,8 @@ class Archivo_Accion {
 
                 //Borrado del archivo
                 unlink($dirsubida . $this->archivo->getNombreArchivoGRID());
-                //unlink($dirsubida . $this->archivo->getNombreArchivoGRID());
                 //unlink($log);
-                unlink($dirsubida . $this->archivo->getNombreArchivoGRID() . ".err");
+                //unlink($dirsubida . $this->archivo->getNombreArchivoGRID() . ".err");
                 //Enviar JSON a la vista 
                 $htmlArchivo = $this->getHTMLArchivo($this->archivo);
                 echo json_encode(array(
@@ -49,6 +55,21 @@ class Archivo_Accion {
         } else {
             echo json_encode(array("Status" => "ErrorCantMove"));
         }
+    }
+
+    private function validarArchivo($usuario) {
+        //Archivo duplicado
+        if ($this->DBConnection->existeArchivo($this->archivo)) {
+            echo json_encode(array("Status" => "duplicated"));
+            return false;
+        } else if ((($usuario->getEspacioUtilizado() + $this->archivo->getTamanio()) / 1E6) > 5000.0) {//Insuficiente espacio
+            echo json_encode(array("Status" => "notenoughspace"));
+            return false;
+        } else if (($this->archivo->getTamanio()) / 1E6 > 1.0) {//Sobrepaso tamaño de archivo
+            echo json_encode(array("Status" => "overload"));
+            return false;
+        }
+        return true;
     }
 
     private function seMovioTemporal($nombreArchivoGRID, $dirsubida) {
@@ -64,7 +85,7 @@ class Archivo_Accion {
                                     <td class="text-center">' . $archivo->getFechaSubida() . '</td>
                                     <td class="text-center">
                                         <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>									
-                                        <a class="btn btn-success btn-sm  descargaArch" href="#" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</a>
+                                        <button class="btn btn-success btn-sm  descargaArch" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</button>
                                         <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
                                         <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
                                     </td>
@@ -106,7 +127,7 @@ class Archivo_Accion {
         }
     }
 
-    public function descargarArchivo() {
+    public function prepararArchivo() {
         //Directorio de subida
         $dirsubida = "../files/";
         $carpeta_usuario = "/" . $this->archivo->getIdUsuario();
@@ -116,11 +137,21 @@ class Archivo_Accion {
         $this->modif_shell_exec($comando);
         //echo "<p>" . $stdout . "</p>";
         //echo "<p>" . $stderr . "</p>";
-        //Validacion recuperacion
-        //
-        
-        //Renombrado del archivo
-        rename($dirsubida . $this->archivo->getNombreArchivoGRID(), $dirsubida . $this->archivo->getNombreArchivo());
+        ////Validación recuperación
+        $string_ok = "El archivo se recupero correctamente";
+        $log = $dirsubida . $this->archivo->getNombreArchivoGRID() . ".out";
+        //Busca la cadena ok para saber si la ejecucion fue correcta
+        if (strpos(file_get_contents($log), $string_ok) !== false) {
+            echo "correct";
+            //Renombrado del archivo
+            rename($dirsubida . $this->archivo->getNombreArchivoGRID(), $dirsubida . $this->archivo->getNombreArchivo());
+        } else {
+            echo "downloadFailed";
+        }
+    }
+
+    public function descargarArchivo() {
+        //Directorio de subida       
         $rutaArchivo = '../files/' . $this->archivo->getNombreArchivo();
 
         //Contenido de la respuesta
@@ -129,13 +160,12 @@ class Archivo_Accion {
         header('Content-Disposition: attachment; filename="' . basename($rutaArchivo) . '"');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
-        ////header('Content-Length: '.filesize($filepath));
         ob_clean();
         flush();
         readfile($rutaArchivo);
 
         //Eliminacion del archivo en la carpeta del servidor
-        unlink($dirsubida . $this->archivo->getNombreArchivo());
+        unlink($rutaArchivo);
         exit();
     }
 

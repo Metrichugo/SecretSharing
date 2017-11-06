@@ -1,3 +1,7 @@
+$.getScript("./js/funcionesComunes.js", function () {
+    console.log("Funciones comunes cargadas");
+});
+
 function submitdata() {
     var email = $('#Email').val();
     var password = $('#Password').val();
@@ -13,19 +17,10 @@ function submitdata() {
         },
         success: function (response) {
             if (response === "correct") {
-                window.open("./php/Principal.php","_self");
+                window.open("./php/Principal.php", "_self");
             } else {
                 console.log(response);
-                $('#Error').html('<div class="alert alert-danger"><button type="button" class="close">×</button>El correo electrónico y/o contraseña no son válidos</div>');
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(100, 0).slideUp(100, function () {
-                        $(this).remove();
-                    });
-                }, 5000);
-                /* Button for close alert */
-                $('.alert .close').on("click", function (e) {
-                    $(this).parent().fadeTo(500, 0).slideUp(500);
-                });
+                muestraMensajeError("El correo electrónico y/o contraseña no son válidos", 'Error');
             }
         }
     });
