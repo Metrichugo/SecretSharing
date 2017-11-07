@@ -7,6 +7,13 @@ include_once("Carpeta.php");
 const STATUS = 1;
 const ESP_UTILIZADO = 0;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../assets/PHPMailer/src/Exception.php';
+require '../assets/PHPMailer/src/PHPMailer.php';
+require '../assets/PHPMailer/src/SMTP.php';
+
 class Usuario_Accion {
 
     protected $usuario;
@@ -139,4 +146,55 @@ class Usuario_Accion {
             echo "incorrect";
         }
     }
+    
+    public function recuperarUsuario(){
+        if($this->DBConnection->existeUsuario($this->usuario)){
+            $this->usuario = $this->DBConnection->consultaUsuario($this->usuario);
+            if( $this->enviarCorreo()){
+                echo "correct";
+            }else{
+                echo "incorrect";
+            }
+            
+        }else{
+            $this->DBConnection->close();
+            echo "incorrect";
+        }
+    }
+    
+    public function enviarCorreo(){
+        $mail = new PHPMailer();  
+        $mail->CharSet = 'UTF-8';
+        //configuracion de phpmailer
+
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'secretocompartido1@gmail.com';
+        $mail->Password = 'Vaporru1';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        
+        //configuracion del correo a enviar 
+
+        $mail->setFrom('secretocompartido1@gmail.com');
+        $mail->addAddress($this->usuario->getidUsuario());
+        $mail->Subject = 'Recuperación de la contraseña Secreto Compartido';
+        $mail->Body = 'Recientemente hemos recibido una solicitud para recuperar su Cuenta del Sistema SecretoCompartido '
+                . $this->usuario->getidUsuario()
+                . ' . Nuestro sistema automatizado a continuación le proporciona su contraseña la cual es: '
+                . $this->usuario->getContrasenia()
+                . '. Por favor no la olvide.';
+        //envio del email
+        //if( $mail->send()  == false ) {
+          //      echo "no se pudo enviar";
+            //    echo "Erro del php mailer". $mail->ErrorInfo;
+        //}else{
+        //        echo "correo enviado" ;
+        //}
+        return $mail->send();
+    }
+    
 }
+
+

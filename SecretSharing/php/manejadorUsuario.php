@@ -6,7 +6,7 @@ include_once("./Usuario_Accion.php");
 
 $operacion = filter_input(INPUT_POST, 'Operation', FILTER_SANITIZE_STRING);
 
-if ($operacion != "iniciarSesion" && $operacion != "registrarUsuario") {    //Modificacion de cuenta
+if ($operacion != "iniciarSesion" && $operacion != "registrarUsuario" && $operacion != "recuperarCuenta" ) {    //Modificacion de cuenta
     session_start();
     if (!isset($_SESSION['usuario'])) {
         header('Location: ../index.html');
@@ -40,7 +40,7 @@ if ($operacion != "iniciarSesion" && $operacion != "registrarUsuario") {    //Mo
             break;
         case "EliminarUsuario";
             $usuarioAccion->eliminarCuentaUsuario();
-            break;
+            break;        
         default;
             echo "invalidrequest";
             break;
@@ -69,6 +69,16 @@ if ($operacion != "iniciarSesion" && $operacion != "registrarUsuario") {    //Mo
             $usuarioAccion = new Usuario_Accion($usuario, $DBConnection);
             //Accion
             $usuarioAccion->registrarUsuario();
+            break;
+        case "recuperarCuenta";
+            //Creacion del objeto de tipo Usuario
+            $usuario = new Usuario();
+            $usuario->setidUsuario(filter_input(INPUT_POST, 'Email', FILTER_VALIDATE_EMAIL));
+            //Construcción del objeto de tipo Usuario_Accion
+            $usuarioAccion = new Usuario_Accion($usuario, $DBConnection);
+            //Accion
+            $usuarioAccion->recuperarUsuario();
+        
             break;
     }
 }

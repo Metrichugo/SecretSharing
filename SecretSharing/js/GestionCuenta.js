@@ -135,7 +135,7 @@ $(document).ready(function () {
             type: "POST",
             url: "../php/manejadorUsuario.php",
             data: {
-                Operation: "EliminarUsuario",                
+                Operation: "EliminarUsuario"                
             },
             success: function (response) {
                 console.log(response);
@@ -151,6 +151,40 @@ $(document).ready(function () {
                 }
             }
         });
+    });
+    
+    
+    
+    
+    //recuperación de cuenta
+    $("#formRecuperarCuenta").submit(function (){
+        console.log("Recuperación de cuenta");
+        var email = $("#correo").val();
+        console.log(email);
+       $.ajax({
+            type: "POST",
+            url: "./php/manejadorUsuario.php",
+            data: {
+                Operation: "recuperarCuenta",
+                Email: email
+            },
+            success: function (response) {
+                console.log(response);
+                           
+                if (response === "correct") {
+                    mostrarRes("#OkRecuperarCuenta", "Se ha enviado su contraseña al correo indicado");
+                    setTimeout(function(){
+                        window.open("./login.html","_self");
+                    }, 2000);
+                    
+                } else {
+                    mostrarError("#ErrorRecuperarCuenta", "Lo sentimos. No pudimos enviar correo a esa cuenta.");
+                }
+                
+            }
+        });
+        
+        return false;
     });
 
 });

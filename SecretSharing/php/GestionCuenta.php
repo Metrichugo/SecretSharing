@@ -36,7 +36,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 
         <!--Scripts usuario-->
         <script src="../js/usuario.js"></script>
-        <script src="../js/GestionCuenta.js"></script>
+        <script src="../js/GestionCuenta.js"></script>*
 
         <!-- Scripts gráfica -->        
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
