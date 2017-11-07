@@ -23,16 +23,18 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Secreto Compartido</title>
+        <title>Gestión de cuenta</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-        <!-- jQuery ,  Popper.js, Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="../assets/bootstrap-4.0.0-beta.2-dist/css/bootstrap.min.css">
+        <!-- jQuery, Popper.js, Bootstrap JS -->
+        <script src="../js/jquery-3.2.1.min.js"></script>
+        <script src="../js/popper.min.js"></script>
+        <script src="../assets/bootstrap-4.0.0-beta.2-dist/js/bootstrap.min.js"></script>
+        <!--Iconos-->
+        <link href="../assets/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
         <!--Scripts usuario-->
         <script src="../js/usuario.js"></script>
@@ -181,7 +183,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                     <button id= "eliminarCuenta" type="button" class="col-sm-9 btn btn-primary" data-toggle="modal" data-target="#modalEliminarCuenta" >Eliminar Cuenta</button>
 
                 </div>
-                
+
                 <div class="col-sm-12 col-md-8">
                     <h4>Cambiar nombre de usuario</h4>
                     <div class="form-bottom" >

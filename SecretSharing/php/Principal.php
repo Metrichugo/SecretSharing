@@ -25,13 +25,13 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../assets/bootstrap-4.0.0-beta.2-dist/css/bootstrap.min.css">
+        <!-- jQuery, Popper.js, Bootstrap JS -->
+        <script src="../js/jquery-3.2.1.min.js"></script>
+        <script src="../js/popper.min.js"></script>
+        <script src="../assets/bootstrap-4.0.0-beta.2-dist/js/bootstrap.min.js"></script>
+        <!--Iconos-->
+        <link href="../assets/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
         <!-- Descarga del archivo -->
         <script type="text/javascript" src = "../js/ajaxdownloader.min.js"></script>
