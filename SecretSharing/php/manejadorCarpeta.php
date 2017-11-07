@@ -107,9 +107,9 @@ function actualizarCarpetas($carpetActual, $DBConnection) {
                             <td class="text-center"><a href = "#"> <p id ="' . $carpeta->getIdCarpeta() . '"  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
                             <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
                             <td class="text-center">
-                                    <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>					                                         
-                                    <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-                                    <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                <button class="btn btn-primary btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalMoverCarpeta"     data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-exchange" aria-hidden="true"></i></button>					                                         
+                                <button class="btn btn-info    btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalEditarCarpeta"    data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>								
+                                <button class="btn btn-danger  btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-trash" aria-hidden="true"></i> </button>
                             </td>
                         </tr>';
     }
@@ -127,10 +127,10 @@ function actualizarArchivos($carpetActual, $DBConnection) {
                                     <td class="text-center">' . $archivo->getTamanio() . '</td>
                                     <td class="text-center">' . $archivo->getFechaSubida() . '</td>
                                     <td class="text-center">
-                                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Mover</a>									
-                                            <button class="btn btn-success btn-sm  descargaArch" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Descargar</button>
-                                            <a class="btn btn-info    btn-sm" href="#" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-edit"></span> Editar</a>
-                                            <a class="btn btn-danger  btn-sm" href="#" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><i class="fa fa-exchange" aria-hidden="true"></i></button> <!--Mover-->									
+                                            <button class="btn btn-success btn-sm  descargaArch" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><i class="fa fa-download" aria-hidden="true"></i></button> <!--Descargar-->
+                                            <button class="btn btn-info    btn-sm" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> <!--Editar-->
+                                            <button class="btn btn-danger  btn-sm" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><i class="fa fa-trash" aria-hidden="true"></i></button>  <!--Borrar-->
                                     </td>
                         </tr>';
     }

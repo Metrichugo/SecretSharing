@@ -221,7 +221,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $(document).on("click", ".descargaArch", function (e) {
         //e.target.id;
-        $(e.target).html('Descargando... <i class="fa fa-refresh fa-spin"></i>');
+        $(e.target).html('<i class="fa fa-refresh fa-spin"></i>');
         $(e.target).prop("disabled", true);
 
         var idCarpeta = $(this).attr("data-idCarpeta");
@@ -259,7 +259,8 @@ $(document).ready(function () {
                 }
                 console.log("Fin de descarga");
                 $(e.target).prop("disabled", false);
-                $(e.target).html('Descargar');
+                $(e.target).html(' ');
+                $(e.target).html('<i class="fa fa-download" aria-hidden="true"></i>');
             }
         });
 

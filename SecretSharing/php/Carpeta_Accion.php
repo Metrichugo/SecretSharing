@@ -48,9 +48,9 @@ class Carpeta_Accion {
                                     <td class="text-center"><a href = "#"> <p id =' . $carpeta->getIdCarpeta() . '  onclick = "actualizarContenidoEnPantalla(' . $carpeta->getIdCarpeta() . ')" >' . $carpeta->getNombreCarpeta() . '</p></a></td>
                                     <td class="text-center">' . $carpeta->getFechaCreacion() . '</td>
                                     <td class="text-center">
-                                        <a class="btn btn-primary btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalMoverCarpeta" data-idCarpeta=' . $carpeta->getIdCarpeta() . '><span class="glyphicon glyphicon-remove"></span> Mover</a>								                                            
-                                        <a class="btn btn-info    btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEditarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . ' ><span class="glyphicon glyphicon-edit"></span> Editar</a>								
-                                        <a class="btn btn-danger  btn-sm btn-sel-carp" href="#" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '  ><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                                        <button class="btn btn-primary btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalMoverCarpeta"     data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-exchange" aria-hidden="true"></i></button>					                                         
+                                        <button class="btn btn-info    btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalEditarCarpeta"    data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>								
+                                        <button class="btn btn-danger  btn-sm btn-sel-carp" data-toggle="modal" data-target="#modalEliminarCarpeta"  data-idCarpeta=' . $carpeta->getIdCarpeta() . '> <i class="fa fa-trash" aria-hidden="true"></i> </button>                            
                                     </td>
                                 </tr>';
     }
