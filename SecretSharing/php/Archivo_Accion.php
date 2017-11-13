@@ -17,6 +17,12 @@ class Archivo_Accion {
             return; //
         }
 
+        $duplicado = false;
+        //Eliminacion del archivo duplicado
+        if ($this->DBConnection->existeArchivo($this->archivo)) {
+            $duplicado = true;
+        }
+
         $dirsubida = "../files/"; //Directorio de Apache donde se almacenan los archivos 
         if ($this->seMovioTemporal($this->archivo->getNombreArchivoGRID(), $dirsubida)) { //Si se movio el archivo del directorio temporal al directorio files
             $carpeta_usuario = "/" . $this->archivo->getIdUsuario();
@@ -30,12 +36,18 @@ class Archivo_Accion {
             $log = $dirsubida . $this->archivo->getNombreArchivoGRID() . ".out";
             //Busca la cadena ok para saber si la ejecucion fue correcta
             if (strpos(file_get_contents($log), $string_ok) !== false) {
-                // Insercion en la base de datos           
-                $this->DBConnection->insertaArchivo($this->archivo);
+                if ($duplicado) {
+                    $archivoBorrar = $this->DBConnection->consultarArchivo($this->archivo->getNombreArchivo(), unserialize($_SESSION["carpetActual"]));
+                    $this->DBConnection->eliminarArchivo($archivoBorrar);
+                    $archivoBorrar->eliminaGRID();
+                }
+
+                // Insercion en la base de datos del nuevo archivo           
+                $this->DBConnection->insertarArchivo($this->archivo);
                 //Aumenta espacio utilizado
 
                 $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() + $this->archivo->getTamanio());
-                $this->DBConnection->editaEspacioUtilizado($usuario);
+                $this->DBConnection->editarEspacioUtilizado($usuario);
                 //Actualiza la variable de sesion 
                 $_SESSION["usuario"] = serialize($usuario);
 
@@ -47,6 +59,7 @@ class Archivo_Accion {
                 $htmlArchivo = $this->getHTMLArchivo($this->archivo);
                 echo json_encode(array(
                     "Status" => "UploadSuccesfull",
+                    "Id"=>"row".$this->archivo->getNombreArchivo(),
                     "Html" => $htmlArchivo
                 ));
             } else {
@@ -58,11 +71,7 @@ class Archivo_Accion {
     }
 
     private function validarArchivo($usuario) {
-        //Archivo duplicado
-        if ($this->DBConnection->existeArchivo($this->archivo)) {
-            echo json_encode(array("Status" => "duplicated"));
-            return false;
-        } else if ((($usuario->getEspacioUtilizado() + $this->archivo->getTamanio()) / 1E6) > 5000.0) {//Insuficiente espacio
+        if ((($usuario->getEspacioUtilizado() + $this->archivo->getTamanio()) / 1E6) > 5000.0) {//Insuficiente espacio
             echo json_encode(array("Status" => "notenoughspace"));
             return false;
         } else if (($this->archivo->getTamanio()) / 1E6 > 1.0) {//Sobrepaso tamaño de archivo
@@ -86,7 +95,7 @@ class Archivo_Accion {
                                     <td class="text-center">
                                     <div class="btn-group" role="group" aria-label="Botones archivo">
                                         <button title="Mover" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMoverArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="mov' . $archivo->getNombreArchivo() . '"><i class="fa fa-exchange" aria-hidden="true"></i></button> <!--Mover-->									
-                                        <button title="Descargar" class="btn btn-success btn-sm  descargaArch" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"><i class="fa fa-download" aria-hidden="true"></i></button> <!--Descargar-->
+                                        <button title="Descargar" class="btn btn-success btn-sm  descargaArch" data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="down' . $archivo->getNombreArchivo() . '"> <i class="fa fa-download" aria-hidden="true"></i> </button> <!--Descargar-->
                                         <button title="Editar" class="btn btn-info    btn-sm" data-toggle="modal" data-target="#modalEditarArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="edit' . $archivo->getNombreArchivo() . '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> <!--Editar-->
                                         <button title="Eliminar" class="btn btn-danger  btn-sm" data-toggle="modal" data-target="#modalEliminaArchivo"  data-idCarpeta="' . $archivo->getIdCarpeta() . '" data-nomArchivo="' . $archivo->getNombreArchivo() . '" id="del' . $archivo->getNombreArchivo() . '"><i class="fa fa-trash" aria-hidden="true"></i></button>  <!--Borrar-->
                                     </div>
@@ -100,7 +109,7 @@ class Archivo_Accion {
             //Actualiza la variable de sesion
             $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
             $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() - $this->archivo->getTamanio());
-            $this->DBConnection->editaEspacioUtilizado($usuario);
+            $this->DBConnection->editarEspacioUtilizado($usuario);
             //Actualiza la variable de sesion 
             $_SESSION["usuario"] = serialize($usuario);
             echo "correct";
@@ -110,10 +119,28 @@ class Archivo_Accion {
     }
 
     public function renombrarArchivo($nuevoNombreArchivo) {
-        if ($this->DBConnection->actualizaArchivo($this->archivo, $nuevoNombreArchivo)) {
-            echo "correct";
+        if ($this->validarNombreArchivo($nuevoNombreArchivo)) {
+            if ($this->DBConnection->actualizarArchivo($this->archivo, $nuevoNombreArchivo)) {
+                echo "correct";
+                return;
+            }
         } else {
-            echo "incorrect";
+            echo "invalidrequest";
+            return;
+        }
+        echo "incorrect";
+        return;
+    }
+
+    private function validarNombreArchivo($nombreArchivo) {
+        if (strlen($nombreArchivo) > 255 || strlen(trim($nombreArchivo)) == 0) {//Mayor a 255
+            return false;
+        } else if (strcmp($nombreArchivo, '.') == 0 || strcmp($nombreArchivo, '..') == 0) {//Es igual a . o ..
+            return false;
+        } else if (substr_count($nombreArchivo, '/')) {//Contiene el caracter barra
+            return false;
+        } else {
+            return true;
         }
     }
 

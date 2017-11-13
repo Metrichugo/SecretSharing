@@ -13,7 +13,7 @@ $usuario = unserialize($_SESSION["usuario"]);
 $DBConnection = unserialize($_SESSION["DBConnection"]);
 $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 //al cargar la pagina la carpeta actual es la carpeta raiz con idCarpetaSuperior=null;
-$carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
+$carpetActual = $DBConnection->consultarCarpetaRaiz($usuario);
 $_SESSION["carpetActual"] = serialize($carpetActual);
 $EspacioTotal = 5000; //5GB
 $EspacioUtilizado = ($usuario->getEspacioUtilizado() / 1E6);
@@ -111,7 +111,7 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                             <img  src="../assets/Login-Icon.png" class="rounded float-left ">
                         </div>
                         <div class="col-sm">
-                            <label for="nombreUsuario" class="col-12"><strong> Nombre de usuario (Email): </strong></label>
+                            <label for="nombreUsuario" class="col-12"><strong> Nombre de usuario (Email) </strong></label>
                             <label id ="nombreUsuario" class="col-12" data-nombreUsuario="<?php
                             echo $usuario->getidUsuario();
                             ?>">
@@ -178,10 +178,9 @@ $EspacioDisponible = $EspacioTotal - $EspacioUtilizado;
                     </div>
 
                     <div class="modal-body">
-                        <p>Para poder modificar tu cuenta introduce nuevamente tu contraseña <p>
-                        <div class="col-sm-12 ">
-                            <input type="password" class="form-control" id="contraseniaModal" placeholder="Introduce aquí tu contraseña" name="contraseña">
-                        </div>
+                        <p>Para poder modificar tu cuenta introduce nuevamente tu contraseña </p>
+                        <input type="password" class="form-control" id="contraseniaModal" placeholder="Introduce aquí tu contraseña" name="contraseña">
+
                         <div class="col-sm-12" id = "ErrorContrasenia"></div>                       
                     </div>
                     <div class="modal-footer">

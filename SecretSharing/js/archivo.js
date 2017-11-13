@@ -84,6 +84,28 @@ function validarNombreArchivo(nuevoNomArch, classError) {
     return r1 && r2 && r3 && r4;
 }
 
+//Consultar duplicidad 
+$(document).ready(function () {
+    $("input:file").change(function () {
+        var nombreArch = $('input[type=file]')[0].files[0].name;
+        console.log(nombreArch);
+        $.ajax({
+            type: "POST",
+            url: "manejadorArchivo.php",
+            data: {
+                Operation: "consultarExisteArchivo",
+                nombreArchivo: nombreArch
+            },
+            success: function (response) {
+                console.log(response);
+                if (response === 'exists') {
+                    muestraMensajeAdvertencia("Existe un archivo con el mismo nombre, será reemplazado.", "errorSubirArchivo")
+                }
+            }
+        });
+    });
+});
+
 
 function subirArchivo() {
     $("#botonSubirArchivo").prop("disabled", true);
@@ -109,6 +131,7 @@ function subirArchivo() {
             console.log(response);
             var jsonResponse = $.parseJSON(response);
             if (jsonResponse.Status === "UploadSuccesfull") {
+                $(jq(jsonResponse.Id)).remove();
                 muestaMensajeOk("Archivo subido correctamente", "resultadoSubirArchivo");
                 $('#tablaArchivos').append(jsonResponse.Html);
                 //Timeout cerrar modal
@@ -220,10 +243,6 @@ $(document).ready(function () {
 //Descargar 
 $(document).ready(function () {
     $(document).on("click", ".descargaArch", function (e) {
-        //e.target.id;
-        $(e.target).html('<i class="fa fa-refresh fa-spin"></i>');
-        $(e.target).prop("disabled", true);
-
         var idCarpeta = $(this).attr("data-idCarpeta");
         var nombreArchivo = $(this).attr("data-nomArchivo");
 
@@ -238,6 +257,11 @@ $(document).ready(function () {
                 idCarpeta: idCarpeta,
                 nombreArchivo: nombreArchivo
             },
+            beforeSend: function () {
+                $(e.target).empty();
+                $(e.target).prop("disabled", true);
+                $(e.target).html('<i class="fa fa-refresh fa-spin"></i>');
+            },
             success: function (response) {
                 console.log(response);
                 if (response === "correct") {
@@ -251,16 +275,13 @@ $(document).ready(function () {
                             nombreArchivo: nombreArchivo
                         }
                     });
-                    $(this).prop("disabled", false);
-                    $(this).html('Descargar');
                 } else {
                     muestraMensajeError("No se pudo recuperar el archivo en este momento, intente más tarde", "ErroresPrincipal");
-
                 }
-                console.log("Fin de descarga");
+                $(e.target).empty();
                 $(e.target).prop("disabled", false);
-                $(e.target).html(' ');
                 $(e.target).html('<i class="fa fa-download" aria-hidden="true"></i>');
+                console.log("Fin de descarga");
             }
         });
 

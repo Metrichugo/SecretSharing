@@ -13,7 +13,7 @@ $usuario = unserialize($_SESSION["usuario"]);
 $DBConnection = unserialize($_SESSION["DBConnection"]);
 $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 //al cargar la pagina la carpeta actual es la carpeta raiz con idCarpetaSuperior=null;
-$carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
+$carpetActual = $DBConnection->consultarCarpetaRaiz($usuario);
 $_SESSION["carpetActual"] = serialize($carpetActual);
 ?>
 
@@ -179,7 +179,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
                     <div class="modal-body">
                         <div class="col-sm-12 ">
-                            <input type="text" class="form-control" id="nombreEditarCarpeta" placeholder="Introduce el nombre de la carpeta" name="nombreEditarCarpeta" required>
+                            <input type="text" class="form-control" id="nombreEditarCarpeta" placeholder="Introduce el nuevo nombre de la carpeta" name="nombreEditarCarpeta" required>
                         </div>
                         <div class="col-sm-12" id = "ErrorEditarCarpeta">
                         </div><div class="col-sm-12" id = "resultadoEditarCarpeta">
@@ -245,7 +245,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
 
                     <div class="modal-body">
                         <div class="col-sm-12 ">
-                            <input type="text" class="form-control" id="nombreEditarArchivo" placeholder="Introduce aqui nuevo nombre del archivo" name="nombreEditarArchivo">
+                            <input type="text" class="form-control" id="nombreEditarArchivo" placeholder="Introduce el nuevo nombre del archivo" name="nombreEditarArchivo">
                         </div>
                         <div class="col-sm-12" id = "ErrorEditarArchivo"></div>
                         <div class="col-sm-12" id = "resultadoEditarArchivo"></div>

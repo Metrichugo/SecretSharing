@@ -5,9 +5,9 @@ if (!isset($_SESSION['usuario'])) {
     header('Location: ../index.html');
     exit;
 }
-include_once("BaseDeDatos.php");
-include_once("Usuario.php");
-include_once("Carpeta.php");
+include_once("./BaseDeDatos.php");
+include_once("./Usuario.php");
+include_once("./Carpeta.php");
 include_once("./Archivo_Accion.php");
 
 //Variables de sesión
@@ -19,9 +19,18 @@ $operacion = filter_input(INPUT_POST, 'Operation', FILTER_SANITIZE_STRING); //Op
 $nombreArchivo = filter_input(INPUT_POST, 'nombreArchivo', FILTER_SANITIZE_STRING); //Nombre del archivo leido desde el metodo POST
 
 switch ($operacion) {
+    case "consultarExisteArchivo";
+        //Construcción del objeto de tipo archivo
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
+        if (is_null($archivo)) {
+            echo "unique";
+        } else {
+            echo "exists";
+        }
+        break;
     case "EliminarArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
         //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
@@ -30,7 +39,7 @@ switch ($operacion) {
 
     case "EditarArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
         //Lectura del nuevo nombre de archivo desde POST
         $nuevoNombreArchivo = filter_input(INPUT_POST, 'nuevoNomArch', FILTER_SANITIZE_STRING);
         //Construcción del objeto de tipo Archivo_Action
@@ -64,7 +73,7 @@ switch ($operacion) {
 
     case "descargarArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
         //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
@@ -73,7 +82,7 @@ switch ($operacion) {
 
     case "prepararArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
         //Construcción del objeto de tipo Archivo_Action
         $archivoAccion = new Archivo_Accion($archivo, $DBConnection);
         //Accion
@@ -82,7 +91,7 @@ switch ($operacion) {
 
     case "moverArchivo";
         //Construcción del objeto de tipo archivo
-        $archivo = $DBConnection->consultaArchivo($nombreArchivo, $carpetActual);
+        $archivo = $DBConnection->consultarArchivo($nombreArchivo, $carpetActual);
         //Lectura del nuevo idCarpeta desde POST
         $idCarpetaDestino = filter_input(INPUT_POST, 'idCarpetaDest', FILTER_SANITIZE_NUMBER_INT);
         //Construcción del objeto de tipo Archivo_Action

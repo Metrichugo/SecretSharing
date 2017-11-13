@@ -19,7 +19,7 @@ if (!$usuario->puedeModificarse()) {
 $DBConnection = unserialize($_SESSION["DBConnection"]);
 $DBConnection->connect(); // Al finaliza el archivo se cierra la conexion con db
 //al cargar la pagina la carpeta actual es la carpeta raiz con idCarpetaSuperior=null;
-$carpetActual = $DBConnection->consultaCarpetaRaiz($usuario);
+$carpetActual = $DBConnection->consultarCarpetaRaiz($usuario);
 $_SESSION["carpetActual"] = serialize($carpetActual);
 ?>
 
@@ -103,18 +103,18 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                         <div class="card-body">
                             <form id = "formNombreUsuario">
                                 <div class="form-group">
-                                    <label for="staticEmail" class="col-form-label">Nombre de Usuario actual (email):</label>    
+                                    <label for="staticEmail" class="col-form-label">Nombre de usuario actual (email)</label>    
                                     <input type="email" readonly class="form-control" id="staticEmail" value="<?php
                                     echo $usuario->getidUsuario();
                                     ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Email" class="col-form-label">Nombre de Usuario (email)</label>
+                                    <label for="Email" class="col-form-label">Nombre de usuario (email)</label>
                                     <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" name="Email" required autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <label for="confirmaEmail" class="col-form-label">Confirmación del nombre de usuario (Email)</label>
+                                    <label for="confirmaEmail" class="col-form-label">Confirmación del nombre de usuario (email)</label>
                                     <input type="email" class="form-control" id="confirmaEmail"  placeholder="ejemplo@servidor.com" name="confirmacionEmail" required>                                
                                 </div>
                                 <div class="form-group">

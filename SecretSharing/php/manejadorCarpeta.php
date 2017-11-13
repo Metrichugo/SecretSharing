@@ -5,9 +5,10 @@ if (!isset($_SESSION['usuario'])) {
     header('Location: ../index.html');
     exit;
 }
-include_once("BaseDeDatos.php");
-include_once("Usuario.php");
-include_once("Carpeta.php");
+include_once("./BaseDeDatos.php");
+include_once("./Usuario.php");
+include_once("./Carpeta.php");
+include_once("./Archivo.php");
 include_once("./Carpeta_Accion.php");
 
 $usuario = unserialize($_SESSION["usuario"]);
@@ -34,7 +35,7 @@ switch ($operacion) {
     case "eliminarCarpeta";
         //Construcción del objeto de tipo carpeta
         $idCarpeta = filter_input(INPUT_POST, 'idCarpeta', FILTER_SANITIZE_NUMBER_INT);
-        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
+        $carpeta = $DBConnection->consultarCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
         //Construcción del objeto de tipo Carpeta_Action
         $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
         //Accion
@@ -45,7 +46,7 @@ switch ($operacion) {
         //Construcción del objeto de tipo carpeta
         $nuevoNombreCarpeta = filter_input(INPUT_POST, 'nombreCarpeta', FILTER_SANITIZE_STRING);
         $idCarpetaEditar = filter_input(INPUT_POST, 'idCarpetaEditar', FILTER_SANITIZE_NUMBER_INT);
-        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpetaEditar);
+        $carpeta = $DBConnection->consultarCarpeta($carpetActual->getIdUsuario(), $idCarpetaEditar);
         //Construcción del objeto de tipo Carpeta_Action
         $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
         //Accion
@@ -55,10 +56,10 @@ switch ($operacion) {
         //Construcción de los objetos de tipo carpeta
         //Carpeta a mover
         $idCarpeta = filter_input(INPUT_POST, 'idCarpeta', FILTER_SANITIZE_NUMBER_INT);
-        $carpeta = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
+        $carpeta = $DBConnection->consultarCarpeta($carpetActual->getIdUsuario(), $idCarpeta);
         //Carpeta destino
         $idCarpetaDest = filter_input(INPUT_POST, 'idCarpetaDest', FILTER_SANITIZE_NUMBER_INT);
-        $carpetaDestino = $DBConnection->consultaCarpeta($carpetActual->getIdUsuario(), $idCarpetaDest);
+        $carpetaDestino = $DBConnection->consultarCarpeta($carpetActual->getIdUsuario(), $idCarpetaDest);
         //Construcción del objeto de tipo Carpeta_Action
         $carpetaAccion = new Carpeta_Accion($carpeta, $DBConnection);
         //Accion
@@ -93,13 +94,13 @@ switch ($operacion) {
 function actualizarCarpetaActual($usuario, $DBConnection) {
     $idCarpetaMoverse = filter_input(INPUT_POST, 'idCarpetaMoverse', FILTER_SANITIZE_NUMBER_INT);
     //Actualizamos el objeto carpeta a la que se va a mostrar en pantalla
-    $carpeta = $DBConnection->consultaCarpeta($usuario->getidUsuario(), $idCarpetaMoverse);
+    $carpeta = $DBConnection->consultarCarpeta($usuario->getidUsuario(), $idCarpetaMoverse);
     $_SESSION["carpetActual"] = serialize($carpeta);
     echo "correct";
 }
 
 function actualizarCarpetas($carpetActual, $DBConnection) {
-    $stack = $DBConnection->listaCarpetas($carpetActual);
+    $stack = $DBConnection->listarCarpetas($carpetActual);
     $ans = "";
     while (!$stack->isEmpty()) {
         $carpeta = $stack->pop();
@@ -119,7 +120,7 @@ function actualizarCarpetas($carpetActual, $DBConnection) {
 }
 
 function actualizarArchivos($carpetActual, $DBConnection) {
-    $stack = $DBConnection->listaArchivos($carpetActual);
+    $stack = $DBConnection->listarArchivos($carpetActual);
     //Pila donde se almacena los archivos de la carpeta
     $ans = "";
     while (!$stack->isEmpty()) {
@@ -147,7 +148,7 @@ function irCarpetaAtras($usuario, $carpetActual, $DBConnection) {
         exit();
     }
     $idCarpetaSup = $carpetActual->getIdCarpetaSuperior();
-    $carpetaSup = $DBConnection->consultaCarpeta($usuario->getidUsuario(), $idCarpetaSup);
+    $carpetaSup = $DBConnection->consultarCarpeta($usuario->getidUsuario(), $idCarpetaSup);
     $_SESSION["carpetActual"] = serialize($carpetaSup);
     echo( $idCarpetaSup );
 }

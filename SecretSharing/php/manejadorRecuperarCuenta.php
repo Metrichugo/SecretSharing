@@ -13,8 +13,8 @@ $url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_STRING);
 if (!empty($email) && !empty($url)) {
     $DBConnection = new BaseDeDatos();
     $DBConnection->connect();
-    if ($DBConnection->consultaEnlaceUsuario($usuario, $url)) {//El enlace es válido
-        $usuario = $DBConnection->consultaUsuario($usuario);
+    if ($DBConnection->consultarEnlaceUsuario($usuario, $url)) {//El enlace es válido
+        $usuario = $DBConnection->consultarUsuario($usuario);
         //Construcción del objeto de tipo Usuario_Accion
         $usuarioAccion = new Usuario_Accion($usuario, $DBConnection);
         //Accion
@@ -24,9 +24,7 @@ if (!empty($email) && !empty($url)) {
         $_SESSION["usuario"] = serialize($usuario);
         header('Location: ./ModificarCuenta.php');
     } else {
-        echo $email;
-        echo $url;
-        //header('Location: ../index.html');
+        header('Location: ../index.html');
         exit;
     }
 } else {

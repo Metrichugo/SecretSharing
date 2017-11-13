@@ -41,7 +41,7 @@ class Usuario_Accion {
             $this->usuario->setStatus(STATUS);
             $this->usuario->setEspacioUtilizado(ESP_UTILIZADO);
             //Se inserta el usuario y su carpeta raiz en la BD
-            if ($this->DBConnection->insertaUsuario($this->usuario) && $this->DBConnection->insertaCarpetaRaiz($this->usuario)) {
+            if ($this->DBConnection->insertarUsuario($this->usuario) && $this->DBConnection->insertarCarpetaRaiz($this->usuario)) {
                 echo "correct";
             } else {
                 echo "incorrect";
@@ -63,7 +63,7 @@ class Usuario_Accion {
     public function iniciarSesion() {
         //El usuario existe?
         if ($this->DBConnection->existeUsuarioContrasenia($this->usuario)) {
-            $this->usuario = $this->DBConnection->consultaUsuario($this->usuario);
+            $this->usuario = $this->DBConnection->consultarUsuario($this->usuario);
             $this->usuario->setModificarse(FALSE);
             //Se inicia una sesión de php
             session_start();
@@ -99,7 +99,7 @@ class Usuario_Accion {
         $oldPassword = $this->usuario->getContrasenia();
         $this->usuario->modificarContrasenia($newPassword);
         $es_valida_contrasenia = $this->validarContrasenia($this->usuario->getidUsuario(), $this->usuario->getContrasenia());
-        if ($es_valida_contrasenia && $this->DBConnection->actualizaUsuario($this->usuario)) {
+        if ($es_valida_contrasenia && $this->DBConnection->actualizarUsuario($this->usuario)) {
             $_SESSION["usuario"] = serialize($this->usuario);
             echo "correct";
         } else {
@@ -146,7 +146,7 @@ class Usuario_Accion {
     }
 
     public function eliminarCuentaUsuario() {
-        if ($this->DBConnection->borraUsuario($this->usuario)) {
+        if ($this->DBConnection->borrarUsuario($this->usuario)) {
             $this->usuario->eliminaGRID();
             $this->cerrarSesion();
         } else {
@@ -157,7 +157,7 @@ class Usuario_Accion {
 
     public function recuperarUsuario() {
         if ($this->DBConnection->existeUsuario($this->usuario)) {
-            $this->usuario = $this->DBConnection->consultaUsuario($this->usuario);
+            $this->usuario = $this->DBConnection->consultarUsuario($this->usuario);
             if ($this->enviarCorreo()) {
                 echo "correct";
             } else {
@@ -172,7 +172,7 @@ class Usuario_Accion {
     private function enviarCorreo() {
         $urlRecuperacion = bin2hex(openssl_random_pseudo_bytes(31));
         //Insertar en la BD
-        $this->DBConnection->editaEnlaceUsuario($this->usuario, $urlRecuperacion);
+        $this->DBConnection->editarEnlaceUsuario($this->usuario, $urlRecuperacion);
         $enlace = "https://maestro/php/manejadorRecuperarCuenta.php?usuario=" . $this->usuario->getidUsuario() . "&url=" . $urlRecuperacion;
 
         $mail = new PHPMailer();

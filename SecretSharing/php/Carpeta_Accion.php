@@ -28,9 +28,9 @@ class Carpeta_Accion {
         }
         //Creacion de objeto de tipo carpeta
         //Inserción en la base de datos
-        if ($this->DBConnection->insertaCarpeta($this->carpeta)) {
+        if ($this->DBConnection->insertarCarpeta($this->carpeta)) {
             //Se envia a la vista el código HTML de la carpeta
-            $carpetaVista = $this->DBConnection->consultaCarpetaObjeto($this->carpeta);
+            $carpetaVista = $this->DBConnection->consultarCarpetaObjeto($this->carpeta);
             $htmlCarpeta = $this->getHTMLCarpeta($carpetaVista);
             echo json_encode(array(
                 "Status" => "correct",
@@ -69,20 +69,20 @@ class Carpeta_Accion {
     
     private function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
         //Eliminación de subcarpetas
-        $pilaSubcarpetas = $DBConnection->listaCarpetas($carpeta);
+        $pilaSubcarpetas = $DBConnection->listarCarpetas($carpeta);
         while (!$pilaSubcarpetas->isEmpty()) {
             $this->eliminaCarpetaYArchivosGRID($pilaSubcarpetas->pop(), $DBConnection);
         }
 
         //Eliminacion de archivos de la carpeta
-        $pilaArchivos = $DBConnection->listaArchivos($carpeta);
+        $pilaArchivos = $DBConnection->listarArchivos($carpeta);
         while (!$pilaArchivos->isEmpty()) {
             $archivo = $pilaArchivos->pop();
             $archivo->eliminaGRID();
             //Actualiza la variable de sesion
             $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
             $usuario->setEspacioUtilizado($usuario->getEspacioUtilizado() - $archivo->getTamanio());
-            $DBConnection->editaEspacioUtilizado($usuario);
+            $DBConnection->editarEspacioUtilizado($usuario);
             //Actualiza la variable de sesion 
             $_SESSION["usuario"] = serialize($usuario);
         }

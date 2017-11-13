@@ -1,8 +1,8 @@
 <?php
 
-include("Usuario.php");
-include("Carpeta.php");
-include("Archivo.php");
+include_once("Usuario.php");
+include_once("Carpeta.php");
+include_once("Archivo.php");
 
 class BaseDeDatos {
 
@@ -29,26 +29,26 @@ class BaseDeDatos {
 
     /*     * **********************************  Actions for USERS  *********************************** */
 
-    public function insertaUsuario($Usuario) {
-        $email = $Usuario->getidUsuario();
-        $password = $Usuario->getContrasenia();
-        $alias = $Usuario->getAlias();
-        $status = $Usuario->getStatus();
-        $espacioUtilizado = $Usuario->getEspacioUtilizado();
+    public function insertarUsuario($usuario) {
+        $email = $usuario->getidUsuario();
+        $password = $usuario->getContrasenia();
+        $alias = $usuario->getAlias();
+        $status = $usuario->getStatus();
+        $espacioUtilizado = $usuario->getEspacioUtilizado();
         $stmt = $this->connection->prepare("INSERT INTO usuario (idUsuario,contrasenia,alias,status,espacioUtilizado) VALUES (?,?,?,?,?)");
         $stmt->bind_param("sssii", $email, $password, $alias, $status, $espacioUtilizado);
         return $stmt->execute();
     }
 
-    public function borraUsuario($Usuario) {
-        $email = $Usuario->getIdUsuario();
+    public function borrarUsuario($usuario) {
+        $email = $usuario->getIdUsuario();
         $stmt = $this->connection->prepare("DELETE FROM usuario WHERE idUsuario = ?");
         $stmt->bind_param("s", $email);
         return $stmt->execute();
     }
 
-    public function consultaUsuario($Usuario) {
-        $email = $Usuario->getidUsuario();
+    public function consultarUsuario($usuario) {
+        $email = $usuario->getidUsuario();
         $stmt = $this->connection->prepare("SELECT idUsuario, contrasenia ,alias,status,espacioUtilizado FROM usuario WHERE idUsuario = ?");
         $stmt->bind_param("s", $email);
         if ($stmt->execute()) {
@@ -67,7 +67,7 @@ class BaseDeDatos {
         return;
     }
 
-    public function consultaEnlaceUsuario($usuario, $url) {
+    public function consultarEnlaceUsuario($usuario, $url) {
         $idUsuario = $usuario->getidUsuario();
         $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS result FROM usuario WHERE idUsuario = ? AND urlRecuperacion=?");
         $stmt->bind_param("ss", $idUsuario, $url);
@@ -79,34 +79,34 @@ class BaseDeDatos {
         }
     }
 
-    public function editaEnlaceUsuario($usuario, $urlRecuperacion) {
+    public function editarEnlaceUsuario($usuario, $urlRecuperacion) {
         $idUsuario = $usuario->getidUsuario();
         $stmt = $this->connection->prepare("UPDATE usuario SET urlRecuperacion=? WHERE idUsuario=?");
         $stmt->bind_param("ss", $urlRecuperacion, $idUsuario);
         return $stmt->execute();
     }
 
-    public function actualizaUsuario($Usuario) {
-        $email = $Usuario->getidUsuario();
-        $password = $Usuario->getContrasenia();
-        $alias = $Usuario->getAlias();
+    public function actualizarUsuario($usuario) {
+        $email = $usuario->getidUsuario();
+        $password = $usuario->getContrasenia();
+        $alias = $usuario->getAlias();
         $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
         $stmt->bind_param("ssss", $email, $password, $alias, $email);
         return $stmt->execute();
     }
 
-    public function actualizaIdUsuario($Usuario, $newIdUsuario) {
-        $email = $Usuario->getidUsuario();
-        $password = $Usuario->getContrasenia();
-        $alias = $Usuario->getAlias();
+    public function actualizaIdUsuario($usuario, $newIdUsuario) {
+        $email = $usuario->getidUsuario();
+        $password = $usuario->getContrasenia();
+        $alias = $usuario->getAlias();
         $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
         $stmt->bind_param("ssss", $newIdUsuario, $password, $alias, $email);
         return $stmt->execute();
     }
 
-    public function existeUsuario($Usuario) {
-        $email = $Usuario->getidUsuario();
-        $password = $Usuario->getContrasenia();
+    public function existeUsuario($usuario) {
+        $email = $usuario->getidUsuario();
+        $password = $usuario->getContrasenia();
         $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ?");
         $stmt->bind_param("s", $email);
         if ($stmt->execute()) {
@@ -117,9 +117,9 @@ class BaseDeDatos {
         }
     }
 
-    public function existeUsuarioContrasenia($Usuario) {
-        $email = $Usuario->getidUsuario();
-        $password = $Usuario->getContrasenia();
+    public function existeUsuarioContrasenia($usuario) {
+        $email = $usuario->getidUsuario();
+        $password = $usuario->getContrasenia();
         $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia=?");
         $stmt->bind_param("ss", $email, $password);
         if ($stmt->execute()) {
@@ -130,7 +130,7 @@ class BaseDeDatos {
         }
     }
 
-    public function editaEspacioUtilizado($usuario) {
+    public function editarEspacioUtilizado($usuario) {
         $stmt = $this->connection->prepare("UPDATE usuario SET espacioUtilizado=? WHERE idUsuario=?");
         $espacioUtilizado = $usuario->getEspacioUtilizado();
         $idUsuario = $usuario->getidUsuario();
@@ -140,8 +140,8 @@ class BaseDeDatos {
 
     /*     * **********************************  Actions for CARPETAS  *********************************** */
 
-    public function consultaCarpetaRaiz($Usuario) {
-        $idUsuario = $Usuario->getidUsuario();
+    public function consultarCarpetaRaiz($usuario) {
+        $idUsuario = $usuario->getidUsuario();
         $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE idUsuario = ? and idCarpetaSuperior IS NULL");
         $stmt->bind_param("s", $idUsuario);
         if ($stmt->execute()) {
@@ -155,7 +155,7 @@ class BaseDeDatos {
         return;
     }
 
-    public function consultaCarpeta($idUsuario, $idCarpeta) {
+    public function consultarCarpeta($idUsuario, $idCarpeta) {
         $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE idCarpeta = ? AND idUsuario = ? ");
         $stmt->bind_param("is", $idCarpeta, $idUsuario);
         if ($stmt->execute()) {
@@ -170,7 +170,7 @@ class BaseDeDatos {
     }
 
     //Se creo este método
-    public function consultaCarpetaObjeto($carpeta) {
+    public function consultarCarpetaObjeto($carpeta) {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
         $nombreCarpeta = $carpeta->getNombreCarpeta();
@@ -204,16 +204,16 @@ class BaseDeDatos {
         }
     }
 
-    public function insertaCarpetaRaiz($Usuario) {
-        $idUsuario = $Usuario->getidUsuario();
-        $nombreNuevaCarpeta = $Usuario->getidUsuario();
+    public function insertarCarpetaRaiz($usuario) {
+        $idUsuario = $usuario->getidUsuario();
+        $nombreNuevaCarpeta = $usuario->getidUsuario();
         $stmt = $this->connection->prepare("INSERT INTO carpeta (idUsuario,  nombreCarpeta, fechaCreacion) "
                 . "VALUES  (?, ?, CURDATE() )");
         $stmt->bind_param("ss", $idUsuario, $nombreNuevaCarpeta);
         return $stmt->execute();
     }
 
-    public function insertaCarpeta($carpeta) {
+    public function insertarCarpeta($carpeta) {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
         $nombreCarpeta = $carpeta->getNombreCarpeta();
@@ -223,7 +223,7 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
-    public function listaCarpetas($carpeta) {
+    public function listarCarpetas($carpeta) {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaActual = $carpeta->getIdCarpeta();
         $stmt = $this->connection->prepare("SELECT * from carpeta WHERE  idUsuario = ? and  idCarpetaSuperior = ? ORDER BY nombreCarpeta DESC");
@@ -298,7 +298,7 @@ class BaseDeDatos {
 
     /*     * **********************************  Actions for FILES  *********************************** */
 
-    public function listaArchivos($carpeta) {
+    public function listarArchivos($carpeta) {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaActual = $carpeta->getIdCarpeta();
 
@@ -328,7 +328,7 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
-    public function actualizaArchivo($archivo, $nuevoNomArch) {
+    public function actualizarArchivo($archivo, $nuevoNomArch) {
         $idUsuario = $archivo->getIdUsuario();
         $nombreArchivo = $archivo->getNombreArchivo();
         $idCarpeta = $archivo->getIdCarpeta();
@@ -338,7 +338,7 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
-    public function insertaArchivo($archivo) {
+    public function insertarArchivo($archivo) {
         $nombreArchivo = $archivo->getNombreArchivo();
         $idCarpeta = $archivo->getIdCarpeta();
         $idUsuario = $archivo->getIdUsuario();
@@ -352,19 +352,7 @@ class BaseDeDatos {
         return $stmt->execute();
     }
 
-    public function obtieneArchivo($nombreArchivo, $idCarpeta) {
-        $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=?");
-        $stmt->bind_param("si", $nombreArchivo, $idCarpeta); //s->String, i->Integer        
-        $stmt->execute();
-        $stmt->bind_result($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
-        $archivo = null;
-        while ($stmt->fetch()) {
-            $archivo = new Archivo($nombreArchivo, $idCarpeta, $idUsuario, $nombreArchivoGRID, $tamanio, $fechaSubida);
-        }
-        return $archivo;
-    }
-
-    public function consultaArchivo($nombreArchivo, $carpeta) {
+    public function consultarArchivo($nombreArchivo, $carpeta) {
         $idCarpeta = $carpeta->getIdCarpeta();
         $idUsuario = $carpeta->getIdUsuario();
         $stmt = $this->connection->prepare("SELECT * FROM archivo WHERE nombreArchivo=? AND idCarpeta=? AND idUsuario=?");

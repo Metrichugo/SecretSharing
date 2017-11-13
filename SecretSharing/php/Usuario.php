@@ -67,7 +67,6 @@ class Usuario {
 
     function setModificarse($puedeModificar) {
         $this->puedeModificar = $puedeModificar;
-        return $this;
     }
 
     function eliminaGRID() {
