@@ -11,7 +11,6 @@ class Archivo_Accion {
     }
 
     public function subirArchivo() {
-
         $usuario = unserialize($_SESSION["usuario"]); //Objeto de sesion tipo usuario
         if (!$this->validarArchivo($usuario)) {//Archivo no válido
             return; //

@@ -66,7 +66,7 @@ class Carpeta_Accion {
         }
         return;
     }
-    
+
     private function eliminaCarpetaYArchivosGRID($carpeta, $DBConnection) {
         //Eliminación de subcarpetas
         $pilaSubcarpetas = $DBConnection->listarCarpetas($carpeta);
@@ -104,7 +104,7 @@ class Carpeta_Accion {
 
     public function renombrarCarpeta($nuevoNombreCarpeta, $carpetaActual) {
         //Se verifica el nombre de la carpeta
-        if ($this->validaNombreCarpeta($nuevoNombreCarpeta)) {
+        if (!$this->validaNombreCarpeta($nuevoNombreCarpeta)) {
             echo "invalidrequest";
             return;
         }
@@ -125,7 +125,7 @@ class Carpeta_Accion {
     private function validaNombreCarpeta($nombreCarpeta) {
         if (strlen($nombreCarpeta) > 255) {//Mayor a 255
             return false;
-        } else if ($nombreCarpeta == '.' || $nombreCarpeta = '..') {//Es igual a . o ..
+        } else if ($nombreCarpeta == '.' || $nombreCarpeta == '..') {//Es igual a . o ..
             return false;
         } else if (substr_count($nombreCarpeta, '/')) {//Contiene el caracter barra
             return false;
