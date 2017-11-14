@@ -13,8 +13,8 @@ def main(argv):
 	ruta_destino_grid=argv[2] 	
 	ruta_y_nombre=ruta_archivo_php+'/'+nombre_archivo
 
-	ruta_ejecutable="/home/victor/Documentos/Ejecutables/Share"
-	ruta_servidores="/home/victor/Documentos/Ejecutables/servidores.txt"
+	ruta_ejecutable="../ejecutables/Share"
+	ruta_servidores="../ejecutables/servidores.txt"
 	numero_shares=4
 	umbral=2
 
