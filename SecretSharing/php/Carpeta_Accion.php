@@ -14,7 +14,7 @@ class Carpeta_Accion {
 
     public function crearCarpeta() {
         //Se verifica el nombre de la carpeta
-        if ($this->validaNombreCarpeta($this->carpeta->getNombreCarpeta())) {
+        if (!$this->validaNombreCarpeta($this->carpeta->getNombreCarpeta())) {
             echo "invalidname";
             return;
         }
