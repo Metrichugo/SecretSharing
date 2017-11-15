@@ -73,7 +73,7 @@ class Archivo_Accion {
         if ((($usuario->getEspacioUtilizado() + $this->archivo->getTamanio()) / 1E6) > 5000.0) {//Insuficiente espacio
             echo json_encode(array("Status" => "notenoughspace"));
             return false;
-        } else if (($this->archivo->getTamanio()) / 1E6 > 1.0) {//Sobrepaso tamaño de archivo
+        } else if (($this->archivo->getTamanio()) / 1E9 > 1.0) {//Sobrepaso tamaño de archivo
             echo json_encode(array("Status" => "overload"));
             return false;
         }
@@ -89,7 +89,7 @@ class Archivo_Accion {
     private function getHTMLArchivo($archivo) {
         return $htmlArchivo = '<tr id="row' . $archivo->getNombreArchivo() . '">
                                     <td class="text-center" id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</td>
-                                    <td class="text-center">' . $archivo->getTamanio() . '</td>
+                                    <td class="text-center">' . $archivo->getTamanio()/ 1E6 . '</td>
                                     <td class="text-center">' . $archivo->getFechaSubida() . '</td>
                                     <td class="text-center">
                                     <div class="btn-group" role="group" aria-label="Botones archivo">

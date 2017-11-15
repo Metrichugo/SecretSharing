@@ -113,6 +113,14 @@ function subirArchivo() {
 
     var inputFile = document.getElementById("fileToUpload");
     var file = inputFile.files[0];
+    if (inputFile.files[0].size > 1E9) {
+        muestraMensajeError("El archivo sobrepasa la capacidad del sistema: El archivo pesa mas de 1 GB", "errorSubirArchivo");
+        $("#botonSubirArchivo").prop("disabled", false);
+        $("#botonSubirArchivo").html('Subir archivo');
+        return false;
+    }
+
+
     console.log("Contenido:");
     console.log(file);
 

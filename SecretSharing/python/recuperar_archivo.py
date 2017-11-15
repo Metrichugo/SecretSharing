@@ -15,8 +15,8 @@ def main(argv):
 
 	ruta_ejecutable="../ejecutables/Recover"
 	ruta_servidores="../ejecutables/servidores.txt"
-	numero_shares=4
-	umbral=2
+	numero_shares=5
+	umbral=3
 
 	print("Nombre del archivo: "+nombre_archivo +" \nUbicacion de salida: "+ruta_archivo_php+ "\nRuta grid: "+ruta_destino_grid)
 

@@ -127,7 +127,7 @@ function actualizarArchivos($carpetActual, $DBConnection) {
         $archivo = $stack->pop();
         $ans = $ans . '<tr id="row' . $archivo->getNombreArchivo() . '">
                                     <td class="text-center" id="arch' . $archivo->getNombreArchivo() . '">' . $archivo->getNombreArchivo() . '</td>
-                                    <td class="text-center">' . $archivo->getTamanio() . '</td>
+                                    <td class="text-center">' . $archivo->getTamanio()/ 1E6 . '</td>
                                     <td class="text-center">' . $archivo->getFechaSubida() . '</td>
                                     <td class="text-center">
                                     <div class="btn-group" role="group" aria-label="Botones archivo">

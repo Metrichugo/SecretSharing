@@ -126,7 +126,7 @@ $_SESSION["carpetActual"] = serialize($carpetActual);
                                 <thead>
                                     <tr>
                                         <th class="text-center">Nombre</th>
-                                        <th class="text-center">Tamaño (bytes)</th>
+                                        <th class="text-center">Tamaño (MB)</th>
                                         <th class="text-center">Fecha de subida</th>
                                         <th class="text-center">Acción</th>
                                     </tr>
