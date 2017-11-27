@@ -112,18 +112,23 @@ function subirArchivo() {
     $("#botonSubirArchivo").html('Subiendo... <i class="fa fa-refresh fa-spin"></i>');
 
     var inputFile = document.getElementById("fileToUpload");
+    if (jQuery.type(inputFile.files[0]) === "undefined") {
+        muestraMensajeError("Seleccione un archivo", "errorSubirArchivo");
+        $("#botonSubirArchivo").prop("disabled", false);
+        $("#botonSubirArchivo").html('Subir archivo');
+        return false;
+    }
+
     var file = inputFile.files[0];
+    console.log("Contenido:");
+    console.log(file);
     if (inputFile.files[0].size > 1E9) {
         muestraMensajeError("El archivo sobrepasa la capacidad del sistema: El archivo pesa mas de 1 GB", "errorSubirArchivo");
         $("#botonSubirArchivo").prop("disabled", false);
         $("#botonSubirArchivo").html('Subir archivo');
         return false;
     }
-
-
-    console.log("Contenido:");
-    console.log(file);
-
+    
     var form_data = new FormData();
     form_data.append('file', file);
     form_data.append('Operation', 'SubirArchivo');

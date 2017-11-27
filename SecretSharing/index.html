@@ -6,9 +6,7 @@
         <title>Secreto Compartido</title>
 
         <link rel="stylesheet" href="css/index.css">
-        <link rel="stylesheet" href="css/navbar.css">
-        <link rel="stylesheet" href="css/sticky-footer.css">
-
+        <!--<link rel="stylesheet" href="css/navbar.css">-->
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="./assets/bootstrap-4.0.0-beta.2-dist/css/bootstrap.min.css">
         <!-- jQuery, Popper.js, Bootstrap JS -->
@@ -39,142 +37,105 @@
             </div>
         </nav>
 
-        <div class="container-fluid" id="MainContent">
-            <div class="row" id="HeaderText">
-                <div class="col-sm-6 offset-sm-3 align-self-center" id="Intro">
-                    <h1 class="text-center"> Accede a tu información de forma segura</h1>
-                </div>
-            </div>
-            <div class="row" id="HeaderButtons">
-                <div class="col-sm-2 offset-sm-4">
-                    <p><a class="btn btn-success btn-lg btn-block" href="login.html" role="button">Iniciar Sesión</a></p>
-                </div>
-                <div class="col-sm-2">
-                    <p><a class="btn btn-secondary btn-lg btn-block" href="#SignUp" role="button">Crear Cuenta</a></p>
+        <div class="jumbotron jumbotron-fluid" id="MainContent">
+            <div class="container">
+                <h1 class="display-5 text-center text-light">Accede a tu información de forma segura</h1>
+                <hr>
+                <div class="row justify-content-center">
+                    <p><a class="btn btn-success btn-lg" href="login.html" role="button">Iniciar Sesión</a></p>
+                    <p>&nbsp;&nbsp;;&nbsp;</p>
+                    <p><a class="btn btn-secondary btn-lg" href="#SignUp" role="button">Crear Cuenta</a></p>
                 </div>
             </div>
         </div>
-
         <div class="container-fluid" id="Services">
-            <div class="row">
-                <div class="col-sm-4 offset-sm-4">
-                    <p class="h1 section-header">¡Prueba nuestros servicios!</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="text-center">
-                        <img src="assets/Login-Icon.png" width="30%">
-                        <p class="h2">Servicio 1</p>
-                    </div>
-                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-                        del cañón.
-                    </p>
-                </div>
-                <div class="col-sm-4">
-                    <div class="text-center">
-                        <img src="assets/Login-Icon.png" width="30%">
-                        <p class="h2">Servicio 1</p>
-                    </div>
-                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-                        del cañón.
-                    </p>
-                </div>
-                <div class="col-sm-4">
-                    <div class="text-center">
-                        <img src="assets/Login-Icon.png" width="30%">
-                        <p class="h2">Servicio 1</p>
-                    </div>
-                    <p>Mexicanos, al grito de guerra El acero aprestad y el bridón, y retiemble en sus centros la tierra Al sonoro rugir
-                        del cañón.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-
-        <!--Contenedor datos sign up-->
-        <div class="container-fluid" id="SignUp">
+            <h1 class="display-5 text-center">¡Prueba nuestros servicios!</h1>
             <hr>
             <div class="row">
-                <div class="col-sm-4 offset-sm-4">
-                    <p class="h1 section-header">Comienza ya mismo</p>
+                <div class="col-sm-4">
+                    <div class="thumbnail text-center">
+                        <img src="assets/hide.png" alt="" class="img-responsive">
+                        <div class="caption">
+                            <p>Privacidad</p>
+                            <p>Solo tú tienes acceso a tus archivos</p>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="col-sm-4">
+                    <div class="thumbnail text-center">
+                        <img src="assets/locked.png" alt="" class="img-responsive">
+                        <div class="caption">
+                            <p>Integridad</p>
+                            <p>Únicamente tu puees modificar los archivos</p>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col-sm-4">
+                    <div class="thumbnail text-center">
+                        <img src="assets/available.png" alt="" class="img-responsive">
+                        <div class="caption">
+                            <p>Disponibilidad</p>
+                            <p>Tus archivos siempre se encontrarán disponibles</p>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <!--Contenedor datos sign up-->
+        <hr>
+        <div class="container" id="SignUp">
+            <h1 class="display-5 text-center">Comienza ya mismo</h1>
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-10" >
+                    <form method="POST" onsubmit="return submitdata()">
+                        <!--Email-->
+                        <div class="form-group row ">
+                            <label for="Email" class="col-form-label">Email</label>
+                            <div class="col">
+                                <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" required>
+                            </div>                                
+                        </div>
+                        <div class="row-12" id="ErrorEmail"></div>
+
+                        <!--Alias-->
+                        <div class="form-group row">
+                            <label for="Alias" class="col-form-label">Alias</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="Alias" placeholder="Alias_de_ejemplo" required>
+                            </div>                            
+                        </div> 
+                        <div class="row-12" id="ErrorAlias"></div>
+
+                        <!--contraseña-->
+                        <div class="form-group row">
+                            <label for="Password" class="col-form-label">Contraseña</label>
+                            <div class="col">
+                                <input type="password" maxlength="255" class="form-control"  data-toggle="tooltip" data-placement="right" title="La contraseña debe de tener al menos 1 mayúscula, 1 minúscula, 1 caracter especial y 1 número; además de una longitud entre 8 y 64 caracteres" id="Password" placeholder="********" required>
+                            </div>
+                            <label for="Confirmacion" class="col-form-label">Confirmación</label>
+                            <div class="col">
+                                <input type="password" class="form-control" id="Confimacion" placeholder="********" required>
+                            </div>
+                        </div>
+                        <div class="row-12" id="ErrorPassword"></div>
+
+                        <div class="row">
+                            <h6>Todos los campos son obligatorios.</h6>
+                        </div>
+                        <div class="row-12" id="RegistroOK"></div>
+                        <div class="form-group row justify-content-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Registrar</button>                            
+                        </div>
+
+
+                    </form>
                 </div>
             </div>
 
-            <form method="POST" onsubmit="return submitdata()">
-                <div class="container-fluid">
-                    <div class="form-group row">
-                        <label for="Email" class="col-sm-1 offset-sm-3 col-form-label">Email *</label>
-                        <div class="col-sm-5">
-                            <input type="email" class="form-control" id="Email" placeholder="ejemplo@servidor.com" required>
-                        </div>
-                        <div class="offset-sm-4 col-sm-5" id="ErrorEmail"></div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="Alias" class="col-sm-1 offset-sm-3 col-form-label">Alias *</label>
-                        <div class="col-sm-5">
-                            <input type="text" class="form-control" id="Alias" placeholder="Usuario_de_ejemplo" required>
-                        </div>
-                        <div class="offset-sm-4 col-sm-5" id="ErrorAlias"></div>
-                    </div> 
-
-                    <div class="form-group row">
-                        <label for="Password" class="col-sm-1 offset-sm-3 col-form-label">Contraseña *</label>
-                        <div class="col-sm-2">
-                            <input type="password" maxlength="255" class="form-control" id="Password" placeholder="********" required>
-                        </div>
-                        <label for="Confirmacion" class="col-sm-1 col-form-label">Confirmación *</label>
-                        <div class="col-sm-2">
-                            <input type="password" class="form-control" id="Confimacion" placeholder="********" required>
-                        </div>
-                        <div class="offset-sm-4 col-sm-5" id="ErrorPassword"></div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-6 offset-sm-3">
-                            <p>* Todos los campos son obligatorios.</p>
-                        </div>
-                        <div class="col-sm-6 offset-sm-3">
-                            <button type="submit" class="btn btn-primary btn-block">Registrar</button>                            
-                        </div>
-                        <div class="col-sm-6 offset-sm-3" id="RegistroOK"></div>
-                    </div>
-                </div>
-            </form>
 
         </div>
-        <br><br> <!--TODO: MODIFICAR EL CSS -->
-        <!--<footer class="footer" id="PiePagina">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-3">
-                <p class="font-weight-bold">Acerca</p>
-                <ul id="markdown-toc">
-                  <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
-                </ul>
-              </div>
-              <div class="col-md-3">
-                <p class="font-weight-bold">Seguridad</p>
-                <ul id="markdown-toc">
-                  <li><a href="#" id="markdown-toc-contents">Manual de usuario</a></li>
-                </ul>
-              </div>
-              <div class="col-md-3">
-                <p class="font-weight-bold">Legal</p>
-                <ul id="markdown-toc">
-                  <li><a href="#" id="markdown-toc-contents">Terminos de uso</a></li>
-                  <li><a href="#" id="markdown-toc-contents">Politicas de privacidad</a></li>
-    
-                </ul>
-              </div>
-              <div class="col-md-3">
-                <p class="font-weight-bold">Contacto</p>
-              </div>
-            </div>
-          </div>
-        </footer>-->
+
     </body>
-
-
 </html>

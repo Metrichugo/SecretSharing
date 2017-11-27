@@ -2,6 +2,10 @@ $.getScript("./js/funcionesComunes.js", function () {
     console.log("Funciones comunes cargadas");
 });
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
 function validarContraseña(email, password, conf) {
     var res = false, res2 = false, res3 = false;
     var exp = /^(?=.*\d)(?=.*[\u0021-\u002f\u003A-\u0040\u005B-\u005F])(?=.*[A-Z])(?=.*[a-z])\S{8,64}$/;

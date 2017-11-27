@@ -7,8 +7,8 @@ include_once("Archivo.php");
 class BaseDeDatos {
 
     protected $DB_NAME = "SecretSharing";
-    protected $DB_USER = "root";
-    protected $DB_PASS = "root";
+    protected $DB_USER = "rcss";
+    protected $DB_PASS = "Vaporru1";
     protected $DB_HOST = "localhost";
 
     /*     * ********************************** Methods for DB **************************************** */
@@ -35,7 +35,8 @@ class BaseDeDatos {
         $alias = $usuario->getAlias();
         $status = $usuario->getStatus();
         $espacioUtilizado = $usuario->getEspacioUtilizado();
-        $stmt = $this->connection->prepare("INSERT INTO usuario (idUsuario,contrasenia,alias,status,espacioUtilizado) VALUES (?,?,?,?,?)");
+        $stmt = $this->connection->prepare("INSERT INTO usuario (idUsuario,contrasenia,alias,status,espacioUtilizado) "
+                . "VALUES (?,AES_ENCRYPT(?, UNHEX(SHA2('RCSS',512))),?,?,?)");
         $stmt->bind_param("sssii", $email, $password, $alias, $status, $espacioUtilizado);
         return $stmt->execute();
     }
@@ -49,7 +50,7 @@ class BaseDeDatos {
 
     public function consultarUsuario($usuario) {
         $email = $usuario->getidUsuario();
-        $stmt = $this->connection->prepare("SELECT idUsuario, contrasenia ,alias,status,espacioUtilizado FROM usuario WHERE idUsuario = ?");
+        $stmt = $this->connection->prepare("SELECT idUsuario,AES_DECRYPT(contrasenia, UNHEX(SHA2('RCSS',512))) ,alias,status,espacioUtilizado FROM usuario WHERE idUsuario = ?");
         $stmt->bind_param("s", $email);
         if ($stmt->execute()) {
             $stmt->bind_result($idUsuario, $contrasenia, $alias, $status, $espacioUtilizado);
@@ -90,17 +91,15 @@ class BaseDeDatos {
         $email = $usuario->getidUsuario();
         $password = $usuario->getContrasenia();
         $alias = $usuario->getAlias();
-        $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
-        $stmt->bind_param("ssss", $email, $password, $alias, $email);
+        $stmt = $this->connection->prepare("UPDATE usuario SET contrasenia = AES_ENCRYPT(?, UNHEX(SHA2('RCSS',512))), alias = ? WHERE idUsuario=?");
+        $stmt->bind_param("sss", $password, $alias, $email);
         return $stmt->execute();
     }
 
     public function actualizaIdUsuario($usuario, $newIdUsuario) {
         $email = $usuario->getidUsuario();
-        $password = $usuario->getContrasenia();
-        $alias = $usuario->getAlias();
-        $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ?, contrasenia = ?, alias = ? WHERE idUsuario=?");
-        $stmt->bind_param("ssss", $newIdUsuario, $password, $alias, $email);
+        $stmt = $this->connection->prepare("UPDATE usuario SET idUsuario = ? WHERE idUsuario=?");
+        $stmt->bind_param("ss", $newIdUsuario, $email);
         return $stmt->execute();
     }
 
@@ -120,7 +119,7 @@ class BaseDeDatos {
     public function existeUsuarioContrasenia($usuario) {
         $email = $usuario->getidUsuario();
         $password = $usuario->getContrasenia();
-        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia=?");
+        $stmt = $this->connection->prepare("SELECT COUNT(idUsuario) AS RESULT FROM usuario WHERE idUsuario = ? AND contrasenia=AES_ENCRYPT(?, UNHEX(SHA2('RCSS',512)))");
         $stmt->bind_param("ss", $email, $password);
         if ($stmt->execute()) {
             $stmt->bind_result($result);
@@ -174,7 +173,7 @@ class BaseDeDatos {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpetaSup = $carpeta->getIdCarpetaSuperior();
         $nombreCarpeta = $carpeta->getNombreCarpeta();
-        $stmt = $this->connection->prepare("select * from carpeta where  idUsuario = ? and  idCarpetaSuperior = ? and nombreCarpeta = ?");
+        $stmt = $this->connection->prepare("SELECT * FROM carpeta WHERE  idUsuario = ? and  idCarpetaSuperior = ? and nombreCarpeta = ?");
         $stmt->bind_param("sis", $idUsuario, $idCarpetaSup, $nombreCarpeta);
         if ($stmt->execute()) {
             $stmt->bind_result($idCarpeta, $idUsuario, $idCarpetaSuperior, $nombreCarpeta, $fechaCreacion);
@@ -263,11 +262,9 @@ class BaseDeDatos {
         $idUsuario = $carpeta->getIdUsuario();
         $idCarpeta = $carpeta->getIdCarpeta();
         $idCarpetaDest = $carpetaDestino->getIdCarpeta();
-        if (!$this->connection->query("UPDATE carpeta SET idCarpetaSuperior = '$idCarpetaDest' WHERE idCarpeta = '$idCarpeta' and idUsuario = '$idUsuario'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("UPDATE carpeta SET idCarpetaSuperior = ? WHERE idCarpeta = ? and idUsuario = ?");
+        $stmt->bind_param("iis", $idCarpetaDest, $idCarpeta, $idUsuario); //s->String, i->Integer 
+        return $stmt->execute();
     }
 
     public function obtenerSubCarpetas($usuario, $idCarpetaSuperior, $idCarpeta) {
@@ -370,11 +367,9 @@ class BaseDeDatos {
         $idUsuario = $archivo->getIdUsuario();
         $nombreArchivo = $archivo->getNombreArchivo();
         $idCarpetaDest = $archivo->getIdCarpeta();
-        if (!$this->connection->query("UPDATE archivo set idCarpeta = '$idCarpetaDest' where nombreArchivo = '$nombreArchivo' and idUsuario ='$idUsuario'")) {
-            echo "Mistakes were made " . $this->connection->errno . " " . $this->connection->error;
-            return false;
-        }
-        return true;
+        $stmt = $this->connection->prepare("UPDATE archivo set idCarpeta = ? where nombreArchivo =  ? and idUsuario = ?");
+        $stmt->bind_param("iss", $idCarpetaDest, $nombreArchivo, $idUsuario); //s->String, i->Integer 
+        return $stmt->execute();
     }
 
     public function existeArchivo($archivo) {

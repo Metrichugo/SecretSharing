@@ -4,40 +4,14 @@
     background-size: cover;
 }
 
-#Intro{
-    width: 40%;
+.thumbnail {
+    position: relative;
+    
 }
 
-#Intro h1{
-    color: whitesmoke;
+.caption {
+    position: absolute;
+    top: 45%;
+    left: 0;
+    width: 100%;
 }
-
-#HeaderText{
-    padding-top: 5%;
-}
-
-#HeaderButtons{
-    padding-top: 5%;
-}
-
-#Services{
-    height: 80%;
-}
-
-.section-header{
-     padding: 5% 0 ;
-     text-align: center;
-}
-
-#Services p.h2{
-    color: #3f45fc;
-    align-self: center;
-    padding-top:5%;
-}
-
-#SignUp{
-    height: 60%;
-    background: #F9F9F9;
-}
-
-
