@@ -214,7 +214,7 @@ function editarNombreArchivo() {
         success: function (response) {
             console.log(response);
             if (response === "correct") {
-                $(jq('row' + nombreArch)).attr('id', jq2('row' + nuevoNomArch));
+                $(jq('row' + nombreArch)).attr('id', ('row' + nuevoNomArch));
                 $(jq('arch' + nombreArch)).text(nuevoNomArch);
                 $(jq('arch' + nombreArch)).attr('id', 'arch' + nuevoNomArch);
                 $(jq('mov' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
@@ -222,6 +222,8 @@ function editarNombreArchivo() {
                 $(jq('down' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
                 $(jq('edit' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
                 $(jq('del' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+                $(jq('mov' + nombreArch)).attr('data-nomArchivo', nuevoNomArch);
+                
                 $(jq('down' + nombreArch)).attr('id', 'down' + nuevoNomArch);
                 $(jq('edit' + nombreArch)).attr('id', 'edit' + nuevoNomArch);
                 $(jq('del' + nombreArch)).attr('id', 'del' + nuevoNomArch);

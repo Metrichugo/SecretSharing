@@ -132,6 +132,19 @@ class Usuario_Accion {
                 if ($this->DBConnection->actualizaIdUsuario($oldUsuario, $newNombreUsuario)) {
                     $_SESSION["usuario"] = serialize($newUsuario);
                     echo "0";
+                    //Cambio de nombre del directorio
+                    $newNombreUsuario;
+                    $handle = fopen("../ejecutables/servidores.txt", "r");
+                    if ($handle) {
+                        while (($line = fgets($handle)) !== false) {
+                            $line = str_replace("\n", "", $line);
+                            $comando = "ssh " . $line . " \"mv ~/RCSS/" . $oldUsuario->getidUsuario() . " ~/RCSS/" . $newNombreUsuario . "\"";
+                            //echo $comando;                
+                            $this->modif_shell_exec($comando, $stdout, $stderr);
+                            //echo "Salida:" . $stdout . $stderr . " ";
+                        }
+                        fclose($handle);
+                    }
                 } else {
                     $_SESSION["usuario"] = serialize($oldUsuario);
                     echo "3";
@@ -143,6 +156,19 @@ class Usuario_Accion {
             echo "2";
             return;
         }
+    }
+
+    private function modif_shell_exec($cmd, &$stdout = null, &$stderr = null) {
+        $pipes = null;
+        $proc = proc_open($cmd, [
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+                ], $pipes);
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+        return proc_close($proc);
     }
 
     public function eliminarCuentaUsuario() {
